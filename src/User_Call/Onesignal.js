@@ -6,8 +6,9 @@ import { MyContext } from '../Context/MyProvider';
 
 const Onesignal = ({ Id, message, receiverId, channel, title, img, type }) => {
 
-    const { onesignalAppId, onesignalKey } = useContext(MyContext);
-
+    const onesignalAppId = "720a0530-a6f1-42b6-8725-f1a47dc284f3";
+    const onesignalKey = "key os_v2_app_oifakmfg6fblnbzf6gsh3que6pphtnhd5qtuigvhaqjgm4lazx7e4hgjtcmwfplkut5oy2hmblv5hujfasbpprwmon4zwulqih4dlsy";
+    
     const [notificationSent, setNotificationSent] = useState(false);
     const Test = useRef(false);
 
