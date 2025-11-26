@@ -3,6 +3,7 @@
 
 import React, { createContext, useState } from 'react';
 
+
 const MyContext = createContext();
 
 const MyProvider = ({ children }) => {
@@ -14,6 +15,7 @@ const MyProvider = ({ children }) => {
     const paymentBaseURL = "https://meetgreek.dhsol.net/";
 
     const [updateId, setUpdateId] = useState(0);
+    const [oneSignalInitialized, setOneSignalInitialized] = useState(false);
 
     const [name, setName] = useState();
     const [email, setEmail] = useState();
@@ -25,6 +27,9 @@ const MyProvider = ({ children }) => {
     const [gender, setGender] = useState();
     const [goal, setGoal] = useState();
     const [nearby, setNearby] = useState();
+    const [country, setCountry] = useState();
+    const [state, setState] = useState();
+    const [city, setCity] = useState();
     const [hobbies, setHobbies] = useState();
     const [languages, setLanguages] = useState();
     const [religion, setReligion] = useState();
@@ -62,6 +67,9 @@ const MyProvider = ({ children }) => {
     const [onesignalKey, setOnesignalKey] = useState();
     const [color, setColor] = useState("");
     const [button, setButton] = useState(true);
+    const [callChannelName, setCallChannelName] = useState('');
+    const [token, setToken] = useState('');
+
 
     const Value = {
         name, setName,
@@ -74,6 +82,11 @@ const MyProvider = ({ children }) => {
         gender, setGender,
         goal, setGoal,
         nearby, setNearby,
+        country, setCountry,
+        state, setState,
+        city, setCity,
+        oneSignalInitialized, setOneSignalInitialized,
+
         hobbies, setHobbies,
         languages, setLanguages,
         religion, setReligion,
@@ -113,10 +126,13 @@ const MyProvider = ({ children }) => {
         button, setButton,
         color, setColor,
         basUrl, imageBaseURL, paymentBaseURL,
+        callChannelName, setCallChannelName,
+        token, setToken,
     };
 
     return (
         <MyContext.Provider value={Value}>
+
             {children}
         </MyContext.Provider>
     );

@@ -1,6 +1,4 @@
-import { createContext } from "react";
+// In your Context.js file, make sure TodoContext is properly defined:
+import React, { createContext } from 'react';
 
-const TodoContext = createContext(null)
-export{
-    TodoContext
-}
+export const TodoContext = createContext();

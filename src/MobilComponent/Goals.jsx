@@ -23,7 +23,7 @@ const Golas = () => {
 
   const SubmitHandler = () => {
     if (selectGoal) {
-      navigation("/nearby");
+      navigation("/location");
       setGoal(selectGoal);
     } else {
       showTost({ title: "Please Select Relationship Goals" });

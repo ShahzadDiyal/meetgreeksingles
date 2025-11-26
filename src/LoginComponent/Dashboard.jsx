@@ -1033,7 +1033,7 @@ const Dashboard = () => {
             ref={BgDisplay}
             onClick={FilterHandler}
             id="overlay"
-            class="overlay z-[888]"
+            className="overlay z-[888]"
           ></div>
         {/* <!-- Overlay End -->
  

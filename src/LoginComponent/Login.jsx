@@ -17,6 +17,9 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../Users_Chats/Firebase";
 import { showTost } from "../showTost";
 import { uid } from "uid";
+import { initOneSignal } from "../utils/OneSignalInit";
+// import { saveUserToFirestore } from "../utils/saveUserToFirestore";
+
 const Login = () => {
 
   const Data = useContext(TodoContext);
@@ -34,6 +37,7 @@ const Login = () => {
   const [otpShow, setOtpShow] = useState(false);
   const [fcmToken, setFcmToken] = useState();
 
+  
   const navigate = useNavigate();
 
   const Show = useRef();
@@ -54,40 +58,205 @@ const Login = () => {
     }
   }
 
-  const SigninHandler = () => {
+  // const SigninHandler = () => {
+  //   const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  //   if (Email && Password) {
+  //     axios
+  //       .post(`${basUrl}user_login.php`, {
+  //         mobile: Email,
+  //         ccode: "+91",
+  //         password: Password,
+  //       })
+  //       .then((res) => {
+  //         if (res.data.Result === "true") {
+  //           setToastShow(true);
+  //           showTost({ title: res.data.ResponseMsg });
+  //           UserAddHandler(res.data.UserLogin);
+  //           Data.setDemo(Data.demo + "123");
+  //           const token = res.data.token || uid(32);
+  //           localStorage.setItem("token", token);
+  //           localStorage.setItem("UserId", res.data.UserLogin.id);
+  //           localStorage.setItem("Register_User", JSON.stringify(res.data.UserLogin));
+  //           setTimeout(() => {
+  //             navigate("/");
+  //           }, 500);
+  //         } else {
+  //           showTost({ title: res.data.ResponseMsg });
+  //         }
+  //       });
+  //   } else if (!Validation.test(Email)) {
+  //     showTost({ title: "Please Enter Valid Email" });
+  //   } else if (!Email) {
+  //     showTost({ title: "Please Enter Email" });
+  //   } else if (!Password) {
+  //     showTost({ title: "Please Enter Password" });
+  //   }
+  // };
+  const SigninHandler = async () => {
+    console.log("SigninHandler clicked");
+
+  try {
     const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    if (Email && Password) {
-      axios
-        .post(`${basUrl}user_login.php`, {
-          mobile: Email,
-          ccode: "+91",
-          password: Password,
-        })
-        .then((res) => {
-          if (res.data.Result === "true") {
-            setToastShow(true);
-            showTost({ title: res.data.ResponseMsg });
-            UserAddHandler(res.data.UserLogin);
-            Data.setDemo(Data.demo + "123");
-            const token = res.data.token || uid(32);
-            localStorage.setItem("token", token);
-            localStorage.setItem("UserId", res.data.UserLogin.id);
-            localStorage.setItem("Register_User", JSON.stringify(res.data.UserLogin));
-            setTimeout(() => {
-              navigate("/");
-            }, 500);
-          } else {
-            showTost({ title: res.data.ResponseMsg });
+    if (!Email) return showTost({ title: "Please Enter Email" });
+    if (!Password) return showTost({ title: "Please Enter Password" });
+
+    const res = await axios.post(`${basUrl}user_login.php`, {
+      mobile: Email,
+      ccode: "+91",
+      password: Password,
+    });
+
+    if (res.data.Result === "true") {
+      const user = res.data.UserLogin;
+      
+      // Store backend token in localStorage
+      const backendToken = res.data.token || uid(32);
+      localStorage.setItem("token", backendToken);
+      localStorage.setItem("UserId", user.id);
+      localStorage.setItem("Register_User", JSON.stringify(user));
+
+      showTost({ title: res.data.ResponseMsg });
+      Data.setDemo(Data.demo + "123");
+
+        // --- SAVE USER TO FIRESTORE WITH FCM TOKEN ---
+        const saveUserToFirestore = async () => {
+          try {
+            const { id, name, email, mobile, profile_pic, token } = user;
+            const userRef = doc(db, "datingUser", id);
+
+            let fcmToken = "";
+
+            console.log("🔄 Starting Firestore save for user:", id);
+
+            // Initialize OneSignal and get FCM token
+            if (window.OneSignal) {
+              try {
+                console.log("🔄 Initializing OneSignal...");
+                
+                // Initialize OneSignal with your actual App ID
+                await window.OneSignal.init({
+                  appId: "720a0530-a6f1-42b6-8725-f1a47dc284f3", // Your OneSignal App ID
+                  allowLocalhostAsSecureOrigin: true,
+                });
+
+                console.log("✅ OneSignal initialized");
+
+                // Wait for OneSignal to be ready
+                await new Promise((resolve) => {
+                  window.OneSignal.push(() => {
+                    console.log("✅ OneSignal is ready");
+                    resolve();
+                  });
+                });
+
+                // Set external user ID
+                await window.OneSignal.setExternalUserId(user.id);
+                console.log("✅ External user ID set:", user.id);
+
+                // Get the FCM token (OneSignal player ID)
+                try {
+                  // Wait a bit for token to be available
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+                  
+                  fcmToken = await window.OneSignal.getUserId();
+                  console.log("✅ FCM Token from OneSignal:", fcmToken);
+
+                  if (!fcmToken) {
+                    console.log("⚠️ No FCM token available, trying alternative method...");
+                    
+                    // Alternative method to get token
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    fcmToken = await window.OneSignal.getUserId();
+                    console.log("✅ FCM Token (retry):", fcmToken);
+                  }
+
+                  if (!fcmToken) {
+                    console.log("❌ Still no FCM token available");
+                  }
+
+                } catch (tokenError) {
+                  console.warn("❌ Error getting FCM token:", tokenError);
+                }
+
+              } catch (oneSignalError) {
+                console.warn("❌ OneSignal initialization error:", oneSignalError);
+              }
+            } else {
+              console.log("⚠️ OneSignal not available in window");
+            }
+
+            // Prepare user data
+            const userData = {
+              uid: id,
+              name: name || "",
+              email: email || "",
+              number: mobile || "",
+              token: fcmToken || "", // FCM token or empty string
+              pro_pic: profile_pic || "null",
+              isOnline: true,
+              last_seen: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            };
+
+            console.log("📦 Data to save to Firestore:", userData);
+
+            // Use setDoc with merge: true
+            await setDoc(userRef, userData, { merge: true });
+            console.log("✅ Firestore save completed");
+
+            // Verify the save
+            const savedDoc = await getDoc(userRef);
+            if (savedDoc.exists()) {
+              const savedData = savedDoc.data();
+              console.log("🔍 VERIFICATION - Firestore document saved successfully");
+              console.log("🔍 VERIFICATION - isOnline:", savedData.isOnline);
+              console.log("🔍 VERIFICATION - token:", savedData.token);
+            } else {
+              console.error("❌ Document doesn't exist after save!");
+            }
+
+          } catch (error) {
+            console.error("🔥 Firestore save error:", error);
+            
+            // Fallback: Save without token
+            try {
+              const { id, name, email, mobile, profile_pic } = user;
+              const userRef = doc(db, "datingUser", id);
+              
+              const fallbackData = {
+                uid: id,
+                name: name || "",
+                email: email || "",
+                number: mobile || "",
+                token: "",
+                pro_pic: profile_pic || "null",
+                isOnline: true,
+                last_seen: new Date().toISOString(),
+              };
+              
+              await setDoc(userRef, fallbackData, { merge: true });
+              console.log("✅ Fallback Firestore save completed");
+            } catch (fallbackError) {
+              console.error("🔥 Fallback Firestore save failed:", fallbackError);
+            }
           }
-        });
-    } else if (!Validation.test(Email)) {
-      showTost({ title: "Please Enter Valid Email" });
-    } else if (!Email) {
-      showTost({ title: "Please Enter Email" });
-    } else if (!Password) {
-      showTost({ title: "Please Enter Password" });
+        };
+
+        // Don't wait for Firestore save to complete - let it happen in background
+        saveUserToFirestore();
+
+        console.log("✅ Login successful, navigating to home...");
+        setTimeout(() => navigate("/"), 500);
+
+      } else {
+        showTost({ title: res.data.ResponseMsg });
+      }
+    } catch (err) {
+      console.error("🔥 SigninHandler crashed:", err);
+      showTost({ title: "Login failed" });
     }
   };
+
 
   const toggleBottomSheet = () => {
     setIsVisible(!isVisible);

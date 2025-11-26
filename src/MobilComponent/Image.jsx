@@ -12,7 +12,7 @@ import { uid } from "uid";
 const Imagecom = () => {
 
   const { demo, setDemo } = useContext(TodoContext);
-  const { name, email, password, bio, number, ccode, birthdate, gender, goal, nearby, hobbies, languages, religion, preference, basUrl, longitude, latitude, setLatitude, setLongitude } = useContext(MyContext);
+  const { name, email, password, bio, number, ccode, birthdate, gender, goal, nearby,country, state, city, hobbies, languages, religion, preference, basUrl, longitude, latitude, setLatitude, setLongitude } = useContext(MyContext);
   const navigate = useNavigate();
 
   const inp1 = useRef();
@@ -91,6 +91,9 @@ const Imagecom = () => {
             formData.append("profile_bio", bio ? bio : undefined);
             formData.append("interest", hobbies);
             formData.append("language", languages);
+            formData.append("country_id", country);
+            formData.append("state_id", state);
+            formData.append("city_id", city);
             formData.append("password", password);
             formData.append("gender", gender);
             formData.append("lats", latitude);
