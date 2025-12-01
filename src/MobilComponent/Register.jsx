@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 /* jshint ignore:start */
 
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import ShowPassword from "../Icon/eye.svg";
 import HidePassword from "../Icon/eye-slash.svg";
@@ -13,17 +13,119 @@ import axios from "axios";
 import { showTost } from "../showTost";
 
 const Register = () => {
-  const [Bio, setbio] = useState();
   const [Name, setname] = useState();
   const [Email, setemail] = useState();
+  const [Phone, setPhone] = useState();
   const [Password, setpassword] = useState();
-  const [accepted, setAccepted] = useState(false); // track if user accepted message
+  const [Gender, setGender] = useState("");
+  const [GreekStatus, setGreekStatus] = useState("");
+  const [BirthDay, setBirthDay] = useState("");
+  const [BirthMonth, setBirthMonth] = useState("");
+  const [BirthYear, setBirthYear] = useState("");
+  const [Country, setCountry] = useState("");
+  const [Countries, setCountries] = useState([]);
+  const [State, setState] = useState("");
+  const [States, setStates] = useState([]);
+  const [City, setCity] = useState("");
+  const [Cities, setCities] = useState([]);
+  const [Bio, setbio] = useState();
+  const [ReferralCode, setReferralCode] = useState("");
+  const [Agreed, setAgreed] = useState(false);
+  const [accepted, setAccepted] = useState(false);
+  const [loadingStates, setLoadingStates] = useState(false);
+  const [loadingCities, setLoadingCities] = useState(false);
+
   const Show = useRef();
   const Hide = useRef();
-  const { setName, setEmail, setPassword, setBio, basUrl } =
-    useContext(MyContext);
+  const {
+    setName,
+    setEmail,
+    setPassword: setContextPassword,
+    setBio: setContextBio,
+    basUrl,
+  } = useContext(MyContext);
 
   const navigation = useNavigate();
+
+  // Generate days, months, years
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+
+  // Fetch countries API
+  useEffect(() => {
+    if (accepted) {
+      axios
+        .get("https://meetgreek.dhsol.net/location_api.php")
+        .then((res) => {
+          setCountries(res.data.countries);
+        })
+        .catch((err) => {
+          console.error("Error fetching countries:", err);
+          showTost({ title: "Failed to load countries" });
+        });
+    }
+  }, [accepted]);
+
+  // Fetch states when country changes
+  useEffect(() => {
+    if (!Country) {
+      setStates([]);
+      setCities([]);
+      setState("");
+      setCity("");
+      return;
+    }
+    setLoadingStates(true);
+    axios
+      .get(`https://meetgreek.dhsol.net/location_api.php?country_id=${Country}`)
+      .then((res) => {
+        setStates(res.data.states || []);
+        setState(""); // reset state selection
+        setCities([]); // reset cities
+        setCity(""); // reset city selection
+      })
+      .catch((err) => {
+        console.error("Error fetching states:", err);
+        showTost({ title: "Failed to load states" });
+      })
+      .finally(() => setLoadingStates(false));
+  }, [Country]);
+
+  // Fetch cities when state changes
+  useEffect(() => {
+    if (!State) {
+      setCities([]);
+      setCity("");
+      return;
+    }
+    setLoadingCities(true);
+    axios
+      .get(`https://meetgreek.dhsol.net/location_api.php?state_id=${State}`)
+      .then((res) => {
+        setCities(res.data.cities || []);
+        setCity(""); // reset city selection
+      })
+      .catch((err) => {
+        console.error("Error fetching cities:", err);
+        showTost({ title: "Failed to load cities" });
+      })
+      .finally(() => setLoadingCities(false));
+  }, [State]);
 
   const myFunction = () => {
     var x = document.getElementById("input");
@@ -39,22 +141,55 @@ const Register = () => {
   };
 
   const SubmitHandler = () => {
-    if (!Name.trim()) return showTost({ title: "Please Enter Name" });
-    if (!Email.trim()) return showTost({ title: "Please Enter Email" });
-    if (!Password.trim()) return showTost({ title: "Please Enter Password" });
+    // Basic validations
+    if (!Name?.trim()) return showTost({ title: "Please Enter Name" });
+    if (!Phone?.trim()) return showTost({ title: "Please Enter Phone Number" });
+    if (!Email?.trim()) return showTost({ title: "Please Enter Email" });
+    if (!Password?.trim()) return showTost({ title: "Please Enter Password" });
+    if (Password.length < 8)
+      return showTost({ title: "Password must be at least 8 characters" });
+    if (!Gender) return showTost({ title: "Please select your gender" });
+    if (!GreekStatus)
+      return showTost({ title: "Please select your Greek status" });
+    if (!BirthDay || !BirthMonth || !BirthYear)
+      return showTost({ title: "Please select your birthdate" });
+    if (!Country) return showTost({ title: "Please select your country" });
+    if (!State) return showTost({ title: "Please select your state" });
+    if (!City) return showTost({ title: "Please select your city" });
+    if (!Agreed)
+      return showTost({ title: "Please agree to Terms & Conditions" });
 
+    // Email validation
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     if (!emailRegex.test(Email)) return showTost({ title: "Invalid Email" });
 
+    // Age validation (must be 18+)
+    const birthDate = new Date(BirthYear, months.indexOf(BirthMonth), BirthDay);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    if (age < 18) return showTost({ title: "You must be 18 years or older" });
+
+    // Check email with API
     axios
       .post(`${basUrl}email_check.php`, { email: Email })
       .then((res) => {
         if (res.data.Result === "true") {
+          // Store all data in context or send to backend
           setName(Name);
           setEmail(Email);
-          setPassword(Password);
-          setBio(Bio);
-          navigation("/phonenumber");
+          setContextPassword(Password);
+          setContextBio(Bio);
+          
+          // You might want to store all data including gender, greek status, location, birthdate
+          // For now, navigate to next step
+          navigation("/image");
         } else {
           showTost({ title: res.data.ResponseMsg });
         }
@@ -65,7 +200,6 @@ const Register = () => {
   const handleAccept = () => setAccepted(true);
   const handleDecline = () => {
     showTost({ title: "You must accept the terms to register." });
-    // optional: redirect user back to home page
     navigation("/");
   };
 
@@ -81,42 +215,60 @@ const Register = () => {
           </div>
 
           {!accepted && (
-            <div className="flex flex-col items-center justify-center pl-6  text-center">
-              <img src="/favicon.ico" width={150} alt="" />
-              <h2 className="text-[30px] font-[700] text-[#0066CC] mb-3">
-                Welcome to Meet Greek Singles!
-              </h2>
-             <ul className="text-[18px] text-start text-gray-700 mb-5 space-y-3">
-  <li className="flex items-center gap-2">
-    <AiOutlineCheckCircle className="text-[#0066CC] w-[20px] h-[20px] flex-shrink-0" />
-    <p>
-      You must be <strong>18 years or older</strong> to join.
-    </p>
-  </li>
-  <li className="flex  gap-2">
-    <AiOutlineCheckCircle className="text-[#0066CC] w-[20px] h-[20px] flex-shrink-0" />
-    <p>
-      This site is strictly for single, separated, divorced, or widowed individuals, seeking meaningful connections with Greek-origin singles.
-    </p>
-  </li>
-  <li className="flex items-center gap-2">
-    <AiOutlineCloseCircle className="text-red-700 w-[20px] h-[20px] flex-shrink-0" />
-    <p>
-      <strong>Married individuals</strong> are not permitted.
-    </p>
-  </li>
-</ul>
+            <div className="flex flex-col items-center justify-center pl-6 text-center">
+              <img src="/favicon.ico" width={150} alt="Logo" className="mb-4" />
 
-              <div className="flex flex-col sm:flex-row gap-4 w-full">
+              {/* Main Heading */}
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#0066CC] mb-3 leading-tight">
+                Welcome to Meet Greek Singles!
+              </h1>
+
+              {/* Subheading / Description */}
+              <p className="text-md md:text-[16px] text-gray-700 mb-6 max-w-xl">
+                We're delighted to have you here. <br />
+                Find love, friendship & Greek connection — wherever you are.
+              </p>
+
+              {/* Section Header */}
+              <h2 className="text-2xl md:text-3xl font-bold text-[#C89A3D] mb-4 border-b-4 border-[#C89A3D] pb-2">
+                To Join Our Community:
+              </h2>
+
+              {/* Rules / Guidelines */}
+              <ul className="text-[18px] text-start text-gray-700 mb-5 space-y-3 max-w-xl">
+                <li className="flex items-center gap-3">
+                  <AiOutlineCheckCircle className="text-[#0066CC] w-6 h-6 flex-shrink-0" />
+                  <p className="leading-snug">
+                    You must be <strong>18 years or older</strong> to join.
+                  </p>
+                </li>
+                <li className="flex items-center gap-3">
+                  <AiOutlineCheckCircle className="text-[#0066CC] w-6 h-6 flex-shrink-0" />
+                  <p className="leading-snug">
+                    This site is strictly for single, separated, divorced, or
+                    widowed individuals, seeking meaningful connections with
+                    Greek-origin singles.
+                  </p>
+                </li>
+                <li className="flex items-center gap-3">
+                  <AiOutlineCloseCircle className="text-red-700 w-6 h-6 flex-shrink-0" />
+                  <p className="leading-snug">
+                    <strong>Married individuals</strong> are not permitted.
+                  </p>
+                </li>
+              </ul>
+
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
                 <button
                   onClick={handleAccept}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0066CC] text-white font-semibold rounded-lg hover:bg-[#0055aa] transition"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#0066CC] text-white font-semibold rounded-lg hover:bg-[#0055aa] transition-all duration-300 shadow-md hover:shadow-lg"
                 >
                   <AiOutlineCheckCircle /> Accept
                 </button>
                 <button
                   onClick={handleDecline}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-all duration-300 shadow-md hover:shadow-lg"
                 >
                   <AiOutlineCloseCircle /> Decline
                 </button>
@@ -127,7 +279,7 @@ const Register = () => {
           {/* ----- Registration Form ----- */}
           {accepted && (
             <>
-              <div className="mt-[80px]">
+              <div className="mt-[10px]">
                 <h1 className="text-[28px] max-_430_:text-[27px] font-[600]">
                   Can You elaborate on your identity? 😎
                 </h1>
@@ -137,77 +289,277 @@ const Register = () => {
                 </p>
               </div>
 
-              <div className="mt-[20px] w-[100%]">
+              <div className="mt-[20px] w-[100%] space-y-3">
+                {/* ========== SECTION 1: BASIC INFO ========== */}
+                
+                {/* 1. Name */}
+                
+
+                {/* 2. Phone Number */}
                 <div className="relative">
                   <input
-                    onChange={(e) => setname(e.target.value)}
-                    className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[20px] py-[15px] rounded-[10px]"
-                    type="text"
-                    placeholder="First Name"
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                    type="number"
+                    placeholder="Phone Number *"
                   />
-                  {Name && (
-                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5" />
+                  {Phone && (
+                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
                   )}
                 </div>
 
+                {/* 3. Email */}
                 <div className="relative">
                   <input
                     onChange={(e) => setemail(e.target.value)}
-                    className="text-black mt-[10px] w-[100%] border-[2px] outline-[#0066CC;] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                    className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
                     type="email"
-                    placeholder="Email"
+                    placeholder="Email *"
                   />
                   {Email && (
-                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5" />
+                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
                   )}
                 </div>
 
+                {/* 4. Password */}
                 <div className="relative">
                   <input
                     onChange={(e) => setpassword(e.target.value)}
                     id="input"
-                    className="text-black mt-[10px] w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
-                    type="text"
-                    placeholder="Password"
+                    className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                    type="password"
+                    placeholder="Password (min. 8 characters) *"
                   />
-                  <button onClick={myFunction}>
+                  <button
+                    onClick={myFunction}
+                    type="button"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                  >
                     <img
                       ref={Show}
                       alt="Show"
                       src={ShowPassword}
-                      className="w-[25px] h-[25px] absolute bottom-[17px] right-5"
+                      className="w-[25px] h-[25px] hidden"
                     />
                     <img
                       ref={Hide}
                       alt="Hide"
                       src={HidePassword}
-                      className="w-[25px] h-[25px] hidden absolute bottom-[17px] right-5"
+                      className="w-[25px] h-[25px]"
                     />
                   </button>
                 </div>
+                {Password && (
+                  <div
+                    className={`ml-2 text-sm ${
+                      Password.length >= 8 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {Password.length >= 8
+                      ? "✓ Password is valid"
+                      : "Password must be at least 8 characters"}
+                  </div>
+                )}
 
-                <input
-                  className="text-black mt-[10px] w-[100%] border-[2px] outline-[#0066CC;] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
-                  type="text"
-                  placeholder="Referral Code"
-                />
+                {/* ========== SECTION 2: PERSONAL DETAILS ========== */}
+                
+                {/* 5. Gender */}
+                <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
+                  <label className="block font-medium mb-3">I am a: *</label>
+                  <div className="flex flex-wrap gap-4">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Man"
+                        checked={Gender === "Man"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-5 h-5 text-[#0066CC]"
+                      />
+                      <span className="text-gray-700">Man</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Woman"
+                        checked={Gender === "Woman"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-5 h-5 text-[#0066CC]"
+                      />
+                      <span className="text-gray-700">Woman</span>
+                    </label>
+                  </div>
+                </div>
 
-                <input
-                  onChange={(e) => setbio(e.target.value)}
-                  className="text-black mt-[10px] w-[100%] border-[2px] outline-[#0066CC;] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
-                  type="text"
-                  placeholder="Bio"
-                />
+                {/* 6. Greek Status */}
+                <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
+                  <label className="block font-medium mb-3">I am: *</label>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="greekStatus"
+                        value="Greek"
+                        checked={GreekStatus === "Greek"}
+                        onChange={(e) => setGreekStatus(e.target.value)}
+                        className="w-5 h-5 text-[#0066CC]"
+                      />
+                      <span className="text-gray-700">Greek</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="greekStatus"
+                        value="Of Greek origin"
+                        checked={GreekStatus === "Of Greek origin"}
+                        onChange={(e) => setGreekStatus(e.target.value)}
+                        className="w-5 h-5 text-[#0066CC]"
+                      />
+                      <span className="text-gray-700">Of Greek origin</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="greekStatus"
+                        value="Philhellene"
+                        checked={GreekStatus === "Philhellene"}
+                        onChange={(e) => setGreekStatus(e.target.value)}
+                        className="w-5 h-5 text-[#0066CC]"
+                      />
+                      <span className="text-gray-700">Philhellene</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* 7. Birthdate */}
+                <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
+                  <label className="block font-medium mb-3">Birthdate: *</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    <select
+                      value={BirthDay}
+                      onChange={(e) => setBirthDay(e.target.value)}
+                      className="text-gray-700 border-[2px] outline-[#0066CC] border-gray-300 px-3 py-3 rounded-[10px]"
+                    >
+                      <option value="">Day</option>
+                      {days.map((day) => (
+                        <option key={day} value={day}>
+                          {day}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={BirthMonth}
+                      onChange={(e) => setBirthMonth(e.target.value)}
+                      className="text-gray-700 border-[2px] outline-[#0066CC] border-gray-300 px-3 py-3 rounded-[10px]"
+                    >
+                      <option value="">Month</option>
+                      {months.map((month) => (
+                        <option key={month} value={month}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={BirthYear}
+                      onChange={(e) => setBirthYear(e.target.value)}
+                      className="text-gray-700 border-[2px] outline-[#0066CC] border-gray-300 px-3 py-3 rounded-[10px]"
+                    >
+                      <option value="">Year</option>
+                      {years.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* ========== SECTION 3: LOCATION ========== */}
+                
+                {/* 8. Country */}
+                <select
+                  value={Country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="text-gray-700 w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                >
+                  <option value="">Select Country *</option>
+                  {Countries.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+
+                {/* 9. State */}
+                <select
+                  value={State}
+                  onChange={(e) => setState(e.target.value)}
+                  disabled={!Country || loadingStates}
+                  className="text-gray-700 w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                >
+                  <option value="">
+                    {loadingStates ? "Loading states..." : "Select State *"}
+                  </option>
+                  {States.map((state) => (
+                    <option key={state.id} value={state.id}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+
+                {/* 10. City */}
+                <select
+                  value={City}
+                  onChange={(e) => setCity(e.target.value)}
+                  disabled={!State || loadingCities}
+                  className="text-gray-700 w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                >
+                  <option value="">
+                    {loadingCities ? "Loading cities..." : "Select City *"}
+                  </option>
+                  {Cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+
+                
+                {/* 13. Terms Agreement */}
+                <div className="rounded-[10px] pt-4">
+                  <label className="flex items-start space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={Agreed}
+                      onChange={(e) => setAgreed(e.target.checked)}
+                      className="mt-1 w-5 h-5 text-[#0066CC]"
+                      id="agreement"
+                    />
+                    <span className="text-gray-700">
+                      I agree to the{" "}
+                      <a href="#" className="text-[#0066CC] underline font-medium">
+                        Terms & Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a href="#" className="text-[#0066CC] underline font-medium">
+                        Privacy Policy
+                      </a>
+                      . *
+                    </span>
+                  </label>
+                </div>
               </div>
 
+              {/* Create Account Button */}
               <button
                 style={{ background: "#0066CC" }}
                 onClick={SubmitHandler}
-                className="btn btn-w-md nextstep mt-[50px]"
+                className="btn btn-w-md nextstep mt-[20px] w-full py-2"
               >
                 <div className="flex items-center justify-center gap-[10px]">
                   <span className="font-bold text-[1.25rem] text-white">
-                    Next
+                    Create Account
                   </span>
                   <svg
                     className="mx-6"
