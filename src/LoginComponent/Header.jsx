@@ -3,7 +3,7 @@
 /* jshint ignore:start */
 import React, { useContext, useEffect, useRef, useState } from "react";
 // import imag from "../images/logos/logo.png";
-import { initOneSignal } from '../utils/OneSignalInit';
+import { initOneSignal } from "../utils/OneSignalInit";
 import imag from "../images/logos/meet-greek.png";
 import imag3 from "../images/flag/united-kingdom.png";
 import Crown from "../Icon/crown-alt.png";
@@ -13,7 +13,14 @@ import axios from "axios";
 import { MyContext } from "../Context/MyProvider";
 import { useTranslation } from "react-i18next";
 import { TodoContext } from "../Context";
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db, messaging } from "../Users_Chats/Firebase";
 import VideoCall from "../User_Call/Video_call";
 import { IoCall } from "react-icons/io5";
@@ -24,22 +31,36 @@ import verify from "../images/icons/verify.png";
 import verify1 from "../images/icons/verify-1.png";
 import Review from "../images/icons/information.png";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import LocationImg from "../images/backgrounds/permission.png"
+import LocationImg from "../images/backgrounds/permission.png";
 import { LuMessageCircle } from "react-icons/lu";
 import Slider from "react-slick";
 import { IoMdClose } from "react-icons/io";
 import UserChat from "./UserChat";
-import SendMessage from "../images/icons/Chat-Icon.svg"
-import Keepswiping from "../images/icons/keepswap.svg"
-
+import SendMessage from "../images/icons/Chat-Icon.svg";
+import Keepswiping from "../images/icons/keepswap.svg";
 
 const Header = () => {
-
   const Data = useContext(TodoContext);
 
   const { t, i18n } = useTranslation();
 
-  const { imageBaseURL, basUrl, updateId, callStatus, color, setColor, chatId, setChatId, setCallstatus, setChatUserName, atendCall, setAtendCall, setOnesignalAppId, setAgoraAppId, setOnesignalKey } = useContext(MyContext);
+  const {
+    imageBaseURL,
+    basUrl,
+    updateId,
+    callStatus,
+    color,
+    setColor,
+    chatId,
+    setChatId,
+    setCallstatus,
+    setChatUserName,
+    atendCall,
+    setAtendCall,
+    setOnesignalAppId,
+    setAgoraAppId,
+    setOnesignalKey,
+  } = useContext(MyContext);
 
   const navigate = useNavigate();
 
@@ -57,7 +78,7 @@ const Header = () => {
   const [img, setImg] = useState(imag3);
   const [language, setLanguage] = useState("English");
   const [notification, setNotification] = useState();
-  const [callType, setCallType] = useState('');
+  const [callType, setCallType] = useState("");
   const [callTime, setCallTime] = useState(0);
   const [callCheck, setCallcheck] = useState();
   const [callProPic, setCallProPic] = useState();
@@ -66,7 +87,32 @@ const Header = () => {
   const [totalLiked, setTotalLiked] = useState([]);
   const [myData, setMyData] = useState();
   const [showChat, setShowChat] = useState(false);
-  const languageData = [{ title: "English", img: require("../images/flag/united-kingdom.png"), id: "en" }, { title: "Arabic", img: require("../images/flag/arabic.png"), id: "ar" }, { title: "Spanish", img: require("../images/flag/spain.png"), id: "sp" }, { title: "Gujarati", img: require("../images/flag/flag.png"), id: "gu" }, { title: "Hindi", img: require("../images/flag/flag.png"), id: "hi" }, { title: "Africans", img: require("../images/flag/south-africa.png"), id: "af" }, { title: "Bengali", img: require("../images/flag/bangladesh.png"), id: "ba" }, { title: "Indonesian", img: require("../images/flag/indonesia-flag.png"), id: "in" }];
+  const languageData = [
+    {
+      title: "English",
+      img: require("../images/flag/united-kingdom.png"),
+      id: "en",
+    },
+    { title: "Arabic", img: require("../images/flag/arabic.png"), id: "ar" },
+    { title: "Spanish", img: require("../images/flag/spain.png"), id: "sp" },
+    { title: "Gujarati", img: require("../images/flag/flag.png"), id: "gu" },
+    { title: "Hindi", img: require("../images/flag/flag.png"), id: "hi" },
+    {
+      title: "Africans",
+      img: require("../images/flag/south-africa.png"),
+      id: "af",
+    },
+    {
+      title: "Bengali",
+      img: require("../images/flag/bangladesh.png"),
+      id: "ba",
+    },
+    {
+      title: "Indonesian",
+      img: require("../images/flag/indonesia-flag.png"),
+      id: "in",
+    },
+  ];
 
   const newProfile = user && user.profile_pic;
 
@@ -87,7 +133,6 @@ const Header = () => {
     slidesToScroll: 1,
   };
 
-
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang);
     sessionStorage.setItem("I18", lang);
@@ -98,7 +143,7 @@ const Header = () => {
     setLanguage(name);
     const Data = {
       Name: name,
-      img: img
+      img: img,
     };
     sessionStorage.setItem("Language", JSON.stringify(Data));
   };
@@ -130,43 +175,42 @@ const Header = () => {
   };
 
   const toggleBottomSheet = (e) => {
-    if (e.target.id === 'Verify') {
+    if (e.target.id === "Verify") {
       setIsVisible3(false);
     } else {
       setIsVisible3(true);
     }
   };
 
- useEffect(() => {
-  document.body.style.overflow = "hidden";
-  setTimeout(() => {
-    setLoading(false);
-    document.body.style.overflow = "auto";
-  }, 2000);
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    setTimeout(() => {
+      setLoading(false);
+      document.body.style.overflow = "auto";
+    }, 2000);
 
-  const RegisterData = localStorage.getItem("Register_User");
-  if (RegisterData) {
-    const UserData = JSON.parse(RegisterData);
-    setUser(UserData);
-    setIsVerify(UserData.is_verify);
-    const Id = sessionStorage.getItem("Icon-Color");
-    setColor(Id ? Id : "Home");
+    const RegisterData = localStorage.getItem("Register_User");
+    if (RegisterData) {
+      const UserData = JSON.parse(RegisterData);
+      setUser(UserData);
+      setIsVerify(UserData.is_verify);
+      const Id = sessionStorage.getItem("Icon-Color");
+      setColor(Id ? Id : "Home");
 
-    if (UserData.identity_picture) {
-      SetInput(imageBaseURL + UserData.identity_picture);
+      if (UserData.identity_picture) {
+        SetInput(imageBaseURL + UserData.identity_picture);
+      }
+
+      const ID = localStorage.getItem("PurchaseId");
+      if (UserData.plan_id > 0) {
+        setPackageId(UserData.plan_id);
+      } else {
+        setPackageId(ID);
+      }
     }
 
-    const ID = localStorage.getItem("PurchaseId");
-    if (UserData.plan_id > 0) {
-      setPackageId(UserData.plan_id);
-    } else {
-      setPackageId(ID);
-    }
-
-  }
-
-  ApiHandler();
-}, [updateId]);
+    ApiHandler();
+  }, [updateId]);
 
   useEffect(() => {
     sessionStorage.setItem("Loding", loading);
@@ -211,13 +255,12 @@ const Header = () => {
             });
           }
         })
-        .catch((error) => {
-        });
+        .catch((error) => {});
     }
   };
 
   const ProfileHandler = (e) => {
-    if (e.target.id === 'EditPhoto') {
+    if (e.target.id === "EditPhoto") {
       setProfileImageShow(false);
     } else {
       setProfileImageShow(true);
@@ -237,7 +280,6 @@ const Header = () => {
 
   const PhotoHandler = () => {
     if (imageSelect) {
-
       const RegisterData = localStorage.getItem("Register_User");
       const UserData = JSON.parse(RegisterData);
 
@@ -256,7 +298,7 @@ const Header = () => {
             updateDoc(userRef, {
               pro_pic: res.data.UserLogin.profile_pic,
             });
-            window.location.href = '/';
+            window.location.href = "/";
           }
         });
     } else {
@@ -287,7 +329,8 @@ const Header = () => {
       if (parsedData.identity_picture) {
         showTost({ title: "Verification Under Review!!" });
       } else {
-        axios.post(`${basUrl}identity_doc.php`, { uid: parsedData.id, img: input })
+        axios
+          .post(`${basUrl}identity_doc.php`, { uid: parsedData.id, img: input })
           .then((res) => {
             if (res.data.Result === "true") {
               localStorage.setItem(
@@ -296,7 +339,7 @@ const Header = () => {
               );
               showTost({ title: res.data.ResponseMsg });
               setIsVisible3(false);
-              navigate("/")
+              navigate("/");
             }
           });
       }
@@ -304,18 +347,15 @@ const Header = () => {
   };
 
   const ApiHandler = () => {
-    axios.post(`${basUrl}pagelist.php`)
-      .then((res) => {
-        setList(res.data.pagelist);
-      });
+    axios.post(`${basUrl}pagelist.php`).then((res) => {
+      setList(res.data.pagelist);
+    });
   };
 
   // OneSignal Notification Show
-  
 
   const handleNotificationReceived = (notification) => {
     OneSignalNotificationHandle(notification.notification);
-
   };
 
   const OneSignalNotificationHandle = async (payload) => {
@@ -341,7 +381,7 @@ const Header = () => {
     updateDoc(userRef, {
       token: "",
       isOnline: false,
-       last_seen: new Date().toISOString(),
+      last_seen: new Date().toISOString(),
     });
 
     navigate("/Home");
@@ -349,8 +389,6 @@ const Header = () => {
     localStorage.clear();
   };
 
-
-  
   // Get User Token Or Notification For Firebase
   const NotificationGetHandle = () => {
     onMessage(messaging, (payload) => {
@@ -426,7 +464,6 @@ const Header = () => {
     const Data = localStorage.getItem("Register_User");
 
     if (Data) {
-
       const Id = notification.Audio || notification.vcId;
 
       const userRef = doc(db, "chat_rooms", Id);
@@ -439,7 +476,7 @@ const Header = () => {
 
           if (!querySnapshot.empty) {
             var isVoiceCall;
-            querySnapshot.forEach(doc => {
+            querySnapshot.forEach((doc) => {
               const messageData = doc.data();
               if (notification.Audio) {
                 isVoiceCall = messageData.Audio;
@@ -455,9 +492,7 @@ const Header = () => {
               }
             });
           }
-        } catch (error) {
-          
-        }
+        } catch (error) {}
       };
       getVoiceCallStatus();
     }
@@ -473,15 +508,15 @@ const Header = () => {
   }, [atendCall]);
 
   const GetKeyHandle = () => {
-    axios.post(`${basUrl}sms_type.php`)
+    axios
+      .post(`${basUrl}sms_type.php`)
       .then((res) => {
         setAgoraAppId(res.data.agora_app_id);
         setOnesignalAppId(res.data.one_key);
         setOnesignalKey(res.data.one_hash);
       })
-      .catch((error) => {
-      })
-  }
+      .catch((error) => {});
+  };
 
   useEffect(() => {
     // Check if geolocation is available
@@ -498,8 +533,8 @@ const Header = () => {
               const userData = JSON.parse(localData);
               setMyData({
                 name: userData.name,
-                pro_pic: userData.profile_pic
-              })
+                pro_pic: userData.profile_pic,
+              });
               try {
                 const response = await axios.post(`${basUrl}home_data.php`, {
                   uid: userData.id,
@@ -517,7 +552,7 @@ const Header = () => {
                 console.error("Error fetching user data:", error);
               }
             }
-          }
+          };
 
           HomeDataGetHandle();
           setLocationError(false);
@@ -559,8 +594,8 @@ const Header = () => {
       try {
         for (let i = 0; i < totalLiked.length; i++) {
           const res = await axios.post(`${basUrl}profile_view.php`, {
-            "uid": userData.id,
-            "profile_id": totalLiked[i].profile_id
+            uid: userData.id,
+            profile_id: totalLiked[i].profile_id,
           });
 
           if (res.data.Result === "true") {
@@ -576,14 +611,13 @@ const Header = () => {
   const ChatCloseHandle = () => {
     setChatId("");
     sessionStorage.setItem("ChatId", "");
-  }
+  };
 
   return (
     <div style={{ userSelect: "none", cursor: "default" }}>
       <header className="header-wrapper">
         <div className="main-header-container border-b-[1px] container-fluid px-md-4 px-3 h-[75px]">
           <div className="header-content-left">
-
             <div className="header-element">
               <button
                 onClick={SlidBarHAndler}
@@ -620,7 +654,8 @@ const Header = () => {
             </div>
 
             <div className="header-element">
-              <Link onClick={() => ColorHandler("Upgrade")}
+              <Link
+                onClick={() => ColorHandler("Upgrade")}
                 to="/upgrade"
                 style={{ background: "#0066CC" }}
                 className="btn text-white gap-1 df-center"
@@ -641,11 +676,16 @@ const Header = () => {
                     fill="currentColor"
                   ></path>
                 </svg>
-                <span className="fs-13 d-sm-block d-none">{t('Upgrade Now')}</span>
+                <span className="fs-13 d-sm-block d-none">
+                  {t("Upgrade Now")}
+                </span>
               </Link>
             </div>
-            <div onClick={() => ColorHandler("Notification")} className="flex items-center">
-              <Link to="/notification" >
+            <div
+              onClick={() => ColorHandler("Notification")}
+              className="flex items-center"
+            >
+              <Link to="/notification">
                 <IoIosNotificationsOutline className="text-[25px] text-black" />
               </Link>
             </div>
@@ -659,9 +699,16 @@ const Header = () => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <img src={img} alt="Language" className="rounded-circle" width="24" height="24" />
+                  <img
+                    src={img}
+                    alt="Language"
+                    className="rounded-circle"
+                    width="24"
+                    height="24"
+                  />
                   <span className="mb-0 fs-16">{language}</span>
-                  <svg ref={Arrow}
+                  <svg
+                    ref={Arrow}
                     className="arrow duration-[0.2s]"
                     id="dropdown-arrow"
                     width="24"
@@ -685,9 +732,16 @@ const Header = () => {
                   className="dropdown-menu z-[888] "
                   aria-labelledby="dropdownMenuButton1"
                 >
-                  {
-                    languageData.map((el) => {
-                      return <li onClick={() => { changeLanguage(el.id); SelectLanuguageHandler(el.img, el.title); ShowHAndler(); }} className="cursor-pointer">
+                  {languageData.map((el) => {
+                    return (
+                      <li
+                        onClick={() => {
+                          changeLanguage(el.id);
+                          SelectLanuguageHandler(el.img, el.title);
+                          ShowHAndler();
+                        }}
+                        className="cursor-pointer"
+                      >
                         <div className="dropdown-item py-2">
                           <div className="flex items-center gap-[5px]">
                             <img
@@ -699,8 +753,8 @@ const Header = () => {
                           </div>
                         </div>
                       </li>
-                    })
-                  }
+                    );
+                  })}
                 </ul>
               </div>
             </div>
@@ -710,7 +764,12 @@ const Header = () => {
 
       <aside ref={Left} className="app-sidebar sticky" id="sidebar">
         <div className="sidebar-header df-center position-relative">
-          <button onClick={() => { ColorHandler("Home"); SlidBarHAndler() }}>
+          <button
+            onClick={() => {
+              ColorHandler("Home");
+              SlidBarHAndler();
+            }}
+          >
             <Link to="/" className="flex justify-center">
               <img src={imag} alt="logo" className="w-[35%]" />
             </Link>
@@ -740,19 +799,21 @@ const Header = () => {
                 onClick={ProfileHandler}
                 className="text-end text-white flex items-center"
               >
-                {t('Edit')} <BiEditAlt className="ms-1" />
+                {t("Edit")} <BiEditAlt className="ms-1" />
               </button>
             </div>
           </div>
           <div className="login-user-profile df-center flex-column mt-3">
-            {packageId > 0 && <div className="bg-white p-[3px] rounded-full -mb-[20px] z-[555]">
-              <img
-                src={Crown}
-                style={{ width: "25px", height: "25px" }}
-                alt="user-avatar"
-                className="bg-[#0066CC] rounded-full p-[2px]"
-              />
-            </div>}
+            {packageId > 0 && (
+              <div className="bg-white p-[3px] rounded-full -mb-[20px] z-[555]">
+                <img
+                  src={Crown}
+                  style={{ width: "25px", height: "25px" }}
+                  alt="user-avatar"
+                  className="bg-[#0066CC] rounded-full p-[2px]"
+                />
+              </div>
+            )}
             <div className="relative size-40 w-[114px]">
               <svg
                 className="size-full -rotate-90"
@@ -775,7 +836,9 @@ const Header = () => {
                   className="stroke-current text-[#0066CC] dark:text-[#0066CC]"
                   stroke-width="2"
                   stroke-dasharray="100"
-                  stroke-dashoffset={100 - localStorage.getItem("Profile_ratio")}
+                  stroke-dashoffset={
+                    100 - localStorage.getItem("Profile_ratio")
+                  }
                   stroke-linecap="round"
                 ></circle>
               </svg>
@@ -798,27 +861,46 @@ const Header = () => {
             </div>
             <div className="bg-white py-[2px] px-[4px] rounded-full -mt-[20px] z-[777]">
               <span className="bg-[#0066CC] text-white rounded-full px-[5px]">
-                {localStorage.getItem("Profile_ratio") + '%'}
+                {localStorage.getItem("Profile_ratio") + "%"}
               </span>
             </div>
             <h3 className="fw-semi-bold flex items-center gap-[5px] m-0">
               {user?.name}
               <button onClick={toggleBottomSheet}>
-                {isverify === "1"
-                  ? <div className="tooltip pt-[5px]">
-                    <img src={Review} style={{ width: "30px", height: "30px" }} alt="" />
-                    <span className="tooltiptext -bottom-[35px] left-[8px] whitespace-nowrap">{t('Under Review')}</span>
+                {isverify === "1" ? (
+                  <div className="tooltip pt-[5px]">
+                    <img
+                      src={Review}
+                      style={{ width: "30px", height: "30px" }}
+                      alt=""
+                    />
+                    <span className="tooltiptext -bottom-[35px] left-[8px] whitespace-nowrap">
+                      {t("Under Review")}
+                    </span>
                   </div>
-                  : isverify === "2"
-                    ? <div className="tooltip pt-[5px]">
-                      <img src={verify} style={{ width: "30px", height: "30px" }} alt="" />
-                      <span className="tooltiptext  -bottom-[35px] left-[10px] whitespace-nowrap">{t('Is Verify')}</span>
-                    </div>
-                    : <div className="tooltip pt-[5px]">
-                      <img src={verify1} style={{ width: "30px", height: "30px" }} alt="" />
-                      <span className="tooltiptext -bottom-[35px] -left-[10px] whitespace-nowrap">{t('Upload Photo')}</span>
-                    </div>
-                }
+                ) : isverify === "2" ? (
+                  <div className="tooltip pt-[5px]">
+                    <img
+                      src={verify}
+                      style={{ width: "30px", height: "30px" }}
+                      alt=""
+                    />
+                    <span className="tooltiptext  -bottom-[35px] left-[10px] whitespace-nowrap">
+                      {t("Is Verify")}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="tooltip pt-[5px]">
+                    <img
+                      src={verify1}
+                      style={{ width: "30px", height: "30px" }}
+                      alt=""
+                    />
+                    <span className="tooltiptext -bottom-[35px] -left-[10px] whitespace-nowrap">
+                      {t("Upload Photo")}
+                    </span>
+                  </div>
+                )}
               </button>{" "}
             </h3>
             <p className="text-gray">{user?.email} </p>
@@ -830,13 +912,14 @@ const Header = () => {
               <div className="container-fluid px-0">
                 <div className="navbar-collapse" id="navbarNav">
                   <ul className="navbar-nav flex-column mb-2 mb-lg-0">
-
-                    <li onClick={() => { ColorHandler("Home"); SlidBarHAndler() }} className="Hover">
-                      <Link
-                        to="/"
-                        className="nav-link"
-                        aria-current="page"
-                      >
+                    <li
+                      onClick={() => {
+                        ColorHandler("Home");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
+                      <Link to="/" className="nav-link" aria-current="page">
                         <svg
                           className=""
                           width="20"
@@ -862,7 +945,13 @@ const Header = () => {
                         </span>
                       </Link>
                     </li>
-                    <li onClick={() => { ColorHandler("Explore"); SlidBarHAndler() }} className="Hover">
+                    <li
+                      onClick={() => {
+                        ColorHandler("Explore");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
                       <Link to="/explore" className="nav-link">
                         <svg
                           width="20"
@@ -873,8 +962,7 @@ const Header = () => {
                         >
                           <path
                             style={{
-                              fill:
-                                color === "Explore" && "#0066CC",
+                              fill: color === "Explore" && "#0066CC",
                             }}
                             d="M9.99997 18.75C9.89397 18.75 9.78793 18.728 9.68893 18.683C9.36193 18.534 1.66598 14.965 0.431976 8.609C-0.0450242 6.15 0.433982 3.75098 1.71298 2.19298C2.74798 0.930984 4.23594 0.259967 6.01694 0.250967C6.02594 0.250967 6.03494 0.250967 6.04294 0.250967C8.07494 0.250967 9.31399 1.408 9.99899 2.393C10.687 1.404 11.9359 0.241967 13.9809 0.250967C15.7629 0.259967 17.2519 0.930984 18.2879 2.19298C19.5649 3.74998 20.0429 6.14898 19.5649 8.60998C18.3329 14.966 10.6359 18.536 10.3089 18.684C10.2119 18.728 10.106 18.75 9.99997 18.75ZM6.04196 1.74999C6.03596 1.74999 6.03099 1.74999 6.02499 1.74999C4.68699 1.75599 3.62702 2.22497 2.87302 3.14397C1.87402 4.36097 1.513 6.29699 1.905 8.32299C2.86 13.247 8.59297 16.447 9.99997 17.165C11.407 16.447 17.14 13.247 18.094 8.32299C18.488 6.29599 18.127 4.35997 17.13 3.14397C16.376 2.22597 15.3159 1.75797 13.9749 1.75097C13.9689 1.75097 13.963 1.75097 13.958 1.75097C11.586 1.75097 10.745 4.12799 10.711 4.22899C10.607 4.53199 10.3209 4.73797 10.0009 4.73797C9.99895 4.73797 9.99792 4.73797 9.99692 4.73797C9.67592 4.73697 9.38993 4.53198 9.28793 4.22698C9.25493 4.12698 8.41296 1.74999 6.04196 1.74999Z"
                             fill="#25314C"
@@ -882,15 +970,20 @@ const Header = () => {
                         </svg>
                         <span
                           style={{
-                            color:
-                              color === "Explore" && "#0066CC",
+                            color: color === "Explore" && "#0066CC",
                           }}
                         >
                           Explore
                         </span>
                       </Link>
                     </li>
-                    <li onClick={() => { ColorHandler("Settings"); SlidBarHAndler() }} className="Hover">
+                    <li
+                      onClick={() => {
+                        ColorHandler("Settings");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
                       <Link to="/profile" className="nav-link">
                         <svg
                           width="20"
@@ -901,8 +994,7 @@ const Header = () => {
                         >
                           <path
                             style={{
-                              fill:
-                                color === "Settings" && "#0066CC",
+                              fill: color === "Settings" && "#0066CC",
                             }}
                             d="M10 6.25C7.93202 6.25 6.25001 7.932 6.25001 10C6.25001 12.068 7.93202 13.75 10 13.75C12.068 13.75 13.75 12.068 13.75 10C13.75 7.932 12.068 6.25 10 6.25ZM10 12.25C8.75902 12.25 7.75001 11.241 7.75001 10C7.75001 8.759 8.75902 7.75 10 7.75C11.241 7.75 12.25 8.759 12.25 10C12.25 11.241 11.241 12.25 10 12.25ZM19.208 11.953C18.514 11.551 18.082 10.803 18.081 10C18.08 9.199 18.509 8.45201 19.212 8.04501C19.727 7.74601 19.903 7.08299 19.605 6.56699L17.933 3.681C17.635 3.166 16.972 2.98901 16.456 3.28601C15.757 3.68901 14.888 3.68901 14.187 3.28201C13.496 2.88101 13.066 2.13601 13.066 1.33701C13.066 0.738006 12.578 0.251007 11.979 0.251007H8.024C7.424 0.251007 6.93703 0.738006 6.93703 1.33701C6.93703 2.13601 6.50701 2.881 5.81401 3.284C5.11501 3.689 4.24702 3.68999 3.54802 3.28699C3.03102 2.98899 2.36903 3.16701 2.07103 3.68201L0.397018 6.57101C0.0990181 7.08601 0.276005 7.74799 0.796005 8.04999C1.489 8.45099 1.92102 9.19799 1.92302 9.99899C1.92502 10.801 1.49501 11.55 0.793014 11.957C0.543014 12.102 0.363016 12.335 0.289016 12.615C0.215016 12.894 0.253025 13.185 0.398025 13.436L2.06902 16.32C2.36702 16.836 3.03002 17.015 3.54802 16.716C4.24702 16.313 5.11402 16.314 5.80302 16.713L5.80501 16.714C5.80801 16.716 5.81102 16.718 5.81502 16.72C6.50602 17.121 6.93501 17.866 6.93401 18.666C6.93401 19.265 7.421 19.752 8.02 19.752H11.979C12.578 19.752 13.065 19.265 13.065 18.667C13.065 17.867 13.495 17.122 14.189 16.719C14.887 16.314 15.755 16.312 16.455 16.716C16.971 17.014 17.633 16.837 17.932 16.322L19.606 13.433C19.903 12.916 19.726 12.253 19.208 11.953ZM16.831 15.227C15.741 14.752 14.476 14.817 13.434 15.42C12.401 16.019 11.719 17.078 11.587 18.25H8.41002C8.28002 17.078 7.596 16.017 6.563 15.419C5.523 14.816 4.25602 14.752 3.16902 15.227L1.89302 13.024C2.84802 12.321 3.425 11.193 3.42101 9.99301C3.418 8.80101 2.84201 7.681 1.89201 6.978L3.16902 4.77399C4.25702 5.24799 5.52402 5.18399 6.56602 4.57999C7.59802 3.98199 8.28 2.92201 8.412 1.75101H11.587C11.718 2.92301 12.401 3.982 13.436 4.582C14.475 5.185 15.742 5.24899 16.831 4.77499L18.108 6.978C17.155 7.68 16.579 8.806 16.581 10.004C16.582 11.198 17.158 12.32 18.109 13.025L16.831 15.227Z"
                             fill="#25314C"
@@ -910,15 +1002,20 @@ const Header = () => {
                         </svg>
                         <span
                           style={{
-                            color:
-                              color === "Settings" && "#0066CC",
+                            color: color === "Settings" && "#0066CC",
                           }}
                         >
                           Settings
                         </span>
                       </Link>
                     </li>
-                    <li onClick={() => { ColorHandler("Wallet"); SlidBarHAndler() }} className="Hover">
+                    <li
+                      onClick={() => {
+                        ColorHandler("Wallet");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
                       <Link to="/wallet" className="nav-link">
                         <svg
                           width="20"
@@ -929,8 +1026,7 @@ const Header = () => {
                         >
                           <path
                             style={{
-                              fill:
-                                color === "Wallet" && "#0066CC",
+                              fill: color === "Wallet" && "#0066CC",
                             }}
                             d="M16.75 4.297V4C16.75 1.582 15.418 0.25 13 0.25H3C1.483 0.25 0.25 1.483 0.25 3V16C0.25 18.418 1.582 19.75 4 19.75H16C18.418 19.75 19.75 18.418 19.75 16V8C19.75 5.845 18.692 4.553 16.75 4.297ZM18.25 13.75H14.5C13.535 13.75 12.75 12.965 12.75 12C12.75 11.035 13.535 10.25 14.5 10.25H18.25V13.75ZM3 1.75H13C14.577 1.75 15.25 2.423 15.25 4V4.25H3C2.311 4.25 1.75 3.689 1.75 3C1.75 2.311 2.311 1.75 3 1.75ZM16 18.25H4C2.423 18.25 1.75 17.577 1.75 16V5.44897C2.125 5.64097 2.55 5.75 3 5.75H16C17.577 5.75 18.25 6.423 18.25 8V8.75H14.5C12.708 8.75 11.25 10.208 11.25 12C11.25 13.792 12.708 15.25 14.5 15.25H18.25V16C18.25 17.577 17.577 18.25 16 18.25ZM15.01 11H15.02C15.573 11 16.02 11.448 16.02 12C16.02 12.552 15.573 13 15.02 13C14.468 13 14.015 12.552 14.015 12C14.015 11.448 14.458 11 15.01 11Z"
                             fill="#25314C"
@@ -945,7 +1041,13 @@ const Header = () => {
                         </span>
                       </Link>
                     </li>
-                    <li onClick={() => { ColorHandler("BuyCoin"); SlidBarHAndler() }} className="Hover">
+                    <li
+                      onClick={() => {
+                        ColorHandler("BuyCoin");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
                       <Link to="/buycoin" className="nav-link">
                         <svg
                           width="22"
@@ -956,8 +1058,7 @@ const Header = () => {
                         >
                           <path
                             style={{
-                              fill:
-                                color === "BuyCoin" && "#0066CC",
+                              fill: color === "BuyCoin" && "#0066CC",
                             }}
                             d="M6.66693 12.0481L6.66694 12.0481C8.26631 12.5047 9.49467 13.733 9.95192 15.3331L10.4713 17.1511C10.5387 17.3872 10.7543 17.55 11 17.55C11.2457 17.55 11.4613 17.3872 11.5287 17.1511L11.4807 17.1373L11.5287 17.1511L12.0481 15.3331C12.5053 13.733 13.733 12.5053 15.3331 12.0481L17.1511 11.5287C17.3872 11.4613 17.55 11.2457 17.55 11C17.55 10.7543 17.3872 10.5387 17.1511 10.4713L17.1373 10.5193L17.1511 10.4713L15.3331 9.95192L15.3331 9.95192C13.7337 9.49533 12.5053 8.26699 12.0481 6.66693C12.0481 6.66693 12.0481 6.66693 12.0481 6.66693L11.5287 4.84894L11.4807 4.86267L11.5287 4.84893C11.4613 4.61282 11.2457 4.45 11 4.45C10.7543 4.45 10.5387 4.61282 10.4713 4.84893L10.5193 4.86267L10.4713 4.84894L9.95192 6.66693C9.95192 6.66693 9.95192 6.66693 9.95192 6.66693C9.49467 8.26698 8.26698 9.49467 6.66693 9.95192C6.66693 9.95192 6.66693 9.95192 6.66693 9.95192L4.84894 10.4713L4.86267 10.5193L4.84893 10.4713C4.61282 10.5387 4.45 10.7543 4.45 11C4.45 11.2457 4.61282 11.4613 4.84893 11.5287L4.86267 11.4807L4.84894 11.5287L6.66693 12.0481ZM14.9991 11.0002C13.0582 11.5672 11.5675 13.0581 11.0007 14.999C10.4339 13.0581 8.9426 11.5666 7.00243 11.0002C8.94265 10.4331 10.4329 8.94275 10.9998 7.00242C11.567 8.94313 13.0587 10.4343 14.9991 11.0002Z"
                             fill="#25314C"
@@ -966,8 +1067,7 @@ const Header = () => {
                           />
                           <rect
                             style={{
-                              stroke:
-                                color === "BuyCoin" && "#0066CC",
+                              stroke: color === "BuyCoin" && "#0066CC",
                             }}
                             className="ttt"
                             x="0.75"
@@ -981,102 +1081,118 @@ const Header = () => {
                         </svg>
                         <span
                           style={{
-                            color:
-                              color === "BuyCoin" && "#0066CC",
+                            color: color === "BuyCoin" && "#0066CC",
                           }}
                         >
                           Buy Coin
                         </span>
                       </Link>
                     </li>
-                    <li onClick={() => { ColorHandler("FAQs"); SlidBarHAndler() }} className="Hover">
-  <Link to="/faqs" className="nav-link">
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Outer Circle */}
-      <circle 
-        cx="12" 
-        cy="12" 
-        r="10" 
-        stroke={color === "FAQs" ? "#0066CC" : "#25314C"} 
-        strokeWidth="2"
-      />
-
-      {/* Dot */}
-      <path
-        d="M12 17H12.01"
-        stroke={color === "FAQs" ? "#0066CC" : "#25314C"}
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-
-      {/* Question Shape */}
-      <path
-        d="M9.172 9.172A4 4 0 1 1 14 11.828c-.667.667-1 1-1 2"
-        stroke={color === "FAQs" ? "#0066CC" : "#25314C"}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-
-    <span
-      style={{
-        color: color === "FAQs" ? "#0066CC" : "#25314C",
-        marginLeft: "8px",
-      }}
-    >
-      FAQs
-    </span>
-  </Link>
-</li>
-
-                    <li onClick={() => { ColorHandler("Aboutus"); SlidBarHAndler() }} className="Hover">
-                      <Link to="/aboutus" className="nav-link">
+                    <li
+                      onClick={() => {
+                        ColorHandler("FAQs");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
+                      <Link to="/faqs" className="nav-link">
                         <svg
-  width="22"
-  height="22"
-  viewBox="0 0 24 24"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <circle
-    cx="12"
-    cy="12"
-    r="10"
-    stroke={color === "Aboutus" ? "#0066CC" : "#25314C"}
-    strokeWidth="1.6"
-  />
-  <path
-    d="M12 16v-4"
-    stroke={color === "Aboutus" ? "#0066CC" : "#25314C"}
-    strokeWidth="1.6"
-    strokeLinecap="round"
-  />
-  <circle
-    cx="12"
-    cy="8"
-    r="1"
-    fill={color === "Aboutus" ? "#0066CC" : "#25314C"}
-  />
-</svg>
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          {/* Outer Circle */}
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke={color === "FAQs" ? "#0066CC" : "#25314C"}
+                            strokeWidth="2"
+                          />
+
+                          {/* Dot */}
+                          <path
+                            d="M12 17H12.01"
+                            stroke={color === "FAQs" ? "#0066CC" : "#25314C"}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+
+                          {/* Question Shape */}
+                          <path
+                            d="M9.172 9.172A4 4 0 1 1 14 11.828c-.667.667-1 1-1 2"
+                            stroke={color === "FAQs" ? "#0066CC" : "#25314C"}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
 
                         <span
                           style={{
-                            color:
-                              color === "Aboutus" && "#0066CC",
+                            color: color === "FAQs" ? "#0066CC" : "#25314C",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          FAQs
+                        </span>
+                      </Link>
+                    </li>
+
+                    <li
+                      onClick={() => {
+                        ColorHandler("Aboutus");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
+                      <Link to="/aboutus" className="nav-link">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke={color === "Aboutus" ? "#0066CC" : "#25314C"}
+                            strokeWidth="1.6"
+                          />
+                          <path
+                            d="M12 16v-4"
+                            stroke={color === "Aboutus" ? "#0066CC" : "#25314C"}
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                          />
+                          <circle
+                            cx="12"
+                            cy="8"
+                            r="1"
+                            fill={color === "Aboutus" ? "#0066CC" : "#25314C"}
+                          />
+                        </svg>
+
+                        <span
+                          style={{
+                            color: color === "Aboutus" && "#0066CC",
                           }}
                         >
                           About us
                         </span>
                       </Link>
                     </li>
-                    <li onClick={() => { ColorHandler("Account"); SlidBarHAndler() }} className="Hover">
+                    <li
+                      onClick={() => {
+                        ColorHandler("Account");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
                       <Link to="/blockUser" className="nav-link">
                         <svg
                           width="20"
@@ -1087,8 +1203,7 @@ const Header = () => {
                         >
                           <path
                             style={{
-                              fill:
-                                color === "Account" && "#0066CC",
+                              fill: color === "Account" && "#0066CC",
                             }}
                             d="M10 21.7501C9.92 21.7501 9.83994 21.7371 9.76294 21.7111C8.17394 21.1811 0.25 18.1221 0.25 9.88805V4.00012C0.25 3.64312 0.502027 3.33401 0.853027 3.26501C5.73303 2.28901 7.46305 1.43111 9.65405 0.344109C9.86505 0.239109 10.145 0.225193 10.356 0.330193C12.517 1.41919 14.2239 2.28001 19.1479 3.26501C19.4989 3.33501 19.751 3.64312 19.751 4.00012V9.88903C19.751 18.123 11.827 21.182 10.238 21.712C10.16 21.737 10.08 21.7501 10 21.7501ZM1.75 4.61218V9.88805C1.75 16.7531 8.168 19.5482 10 20.2052C11.832 19.5482 18.25 16.7521 18.25 9.88805V4.61218C13.829 3.68718 11.9699 2.81901 10.0149 1.83801C7.93789 2.86501 6.135 3.69618 1.75 4.61218ZM9.54199 13.5301L13.542 9.53014C13.835 9.23714 13.835 8.76211 13.542 8.46911C13.249 8.17611 12.774 8.17611 12.481 8.46911L9.01099 11.9391L7.54102 10.4691C7.24802 10.1761 6.77298 10.1761 6.47998 10.4691C6.18698 10.7621 6.18698 11.2371 6.47998 11.5301L8.47998 13.5301C8.62598 13.6761 8.81801 13.7501 9.01001 13.7501C9.20201 13.7501 9.39599 13.6771 9.54199 13.5301Z"
                             fill="#25314C"
@@ -1096,38 +1211,58 @@ const Header = () => {
                         </svg>
                         <span
                           style={{
-                            color:
-                              color === "Account" && "#0066CC",
+                            color: color === "Account" && "#0066CC",
                           }}
                         >
                           Account & Security
                         </span>
                       </Link>
                     </li>
-                    <li onClick={() => { ColorHandler("Chat"); SlidBarHAndler() }} className="Hover">
+                    <li
+                      onClick={() => {
+                        ColorHandler("Chat");
+                        SlidBarHAndler();
+                      }}
+                      className="Hover"
+                    >
                       <Link to="/chat" className="nav-link">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path style={{
-                            fill:
-                              color === "Chat" && "#0066CC",
-                          }} d="M3.85693 21.75C3.71193 21.75 3.57111 21.748 3.43311 21.743C2.93311 21.731 2.49497 21.411 2.32397 20.928C2.15197 20.442 2.29408 19.9131 2.68408 19.5811C3.61608 18.8291 3.98892 17.997 4.13892 17.426C2.90192 15.947 2.24902 14.08 2.24902 12.001C2.24902 6.84798 6.25902 3.25 11.999 3.25C17.739 3.25 21.749 6.84898 21.749 12.001C21.749 17.153 17.739 20.752 11.999 20.752C10.812 20.752 9.67398 20.591 8.60498 20.2729C7.24198 21.4599 5.36393 21.75 3.85693 21.75ZM3.47803 20.243C3.48003 20.243 3.48189 20.243 3.48389 20.243C3.48089 20.244 3.47903 20.244 3.47803 20.243ZM12 4.75C7.143 4.75 3.75 7.73198 3.75 12.001C3.75 13.837 4.35498 15.463 5.50098 16.703C5.65598 16.871 5.72692 17.101 5.69092 17.328C5.52292 18.399 4.99511 19.412 4.18311 20.243C5.34311 20.201 6.90304 19.934 7.86304 18.91C8.06404 18.694 8.37603 18.617 8.65503 18.714C9.69003 19.072 10.815 19.2531 12 19.2531C16.857 19.2531 20.25 16.271 20.25 12.002C20.25 7.73295 16.857 4.75 12 4.75ZM13.02 12C13.02 11.448 12.573 11 12.02 11H12.01C11.458 11 11.0149 11.448 11.0149 12C11.0149 12.552 11.468 13 12.02 13C12.572 13 13.02 12.552 13.02 12ZM17.02 12C17.02 11.448 16.573 11 16.02 11H16.01C15.458 11 15.0149 11.448 15.0149 12C15.0149 12.552 15.468 13 16.02 13C16.572 13 17.02 12.552 17.02 12ZM9.02002 12C9.02002 11.448 8.57302 11 8.02002 11H8.01001C7.45801 11 7.01489 11.448 7.01489 12C7.01489 12.552 7.46802 13 8.02002 13C8.57202 13 9.02002 12.552 9.02002 12Z" fill="#25314C" />
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            style={{
+                              fill: color === "Chat" && "#0066CC",
+                            }}
+                            d="M3.85693 21.75C3.71193 21.75 3.57111 21.748 3.43311 21.743C2.93311 21.731 2.49497 21.411 2.32397 20.928C2.15197 20.442 2.29408 19.9131 2.68408 19.5811C3.61608 18.8291 3.98892 17.997 4.13892 17.426C2.90192 15.947 2.24902 14.08 2.24902 12.001C2.24902 6.84798 6.25902 3.25 11.999 3.25C17.739 3.25 21.749 6.84898 21.749 12.001C21.749 17.153 17.739 20.752 11.999 20.752C10.812 20.752 9.67398 20.591 8.60498 20.2729C7.24198 21.4599 5.36393 21.75 3.85693 21.75ZM3.47803 20.243C3.48003 20.243 3.48189 20.243 3.48389 20.243C3.48089 20.244 3.47903 20.244 3.47803 20.243ZM12 4.75C7.143 4.75 3.75 7.73198 3.75 12.001C3.75 13.837 4.35498 15.463 5.50098 16.703C5.65598 16.871 5.72692 17.101 5.69092 17.328C5.52292 18.399 4.99511 19.412 4.18311 20.243C5.34311 20.201 6.90304 19.934 7.86304 18.91C8.06404 18.694 8.37603 18.617 8.65503 18.714C9.69003 19.072 10.815 19.2531 12 19.2531C16.857 19.2531 20.25 16.271 20.25 12.002C20.25 7.73295 16.857 4.75 12 4.75ZM13.02 12C13.02 11.448 12.573 11 12.02 11H12.01C11.458 11 11.0149 11.448 11.0149 12C11.0149 12.552 11.468 13 12.02 13C12.572 13 13.02 12.552 13.02 12ZM17.02 12C17.02 11.448 16.573 11 16.02 11H16.01C15.458 11 15.0149 11.448 15.0149 12C15.0149 12.552 15.468 13 16.02 13C16.572 13 17.02 12.552 17.02 12ZM9.02002 12C9.02002 11.448 8.57302 11 8.02002 11H8.01001C7.45801 11 7.01489 11.448 7.01489 12C7.01489 12.552 7.46802 13 8.02002 13C8.57202 13 9.02002 12.552 9.02002 12Z"
+                            fill="#25314C"
+                          />
                         </svg>
                         <span
                           style={{
-                            color:
-                              color === "Chat" && "#0066CC",
+                            color: color === "Chat" && "#0066CC",
                           }}
                         >
-                          {t('User Chat')}
+                          {t("User Chat")}
                         </span>
                       </Link>
                     </li>
-                    {
-                      list.map((item, index) => {
-                        const Title = item.title.replace(/\s+/g, '_');
-                        const FinalText = Title.toLowerCase();
+                    {list.map((item, index) => {
+                      const Title = item.title.replace(/\s+/g, "_");
+                      const FinalText = Title.toLowerCase();
 
-                        return <li key={index} onClick={() => { ColorHandler(item.title); SlidBarHAndler(); }} className="Hover">
+                      return (
+                        <li
+                          key={index}
+                          onClick={() => {
+                            ColorHandler(item.title);
+                            SlidBarHAndler();
+                          }}
+                          className="Hover"
+                        >
                           <Link to={`/page/${FinalText}`} className="nav-link">
                             <svg
                               width="18"
@@ -1153,10 +1288,10 @@ const Header = () => {
                             </span>
                           </Link>
                         </li>
-                      })
-                    }
+                      );
+                    })}
                     <li className="Hover">
-                      <Link onClick={LogOutHandler} to='/' className="nav-link">
+                      <Link onClick={LogOutHandler} to="/" className="nav-link">
                         <svg
                           width="20"
                           height="20"
@@ -1177,39 +1312,64 @@ const Header = () => {
               </div>
             </nav>
           </div>
-          {packageId > 0
-            ? <div onClick={() => { ColorHandler(""); SlidBarHAndler() }} className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#0066CC] mt-[20px]">
+          {packageId > 0 ? (
+            <div
+              onClick={() => {
+                ColorHandler("");
+                SlidBarHAndler();
+              }}
+              className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#0066CC] mt-[20px]"
+            >
               <Link to="/upgrade">
                 <div className="flex items-center">
-                  <h6 className="text-white Demo">{t("You're Activated Membersip")}</h6>
+                  <h6 className="text-white Demo">
+                    {t("You're Activated Membersip")}
+                  </h6>
                   <button className="bg-white text-[#0066CC] px-[10px] py-[3px] rounded-[10px] font-[500]">
-                    {t('Active')}
+                    {t("Active")}
                   </button>
                 </div>
                 <h6 className="TITLE font-[400] text-white">
-                  {t('Enjoy premium and match anyway')}
+                  {t("Enjoy premium and match anyway")}
                 </h6>
               </Link>
             </div>
-            : <div onClick={() => { ColorHandler(""); SlidBarHAndler() }} className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#0066CC] mt-[20px]">
+          ) : (
+            <div
+              onClick={() => {
+                ColorHandler("");
+                SlidBarHAndler();
+              }}
+              className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#0066CC] mt-[20px]"
+            >
               <Link to="/upgrade">
                 <div className="flex items-center">
-                  <h6 className="text-white Demo">{t("Join Our Membership Today!")}</h6>
+                  <h6 className="text-white Demo">
+                    {t("Join Our Membership Today!")}
+                  </h6>
                   <button className="bg-white text-[#0066CC] px-[10px] py-[3px] rounded-[10px] font-[500]">
-                    {t('Go')}
+                    {t("Go")}
                   </button>
                 </div>
                 <h6 className="TITLE font-[400] text-white">
-                  {t('Checkout Meet Greek Singles Premium..')}
+                  {t("Checkout Meet Greek Singles Premium..")}
                 </h6>
               </Link>
-            </div>}
+            </div>
+          )}
         </div>
       </aside>
 
       {isVisible3 && (
-        <div onClick={toggleBottomSheet} id="Verify" className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-          <div onClick={(e) => e.stopPropagation()} className="w-[25%] max-_430_:w-[100%] max-_768_:w-[80%] max-_1030_:w-[45%] max-_1500_:w-[30%] bg-white rounded-[15px] px-[15px] py-[10px]">
+        <div
+          onClick={toggleBottomSheet}
+          id="Verify"
+          className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-[25%] max-_430_:w-[100%] max-_768_:w-[80%] max-_1030_:w-[45%] max-_1500_:w-[30%] bg-white rounded-[15px] px-[15px] py-[10px]"
+          >
             <div className="flex flex-col justify-center items-center text-center">
               <div
                 onClick={() => InputRef.current.click()}
@@ -1225,7 +1385,8 @@ const Header = () => {
                   ) : (
                     <h2 className="m-0 font-medium text-3xl">+</h2>
                   )}
-                  <input disabled={input && true}
+                  <input
+                    disabled={input && true}
                     ref={InputRef}
                     className="hidden"
                     type="file"
@@ -1235,16 +1396,19 @@ const Header = () => {
                 </div>
               </div>
               <div className="mt-4">
-                <h3>{t('Verification Under')} <br /> {t('Review')}</h3>
+                <h3>
+                  {t("Verification Under")} <br /> {t("Review")}
+                </h3>
                 <p className="font-medium text-lg">
-                  {t('We are currently reviewing your')} <br /> {t('selfies and will get back to you')} <br /> {t("shortly!")}
+                  {t("We are currently reviewing your")} <br />{" "}
+                  {t("selfies and will get back to you")} <br /> {t("shortly!")}
                 </p>
               </div>
               <button
                 onClick={VerificationHandler}
                 className="font-medium text-lg bg-[#0066CC] text-white w-[60%] max-w-[75%] rounded-lg py-2 my-4"
               >
-                {t('Upload')}
+                {t("Upload")}
               </button>
             </div>
           </div>
@@ -1254,15 +1418,22 @@ const Header = () => {
       {loading && (
         <div className="w-[100%] h-[100vh] bg-white fixed flex items-center justify-center top-0 left-0 right-0 bottom-0 z-[9999]">
           <div className="">
-            <h2 className="">{t('Loading...')}</h2>
+            <h2 className="">{t("Loading...")}</h2>
           </div>
         </div>
       )}
 
       {/* Profile photot add section  */}
       {profileimageshow && (
-        <div onClick={ProfileHandler} id="EditPhoto" className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-          <div onClick={(e) => e.stopPropagation()} className="w-[25%] max-_430_:w-[100%] max-_768_:w-[80%] max-_1030_:w-[40%] max-_1500_:w-[30%] bg-white rounded-[15px] px-[15px] py-[10px]">
+        <div
+          onClick={ProfileHandler}
+          id="EditPhoto"
+          className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-[25%] max-_430_:w-[100%] max-_768_:w-[80%] max-_1030_:w-[40%] max-_1500_:w-[30%] bg-white rounded-[15px] px-[15px] py-[10px]"
+          >
             <div className="flex flex-col justify-center items-center text-center">
               <div
                 onClick={() => ProfileRef.current.click()}
@@ -1288,13 +1459,13 @@ const Header = () => {
                 </div>
               </div>
               <div className="mt-[15px]">
-                <h3>{t('Add Your Favorite Photo')}</h3>
+                <h3>{t("Add Your Favorite Photo")}</h3>
               </div>
               <button
                 onClick={PhotoHandler}
                 className="font-[500] text-[18px] bg-[#0066CC] text-white w-[60%] max-_430_:w-[75%] rounded-[10px] py-[8px] my-[15px]"
               >
-                {t('Add')}
+                {t("Add")}
               </button>
             </div>
           </div>
@@ -1317,75 +1488,219 @@ const Header = () => {
         className="fixed top-0 left-0 right-0 bottom-0 hidden z-[333] duration-[1s]"
       ></div>
 
-      {atendCall && <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-        <div onClick={(e) => e.stopPropagation()} className="w-[20%] max-_430_:w-[100%]  max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] rounded-[15px]">
-          <div className="flex items-end justify-center" style={{
-            backgroundImage: `url(${imageBaseURL + callProPic})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            height: "500px",
-            width: "100%",
-          }}>
-            <div className="mb-[15px] text-center">
-              <h2 className="text-white m-0">{notification.name}</h2>
-              {callType === "Audio_Call"
-                ? <h6 className="text-white mb-2">In Coming Audio Call ...</h6>
-                : <h6 className="text-white mb-2">In Coming Video Call ...</h6>
-              }
-              <div className=" flex gap-[20px] justify-center">
-                <button onClick={CallAnsuserHandler}><IoCall className="bg-green-500 text-white w-[45px] h-[45px] p-[10px] rounded-full" /></button>
-                <button onClick={leaveCallHandler} ><IoCall className="bg-red-500 text-white w-[45px] h-[45px] p-[10px] rounded-full rotate-[135deg]" /></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>}
-
-      {callStatus && <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-        <div onClick={(e) => e.stopPropagation()} className="w-[20%] max-_430_:w-[100%]  max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] rounded-[15px]">
-          {callType === "Audio_Call"
-            ? <VoiceCall Id={notification.id} name={notification.name} channelname={notification.Audio} img={imageBaseURL + callProPic} />
-            : <VideoCall channelname={notification.vcId} Id={notification.id} img={imageBaseURL + callProPic} />
-          }
-        </div>
-      </div>}
-
-      {locationError && (
+      {atendCall && (
         <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-          <div className="w-[25%] max-_430_:w-[100%] max-_768_:w-[75%] max-_1030_:w-[35%] max-_1500_:w-[25%] bg-white rounded-[15px] px-[15px] py-[10px]">
-            <div className="">
-              <h2 className="m-0 text-center">{t('Enable Location Services')}</h2>
-              <img src={LocationImg} alt="" />
-              <div className="my-3">
-                <div className="flex gap-[10px]">
-                  <span className="text-[18px]">1.</span>
-                  <h6>To provide accurate services, please enable your location.</h6>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-[20%] max-_430_:w-[100%]  max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] rounded-[15px]"
+          >
+            <div
+              className="flex items-end justify-center"
+              style={{
+                backgroundImage: `url(${imageBaseURL + callProPic})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                height: "500px",
+                width: "100%",
+              }}
+            >
+              <div className="mb-[15px] text-center">
+                <h2 className="text-white m-0">{notification.name}</h2>
+                {callType === "Audio_Call" ? (
+                  <h6 className="text-white mb-2">In Coming Audio Call ...</h6>
+                ) : (
+                  <h6 className="text-white mb-2">In Coming Video Call ...</h6>
+                )}
+                <div className=" flex gap-[20px] justify-center">
+                  <button onClick={CallAnsuserHandler}>
+                    <IoCall className="bg-green-500 text-white w-[45px] h-[45px] p-[10px] rounded-full" />
+                  </button>
+                  <button onClick={leaveCallHandler}>
+                    <IoCall className="bg-red-500 text-white w-[45px] h-[45px] p-[10px] rounded-full rotate-[135deg]" />
+                  </button>
                 </div>
-                <div className="flex gap-[5px]">
-                  <span className="text-[18px]">2.</span>
-                  <h6> Allow location access when prompted. If not prompted, enable it in your browser settings.</h6>
-                </div>
-                <h6>🔄 Refresh the page after enabling.</h6>
               </div>
-              <button className="bg-[#0066CC] text-white w-[100%] rounded-[5px] py-[5px] mt-2 font-[500]">Enable Now</button>
             </div>
           </div>
         </div>
       )}
 
-      {likeMatch && <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-        <div onClick={(e) => e.stopPropagation()} className="w-[25%] relative likeMatch bg-white max-_430_:w-[100%] p-[20px] max-_580_:w-[60%] max-_768_:w-[60%] max-_991_:w-[60%] max-_1030_:w-[50%] max-_1500_:w-[40%] rounded-[15px]">
-          <button onClick={ProfileViewHandle} className="absolute -right-[8px] -top-[8px] bg-[#0066CC] p-[2px] rounded-full">< IoMdClose className="text-[22px] text-white" /></button>
-          {totalLiked.length > 1
-            ? <Slider {...settings}>
-              {
-                totalLiked?.map((item) => {
-                  return <div>
-                    <h3 className="text-center text-[#0066CC] text-[20px]">You and <span className="text-[#9000ffb2]">{item.profile_name}</span> liked each other!</h3>
+      {callStatus && (
+        <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-[20%] max-_430_:w-[100%]  max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] rounded-[15px]"
+          >
+            {callType === "Audio_Call" ? (
+              <VoiceCall
+                Id={notification.id}
+                name={notification.name}
+                channelname={notification.Audio}
+                img={imageBaseURL + callProPic}
+              />
+            ) : (
+              <VideoCall
+                channelname={notification.vcId}
+                Id={notification.id}
+                img={imageBaseURL + callProPic}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
+      {locationError && (
+        <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
+          <div className="w-[25%] max-_430_:w-[100%] max-_768_:w-[75%] max-_1030_:w-[35%] max-_1500_:w-[25%] bg-white rounded-[15px] px-[15px] py-[10px]">
+            <div className="">
+              <h2 className="m-0 text-center">
+                {t("Enable Location Services")}
+              </h2>
+              <img src={LocationImg} alt="" />
+              <div className="my-3">
+                <div className="flex gap-[10px]">
+                  <span className="text-[18px]">1.</span>
+                  <h6>
+                    To provide accurate services, please enable your location.
+                  </h6>
+                </div>
+                <div className="flex gap-[5px]">
+                  <span className="text-[18px]">2.</span>
+                  <h6>
+                    {" "}
+                    Allow location access when prompted. If not prompted, enable
+                    it in your browser settings.
+                  </h6>
+                </div>
+                <h6>🔄 Refresh the page after enabling.</h6>
+              </div>
+              <button className="bg-[#0066CC] text-white w-[100%] rounded-[5px] py-[5px] mt-2 font-[500]">
+                Enable Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {likeMatch && (
+        <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-[25%] relative likeMatch bg-white max-_430_:w-[100%] p-[20px] max-_580_:w-[60%] max-_768_:w-[60%] max-_991_:w-[60%] max-_1030_:w-[50%] max-_1500_:w-[40%] rounded-[15px]"
+          >
+            <button
+              onClick={ProfileViewHandle}
+              className="absolute -right-[8px] -top-[8px] bg-[#0066CC] p-[2px] rounded-full"
+            >
+              <IoMdClose className="text-[22px] text-white" />
+            </button>
+            {totalLiked.length > 1 ? (
+              <Slider {...settings}>
+                {totalLiked?.map((item) => {
+                  return (
+                    <div>
+                      <h3 className="text-center text-[#0066CC] text-[20px]">
+                        You and{" "}
+                        <span className="text-[#9000ffb2]">
+                          {item.profile_name}
+                        </span>{" "}
+                        liked each other!
+                      </h3>
+                      <div className="flex items-center justify-center gap-2 mt-[50px]">
+                        <div className="text-center w-[165px] max-_430_:w-[135px]">
+                          <img
+                            src={imageBaseURL + item.profile_images[0]}
+                            className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchleft border-[6px] border-[#0066CC]"
+                            alt=""
+                          />
+                          <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap">
+                            {item.profile_name}
+                          </h4>
+                        </div>
+                        <div className="absolute flex items-center justify-center mt-[8px] p-[8px] rounded-full mb-[8px] bg-[#501368] z-[2]">
+                          <svg
+                            className="size-full w-[50px] -rotate-90"
+                            viewBox="0 0 36 36"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle
+                              cx="18"
+                              cy="18"
+                              r="16"
+                              fill="none"
+                              className="stroke-current text-[#e7cdfab9]"
+                              strokeWidth="3"
+                            ></circle>
+                            <circle
+                              cx="18"
+                              cy="18"
+                              r="16"
+                              fill="none"
+                              className="stroke-current text-[#a32aff] dark:text-[#ac41ff]"
+                              strokeWidth="3"
+                              strokeDasharray="100"
+                              strokeDashoffset={
+                                100 - item.match_ratio.toFixed(0)
+                              }
+                              strokeLinecap="round"
+                            ></circle>
+                          </svg>
+                          <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
+                            {item.match_ratio.toFixed(0)}%
+                          </h6>
+                        </div>
+                        <div className="text-center w-[165px] max-_430_:w-[135px]">
+                          <img
+                            src={imageBaseURL + myData.pro_pic}
+                            className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchright"
+                            alt=""
+                          />
+                          <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap ">
+                            {myData.name}
+                          </h4>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() =>
+                          SendMessageHandle(item.profile_id, item.profile_name)
+                        }
+                        className="likeMatchButton mt-[30px] mx-auto"
+                      >
+                        <img src={SendMessage} alt="" />
+                        <h6 className="m-0">Send a message</h6>
+                      </button>
+                      <button
+                        onClick={KeepSwipingHandle}
+                        className="likeMatchButton mt-[10px] mx-auto"
+                      >
+                        <img src={Keepswiping} alt="" />
+                        <h6 className="m-0">Keep Swiping</h6>
+                      </button>
+                    </div>
+                  );
+                })}
+              </Slider>
+            ) : (
+              totalLiked?.map((item) => {
+                return (
+                  <div>
+                    <h3 className="text-center text-[#0066CC] text-[20px]">
+                      You and{" "}
+                      <span className="text-[#9000ffb2]">
+                        {item.profile_name}
+                      </span>{" "}
+                      liked each other!
+                    </h3>
                     <div className="flex items-center justify-center gap-2 mt-[50px]">
                       <div className="text-center w-[165px] max-_430_:w-[135px]">
-                        <img src={imageBaseURL + item.profile_images[0]} className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchleft border-[6px] border-[#0066CC]" alt="" />
-                        <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap">{item.profile_name}</h4>
+                        <img
+                          src={imageBaseURL + item.profile_images[0]}
+                          className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchleft border-[6px] border-[#0066CC]"
+                          alt=""
+                        />
+                        <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap">
+                          {item.profile_name}
+                        </h4>
                       </div>
                       <div className="absolute flex items-center justify-center mt-[8px] p-[8px] rounded-full mb-[8px] bg-[#501368] z-[2]">
                         <svg
@@ -1418,92 +1733,56 @@ const Header = () => {
                         </h6>
                       </div>
                       <div className="text-center w-[165px] max-_430_:w-[135px]">
-                        <img src={imageBaseURL + myData.pro_pic} className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchright" alt="" />
-                        <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap ">{myData.name}</h4>
+                        <img
+                          src={imageBaseURL + myData.pro_pic}
+                          className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchright"
+                          alt=""
+                        />
+                        <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap ">
+                          {myData.name}
+                        </h4>
                       </div>
                     </div>
-                    <button onClick={() => SendMessageHandle(item.profile_id, item.profile_name)} className="likeMatchButton mt-[30px] mx-auto">
+                    <button
+                      onClick={() =>
+                        SendMessageHandle(item.profile_id, item.profile_name)
+                      }
+                      className="likeMatchButton mt-[30px] mx-auto"
+                    >
                       <img src={SendMessage} alt="" />
                       <h6 className="m-0">Send a message</h6>
                     </button>
-                    <button onClick={KeepSwipingHandle} className="likeMatchButton mt-[10px] mx-auto">
+                    <button
+                      onClick={KeepSwipingHandle}
+                      className="likeMatchButton mt-[10px] mx-auto"
+                    >
                       <img src={Keepswiping} alt="" />
                       <h6 className="m-0">Keep Swiping</h6>
                     </button>
                   </div>
-                })
-              }
-            </Slider>
-            : totalLiked?.map((item) => {
-              return <div>
-                <h3 className="text-center text-[#0066CC] text-[20px]">You and <span className="text-[#9000ffb2]">{item.profile_name}</span> liked each other!</h3>
-                <div className="flex items-center justify-center gap-2 mt-[50px]">
-                  <div className="text-center w-[165px] max-_430_:w-[135px]">
-                    <img src={imageBaseURL + item.profile_images[0]} className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchleft border-[6px] border-[#0066CC]" alt="" />
-                    <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap">{item.profile_name}</h4>
-                  </div>
-                  <div className="absolute flex items-center justify-center mt-[8px] p-[8px] rounded-full mb-[8px] bg-[#501368] z-[2]">
-                    <svg
-                      className="size-full w-[50px] -rotate-90"
-                      viewBox="0 0 36 36"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="16"
-                        fill="none"
-                        className="stroke-current text-[#e7cdfab9]"
-                        strokeWidth="3"
-                      ></circle>
-                      <circle
-                        cx="18"
-                        cy="18"
-                        r="16"
-                        fill="none"
-                        className="stroke-current text-[#a32aff] dark:text-[#ac41ff]"
-                        strokeWidth="3"
-                        strokeDasharray="100"
-                        strokeDashoffset={100 - item.match_ratio.toFixed(0)}
-                        strokeLinecap="round"
-                      ></circle>
-                    </svg>
-                    <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
-                      {item.match_ratio.toFixed(0)}%
-                    </h6>
-                  </div>
-                  <div className="text-center w-[165px] max-_430_:w-[135px]">
-                    <img src={imageBaseURL + myData.pro_pic} className="h-[200px] max-_430_:h-[180px] w-[150px] mx-auto z-[1] object-cover likematchright" alt="" />
-                    <h4 className="mt-[8px] overflow-ellipsis overflow-hidden whitespace-nowrap ">{myData.name}</h4>
-                  </div>
-                </div>
-                <button onClick={() => SendMessageHandle(item.profile_id, item.profile_name)} className="likeMatchButton mt-[30px] mx-auto">
-                  <img src={SendMessage} alt="" />
-                  <h6 className="m-0">Send a message</h6>
-                </button>
-                <button onClick={KeepSwipingHandle} className="likeMatchButton mt-[10px] mx-auto">
-                  <img src={Keepswiping} alt="" />
-                  <h6 className="m-0">Keep Swiping</h6>
-                </button>
-              </div>
-            })
-          }
+                );
+              })
+            )}
+          </div>
         </div>
-      </div>}
+      )}
       {/* <<------------ Chat Sheet Show ---------->> */}
-      {(chatId && showChat) && <div onClick={ChatCloseHandle} className="bottom-sheet z-[999]">
-        <div onClick={(e) => e.stopPropagation()} style={{ width: "400px" }} className="bottom-sheet-content">
-          <UserChat />
+      {chatId && showChat && (
+        <div onClick={ChatCloseHandle} className="bottom-sheet z-[999]">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "400px" }}
+            className="bottom-sheet-content"
+          >
+            <UserChat />
+          </div>
         </div>
-      </div>}
+      )}
     </div>
   );
 };
 export default Header;
 /* jshint ignore:end */
-
-
-
 
 // /* jshint esversion: 6 */
 // /* jshint esversion: 8 */
@@ -1539,7 +1818,6 @@ export default Header;
 // import SendMessage from "../images/icons/Chat-Icon.svg"
 // import Keepswiping from "../images/icons/keepswap.svg"
 // import { initOneSignal } from '../utils/OneSignalInit';
-
 
 // const Header = () => {
 
@@ -1594,7 +1872,6 @@ export default Header;
 //     slidesToShow: 1,
 //     slidesToScroll: 1,
 //   };
-
 
 //   const changeLanguage = (lang) => {
 //     i18n.changeLanguage(lang);
@@ -1882,7 +2159,6 @@ export default Header;
 //     localStorage.clear();
 //   };
 
-
 //   // Get User Token Or Notification For Firebase
 //   const NotificationGetHandle = () => {
 //     onMessage(messaging, (payload) => {
@@ -1988,7 +2264,7 @@ export default Header;
 //             });
 //           }
 //         } catch (error) {
-          
+
 //         }
 //       };
 //       getVoiceCallStatus();
