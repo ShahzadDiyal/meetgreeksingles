@@ -13,10 +13,9 @@ import axios from "axios";
 import { showTost } from "../showTost";
 
 const Register = () => {
-  const [Name, setname] = useState();
-  const [Email, setemail] = useState();
-  const [Phone, setPhone] = useState();
-  const [Password, setpassword] = useState();
+  const [Email, setemail] = useState("");
+  const [Phone, setPhone] = useState("");
+  const [Password, setpassword] = useState("");
   const [Gender, setGender] = useState("");
   const [GreekStatus, setGreekStatus] = useState("");
   const [BirthDay, setBirthDay] = useState("");
@@ -28,26 +27,21 @@ const Register = () => {
   const [States, setStates] = useState([]);
   const [City, setCity] = useState("");
   const [Cities, setCities] = useState([]);
-  const [Bio, setbio] = useState();
-  const [ReferralCode, setReferralCode] = useState("");
   const [Agreed, setAgreed] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
 
+  // Registration loading state
+  const [isRegistering, setIsRegistering] = useState(false);
+
   const Show = useRef();
   const Hide = useRef();
-  const {
-    setName,
-    setEmail,
-    setPassword: setContextPassword,
-    setBio: setContextBio,
-    basUrl,
-  } = useContext(MyContext);
+
+  const { basUrl, setUserId } = useContext(MyContext);
 
   const navigation = useNavigate();
 
-  // Generate days, months, years
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   const months = [
     "January",
@@ -66,7 +60,6 @@ const Register = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
 
-  // Fetch countries API
   useEffect(() => {
     if (accepted) {
       axios
@@ -81,7 +74,6 @@ const Register = () => {
     }
   }, [accepted]);
 
-  // Fetch states when country changes
   useEffect(() => {
     if (!Country) {
       setStates([]);
@@ -95,9 +87,9 @@ const Register = () => {
       .get(`https://meetgreek.dhsol.net/location_api.php?country_id=${Country}`)
       .then((res) => {
         setStates(res.data.states || []);
-        setState(""); // reset state selection
-        setCities([]); // reset cities
-        setCity(""); // reset city selection
+        setState(""); 
+        setCities([]); 
+        setCity(""); 
       })
       .catch((err) => {
         console.error("Error fetching states:", err);
@@ -106,7 +98,6 @@ const Register = () => {
       .finally(() => setLoadingStates(false));
   }, [Country]);
 
-  // Fetch cities when state changes
   useEffect(() => {
     if (!State) {
       setCities([]);
@@ -118,7 +109,7 @@ const Register = () => {
       .get(`https://meetgreek.dhsol.net/location_api.php?state_id=${State}`)
       .then((res) => {
         setCities(res.data.cities || []);
-        setCity(""); // reset city selection
+        setCity(""); 
       })
       .catch((err) => {
         console.error("Error fetching cities:", err);
@@ -140,9 +131,11 @@ const Register = () => {
     }
   };
 
-  const SubmitHandler = () => {
+  const SubmitHandler = async () => {
+    // Prevent multiple clicks
+    if (isRegistering) return;
+
     // Basic validations
-    if (!Name?.trim()) return showTost({ title: "Please Enter Name" });
     if (!Phone?.trim()) return showTost({ title: "Please Enter Phone Number" });
     if (!Email?.trim()) return showTost({ title: "Please Enter Email" });
     if (!Password?.trim()) return showTost({ title: "Please Enter Password" });
@@ -176,25 +169,83 @@ const Register = () => {
     }
     if (age < 18) return showTost({ title: "You must be 18 years or older" });
 
-    // Check email with API
-    axios
-      .post(`${basUrl}email_check.php`, { email: Email })
-      .then((res) => {
-        if (res.data.Result === "true") {
-          // Store all data in context or send to backend
-          setName(Name);
-          setEmail(Email);
-          setContextPassword(Password);
-          setContextBio(Bio);
-          
-          // You might want to store all data including gender, greek status, location, birthdate
-          // For now, navigate to next step
-          navigation("/image");
-        } else {
-          showTost({ title: res.data.ResponseMsg });
+    // Set loading state
+    setIsRegistering(true);
+
+    try {
+      // Format birthdate to YYYY-MM-DD
+      const formattedBirthdate = `${BirthYear}-${String(
+        months.indexOf(BirthMonth) + 1
+      ).padStart(2, "0")}-${String(BirthDay).padStart(2, "0")}`;
+
+      // Get country name from selected country ID
+      const selectedCountry = Countries.find((c) => c.id == Country);
+      const selectedState = States.find((s) => s.id == State);
+      const selectedCity = Cities.find((c) => c.id == City);
+
+      // Prepare FormData with exact fields you need
+      const formData = new FormData();
+
+      // REQUIRED FIELDS as per your specification:
+      formData.append("gender", Gender);
+      formData.append("origin", GreekStatus); 
+      formData.append("country", selectedCountry ? selectedCountry.name : "");
+      formData.append("state", selectedState ? selectedState.name : "");
+      formData.append("city", selectedCity ? selectedCity.name : "");
+      formData.append("country_id", Country);
+      formData.append("state_id", State);
+      formData.append("city_id", City);
+      formData.append("bday", formattedBirthdate);
+      formData.append("mobile", Phone);
+      formData.append("email", Email);
+      formData.append("password", Password);
+
+      // For debugging: Log what's being sent
+      console.log("Sending registration data:");
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+
+      // Send registration request to backend
+      const response = await axios.post(`${basUrl}reg_user.php`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("Registration response:", response.data);
+
+      if (response.data.Result === "true") {
+        // Registration successful
+        showTost({
+          title: response.data.ResponseMsg || "Registration successful!",
+        });
+        
+          setUserId(response.data.User?.id)
+          localStorage.setItem("UserId", response.data.User?.id);
+
+        // Store user data if returned
+        // if (response.data.User?.id) {
+        // }
+
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
         }
-      })
-      .catch(() => showTost({ title: "Network error" }));
+
+        // Navigate to next step
+        navigation("/image");
+      } else {
+        // Registration failed
+        showTost({
+          title:
+            response.data.ResponseMsg ||
+            "Registration failed. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      showTost({ title: "Network error. Please try again." });
+    } finally {
+      setIsRegistering(false);
+    }
   };
 
   const handleAccept = () => setAccepted(true);
@@ -218,23 +269,19 @@ const Register = () => {
             <div className="flex flex-col items-center justify-center pl-6 text-center">
               <img src="/favicon.ico" width={150} alt="Logo" className="mb-4" />
 
-              {/* Main Heading */}
               <h1 className="text-2xl md:text-3xl font-extrabold text-[#0066CC] mb-3 leading-tight">
                 Welcome to Meet Greek Singles!
               </h1>
 
-              {/* Subheading / Description */}
               <p className="text-md md:text-[16px] text-gray-700 mb-6 max-w-xl">
                 We're delighted to have you here. <br />
                 Find love, friendship & Greek connection — wherever you are.
               </p>
 
-              {/* Section Header */}
               <h2 className="text-2xl md:text-3xl font-bold text-[#C89A3D] mb-4 border-b-4 border-[#C89A3D] pb-2">
                 To Join Our Community:
               </h2>
 
-              {/* Rules / Guidelines */}
               <ul className="text-[18px] text-start text-gray-700 mb-5 space-y-3 max-w-xl">
                 <li className="flex items-center gap-3">
                   <AiOutlineCheckCircle className="text-[#0066CC] w-6 h-6 flex-shrink-0" />
@@ -258,7 +305,6 @@ const Register = () => {
                 </li>
               </ul>
 
-              {/* Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
                 <button
                   onClick={handleAccept}
@@ -276,7 +322,6 @@ const Register = () => {
             </div>
           )}
 
-          {/* ----- Registration Form ----- */}
           {accepted && (
             <>
               <div className="mt-[10px]">
@@ -290,15 +335,11 @@ const Register = () => {
               </div>
 
               <div className="mt-[20px] w-[100%] space-y-3">
-                {/* ========== SECTION 1: BASIC INFO ========== */}
-                
-                {/* 1. Name */}
-                
-
-                {/* 2. Phone Number */}
+                {/* Phone Number */}
                 <div className="relative">
                   <input
                     onChange={(e) => setPhone(e.target.value)}
+                    value={Phone}
                     className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
                     type="number"
                     placeholder="Phone Number *"
@@ -308,10 +349,11 @@ const Register = () => {
                   )}
                 </div>
 
-                {/* 3. Email */}
+                {/* Email */}
                 <div className="relative">
                   <input
                     onChange={(e) => setemail(e.target.value)}
+                    value={Email}
                     className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
                     type="email"
                     placeholder="Email *"
@@ -321,10 +363,11 @@ const Register = () => {
                   )}
                 </div>
 
-                {/* 4. Password */}
+                {/* Password */}
                 <div className="relative">
                   <input
                     onChange={(e) => setpassword(e.target.value)}
+                    value={Password}
                     id="input"
                     className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
                     type="password"
@@ -361,9 +404,7 @@ const Register = () => {
                   </div>
                 )}
 
-                {/* ========== SECTION 2: PERSONAL DETAILS ========== */}
-                
-                {/* 5. Gender */}
+                {/* Gender */}
                 <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
                   <label className="block font-medium mb-3">I am a: *</label>
                   <div className="flex flex-wrap gap-4">
@@ -371,8 +412,8 @@ const Register = () => {
                       <input
                         type="radio"
                         name="gender"
-                        value="Man"
-                        checked={Gender === "Man"}
+                        value="Male"
+                        checked={Gender === "Male"}
                         onChange={(e) => setGender(e.target.value)}
                         className="w-5 h-5 text-[#0066CC]"
                       />
@@ -382,8 +423,8 @@ const Register = () => {
                       <input
                         type="radio"
                         name="gender"
-                        value="Woman"
-                        checked={Gender === "Woman"}
+                        value="Female"
+                        checked={Gender === "Female"}
                         onChange={(e) => setGender(e.target.value)}
                         className="w-5 h-5 text-[#0066CC]"
                       />
@@ -392,7 +433,7 @@ const Register = () => {
                   </div>
                 </div>
 
-                {/* 6. Greek Status */}
+                {/* Greek Status (origin) */}
                 <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
                   <label className="block font-medium mb-3">I am: *</label>
                   <div className="space-y-2">
@@ -432,7 +473,7 @@ const Register = () => {
                   </div>
                 </div>
 
-                {/* 7. Birthdate */}
+                {/* Birthdate */}
                 <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
                   <label className="block font-medium mb-3">Birthdate: *</label>
                   <div className="grid grid-cols-3 gap-3">
@@ -475,9 +516,7 @@ const Register = () => {
                   </div>
                 </div>
 
-                {/* ========== SECTION 3: LOCATION ========== */}
-                
-                {/* 8. Country */}
+                {/* Country */}
                 <select
                   value={Country}
                   onChange={(e) => setCountry(e.target.value)}
@@ -491,7 +530,7 @@ const Register = () => {
                   ))}
                 </select>
 
-                {/* 9. State */}
+                {/* State */}
                 <select
                   value={State}
                   onChange={(e) => setState(e.target.value)}
@@ -508,7 +547,7 @@ const Register = () => {
                   ))}
                 </select>
 
-                {/* 10. City */}
+                {/* City */}
                 <select
                   value={City}
                   onChange={(e) => setCity(e.target.value)}
@@ -525,8 +564,7 @@ const Register = () => {
                   ))}
                 </select>
 
-                
-                {/* 13. Terms Agreement */}
+                {/* Terms Agreement */}
                 <div className="rounded-[10px] pt-4">
                   <label className="flex items-start space-x-3 cursor-pointer">
                     <input
@@ -538,11 +576,17 @@ const Register = () => {
                     />
                     <span className="text-gray-700">
                       I agree to the{" "}
-                      <a href="#" className="text-[#0066CC] underline font-medium">
+                      <a
+                        href="#"
+                        className="text-[#0066CC] underline font-medium"
+                      >
                         Terms & Conditions
                       </a>{" "}
                       and{" "}
-                      <a href="#" className="text-[#0066CC] underline font-medium">
+                      <a
+                        href="#"
+                        className="text-[#0066CC] underline font-medium"
+                      >
                         Privacy Policy
                       </a>
                       . *
@@ -553,29 +597,67 @@ const Register = () => {
 
               {/* Create Account Button */}
               <button
-                style={{ background: "#0066CC" }}
+                style={{ background: isRegistering ? "#999" : "#0066CC" }}
                 onClick={SubmitHandler}
-                className="btn btn-w-md nextstep mt-[20px] w-full py-2"
+                disabled={isRegistering}
+                className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-xl transition-all duration-300"
               >
                 <div className="flex items-center justify-center gap-[10px]">
-                  <span className="font-bold text-[1.25rem] text-white">
-                    Create Account
-                  </span>
-                  <svg
-                    className="mx-6"
-                    width="19"
-                    height="13"
-                    viewBox="0 0 19 13"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1.75455 5.73075H15.4523L11.3296 1.60802C11.2552 1.53617 11.1959 1.45022 11.155 1.35519C11.1142 1.26016 11.0927 1.15795 11.0918 1.05453C11.0909 0.951108 11.1106 0.848543 11.1498 0.752818C11.189 0.657094 11.2468 0.570128 11.3199 0.496995C11.3931 0.423862 11.48 0.366026 11.5758 0.326862C11.6715 0.287698 11.7741 0.267991 11.8775 0.268889C11.9809 0.269788 12.0831 0.291275 12.1781 0.332096C12.2732 0.372918 12.3591 0.432257 12.431 0.50665L17.8833 5.95896C18.0293 6.10503 18.1113 6.30311 18.1113 6.50965C18.1113 6.71618 18.0293 6.91427 17.8833 7.06033L12.431 12.5126C12.2841 12.6545 12.0873 12.733 11.8831 12.7313C11.6789 12.7295 11.4835 12.6476 11.3391 12.5032C11.1947 12.3587 11.1128 12.1634 11.111 11.9592C11.1092 11.7549 11.1877 11.5582 11.3296 11.4113L15.4523 7.28855H1.75455C1.54797 7.28855 1.34986 7.20649 1.20378 7.06041C1.05771 6.91434 0.975649 6.71623 0.975649 6.50965C0.975649 6.30307 1.05771 6.10495 1.20378 5.95888C1.34986 5.81281 1.54797 5.73075 1.75455 5.73075Z"
-                      fill="white"
-                    />
-                  </svg>
+                  {isRegistering ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      <span className="font-bold text-[1.25rem] text-white">
+                        Creating Account...
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-bold text-[1.25rem] text-white">
+                        Create Account
+                      </span>
+                      <svg
+                        className="mx-6"
+                        width="19"
+                        height="13"
+                        viewBox="0 0 19 13"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1.75455 5.73075H15.4523L11.3296 1.60802C11.2552 1.53617 11.1959 1.45022 11.155 1.35519C11.1142 1.26016 11.0927 1.15795 11.0918 1.05453C11.0909 0.951108 11.1106 0.848543 11.1498 0.752818C11.189 0.657094 11.2468 0.570128 11.3199 0.496995C11.3931 0.423862 11.48 0.366026 11.5758 0.326862C11.6715 0.287698 11.7741 0.267991 11.8775 0.268889C11.9809 0.269788 12.0831 0.291275 12.1781 0.332096C12.2732 0.372918 12.3591 0.432257 12.431 0.50665L17.8833 5.95896C18.0293 6.10503 18.1113 6.30311 18.1113 6.50965C18.1113 6.71618 18.0293 6.91427 17.8833 7.06033L12.431 12.5126C12.2841 12.6545 12.0873 12.733 11.8831 12.7313C11.6789 12.7295 11.4835 12.6476 11.3391 12.5032C11.1947 12.3587 11.1128 12.1634 11.111 11.9592C11.1092 11.7549 11.1877 11.5582 11.3296 11.4113L15.4523 7.28855H1.75455C1.54797 7.28855 1.34986 7.20649 1.20378 7.06041C1.05771 6.91434 0.975649 6.71623 0.975649 6.50965C0.975649 6.30307 1.05771 6.10495 1.20378 5.95888C1.34986 5.81281 1.54797 5.73075 1.75455 5.73075Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </>
+                  )}
                 </div>
               </button>
+
+              {/* Registration Progress Note */}
+              {isRegistering && (
+                <div className="mt-4 text-center text-gray-600 text-sm">
+                  <p>Please wait while we create your account...</p>
+                </div>
+              )}
             </>
           )}
         </section>

@@ -3,18 +3,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
-import axios from "axios";
-import { Formik } from "formik";
-import { TodoContext } from "../Context";
 import { showTost } from "../showTost";
 
 const Imagecom = () => {
-  const { demo, setDemo } = useContext(TodoContext);
   const { 
-    name, email, password, bio, number, ccode, birthdate, gender, 
-    goal, nearby, country, state, city, hobbies, languages, religion, 
-    preference, basUrl, longitude, latitude, setLatitude, setLongitude 
+    setLatitude, 
+    setLongitude,
+    profileImages,
+    setProfileImages,
+    registrationStep,
+    setRegistrationStep
   } = useContext(MyContext);
+  
   const navigate = useNavigate();
 
   const inp1 = useRef();
@@ -24,22 +24,15 @@ const Imagecom = () => {
   const inp5 = useRef();
   const inp6 = useRef();
 
-  const [input1, setInput1] = useState();
-  const [input2, setInput2] = useState();
-  const [input3, setInput3] = useState();
-  const [input4, setInput4] = useState();
-  const [input5, setInput5] = useState();
-  const [input6, setInput6] = useState();
-  const [Error, seterror] = useState(0);
-
-  const [selectedImages, setSelectedImages] = useState({
-    pic0: null,
-    pic1: null,
-    pic2: null,
-    pic3: null,
-    pic4: null,
-    pic5: null
-  });
+  const [input1, setInput1] = useState(profileImages.pic0 || null);
+  const [input2, setInput2] = useState(profileImages.pic3 || null);
+  const [input3, setInput3] = useState(profileImages.pic4 || null);
+  const [input4, setInput4] = useState(profileImages.pic1 || null);
+  const [input5, setInput5] = useState(profileImages.pic2 || null);
+  const [input6, setInput6] = useState(profileImages.pic5 || null);
+  
+  const [selectedImages, setSelectedImages] = useState(profileImages);
+  const [selectedCount, setSelectedCount] = useState(0);
 
   const ImageHandler = (id) => {
     if (id === "1") {
@@ -67,13 +60,15 @@ const Imagecom = () => {
   // Count how many images have been selected
   useEffect(() => {
     const count = Object.values(selectedImages).filter(img => img !== null).length;
-    seterror(count);
+    setSelectedCount(count);
   }, [selectedImages]);
 
   const handleFileSelect = (id, file) => {
     if (!file) return;
     
     const newSelectedImages = { ...selectedImages };
+    
+    // Update local state
     if (id === "1") {
       setInput1(file);
       newSelectedImages.pic0 = file;
@@ -93,25 +88,21 @@ const Imagecom = () => {
       setInput6(file);
       newSelectedImages.pic5 = file;
     }
+    
+    // Update both local and context state
     setSelectedImages(newSelectedImages);
+    setProfileImages(newSelectedImages);
   };
 
   const SubmitHandler = () => {
     // Check if at least 3 images are selected
-    const selectedCount = Object.values(selectedImages).filter(img => img !== null).length;
-    
     if (selectedCount >= 3) {
-      // Store images in context or localStorage to use on next page
-      const imagesData = {
-        images: selectedImages,
-        imageCount: selectedCount
-      };
+      setRegistrationStep(registrationStep + 1);
       
-      // You can store in localStorage or context
-      localStorage.setItem('selectedProfileImages', JSON.stringify(imagesData));
+  
+      navigate("/info");
       
-      // Redirect to the next page
-      navigate("/about"); // Change this to your desired route
+      showTost({ title: "Images saved successfully!" });
     } else {
       showTost({ title: "Please Select Minimum 3 Images" });
     }
@@ -124,7 +115,7 @@ const Imagecom = () => {
           <section className="steps step-1 active rounded-[40px] relative">
             <div className="w-[100%] bg-[#EFEDEE]  pt-[30px] z-[999]  pb-[20px] fixed top-[0px] ">
               <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-                <div className="bg-[#0066CC]  rounded-full w-[95%] h-[5px] "></div>
+                <div className="bg-[#0066CC]  rounded-full w-[9%] h-[5px] "></div>
               </div>
             </div>
             <div className="mt-[10px]">
@@ -137,7 +128,7 @@ const Imagecom = () => {
                 Let your personality shine.
               </p>
               <p className="text-[16px] mt-[5px] text-gray-600 font-medium">
-                Minimum 3 images required
+                Minimum 3 images required ({selectedCount} selected)
               </p>
             </div>
 
@@ -336,38 +327,46 @@ const Imagecom = () => {
                 {/* Selected Images Counter */}
                 <div className="mt-4 text-center">
                   <p className="text-gray-700">
-                    Selected: <span className="font-bold">{Error}</span> / 6 images
+                    Selected: <span className="font-bold">{selectedCount}</span> / 6 images
+                    {selectedCount >= 3 && " ✓"}
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {Error >= 3 ? "✓ Minimum requirement met!" : "Select at least 3 more images"}
+                  <p className={`text-sm mt-1 ${selectedCount >= 3 ? "text-green-600" : "text-yellow-600"}`}>
+                    {selectedCount >= 3 
+                      ? "Minimum requirement met! You can proceed." 
+                      : `Select ${3 - selectedCount} more image(s)`}
                   </p>
                 </div>
               </div>
 
               <button
                 type="button"
-                style={{ background: "#0066CC" }}
+                style={{ 
+                  background: selectedCount >= 3 ? "#0066CC" : "#CCCCCC",
+                  cursor: selectedCount >= 3 ? "pointer" : "not-allowed"
+                }}
                 onClick={SubmitHandler}
-                className="btn btn-w-md nextstep mt-[50px] w-full"
-                disabled={Error < 3}
+                className="btn btn-w-md nextstep mt-[50px] w-full py-3 rounded-xl transition-all duration-300"
+                disabled={selectedCount < 3}
               >
                 <div className="flex items-center justify-center gap-[10px]">
                   <span className="font-bold text-[1.25rem] text-white">
-                    Continue to Next Step
+                    {selectedCount >= 3 ? "Continue to Next Step" : "Select More Images"}
                   </span>
-                  <svg
-                    className="mx-6"
-                    width="19"
-                    height="13"
-                    viewBox="0 0 19 13"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1.75455 5.73075H15.4523L11.3296 1.60802C11.2552 1.53617 11.1959 1.45022 11.155 1.35519C11.1142 1.26016 11.0927 1.15795 11.0918 1.05453C11.0909 0.951108 11.1106 0.848543 11.1498 0.752818C11.189 0.657094 11.2468 0.570128 11.3199 0.496995C11.3931 0.423862 11.48 0.366026 11.5758 0.326862C11.6715 0.287698 11.7741 0.267991 11.8775 0.268889C11.9809 0.269788 12.0831 0.291275 12.1781 0.332096C12.2732 0.372918 12.3591 0.432257 12.431 0.50665L17.8833 5.95896C18.0293 6.10503 18.1113 6.30311 18.1113 6.50965C18.1113 6.71618 18.0293 6.91427 17.8833 7.06033L12.431 12.5126C12.2841 12.6545 12.0873 12.733 11.8831 12.7313C11.6789 12.7295 11.4835 12.6476 11.3391 12.5032C11.1947 12.3587 11.1128 12.1634 11.111 11.9592C11.1092 11.7549 11.1877 11.5582 11.3296 11.4113L15.4523 7.28855H1.75455C1.54797 7.28855 1.34986 7.20649 1.20378 7.06041C1.05771 6.91434 0.975649 6.71623 0.975649 6.50965C0.975649 6.30307 1.05771 6.10495 1.20378 5.95888C1.34986 5.81281 1.54797 5.73075 1.75455 5.73075Z"
-                      fill="white"
-                    />
-                  </svg>
+                  {selectedCount >= 3 && (
+                    <svg
+                      className="mx-6"
+                      width="19"
+                      height="13"
+                      viewBox="0 0 19 13"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1.75455 5.73075H15.4523L11.3296 1.60802C11.2552 1.53617 11.1959 1.45022 11.155 1.35519C11.1142 1.26016 11.0927 1.15795 11.0918 1.05453C11.0909 0.951108 11.1106 0.848543 11.1498 0.752818C11.189 0.657094 11.2468 0.570128 11.3199 0.496995C11.3931 0.423862 11.48 0.366026 11.5758 0.326862C11.6715 0.287698 11.7741 0.267991 11.8775 0.268889C11.9809 0.269788 12.0831 0.291275 12.1781 0.332096C12.2732 0.372918 12.3591 0.432257 12.431 0.50665L17.8833 5.95896C18.0293 6.10503 18.1113 6.30311 18.1113 6.50965C18.1113 6.71618 18.0293 6.91427 17.8833 7.06033L12.431 12.5126C12.2841 12.6545 12.0873 12.733 11.8831 12.7313C11.6789 12.7295 11.4835 12.6476 11.3391 12.5032C11.1947 12.3587 11.1128 12.1634 11.111 11.9592C11.1092 11.7549 11.1877 11.5582 11.3296 11.4113L15.4523 7.28855H1.75455C1.54797 7.28855 1.34986 7.20649 1.20378 7.06041C1.05771 6.91434 0.975649 6.71623 0.975649 6.50965C0.975649 6.30307 1.05771 6.10495 1.20378 5.95888C1.34986 5.81281 1.54797 5.73075 1.75455 5.73075Z"
+                        fill="white"
+                      />
+                    </svg>
+                  )}
                 </div>
               </button>
             </div>

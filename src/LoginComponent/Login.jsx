@@ -93,7 +93,7 @@ const Login = () => {
   //   }
   // };
   const SigninHandler = async () => {
-    console.log("SigninHandler clicked");
+  console.log("SigninHandler clicked");
 
   try {
     const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
@@ -118,144 +118,143 @@ const Login = () => {
       showTost({ title: res.data.ResponseMsg });
       Data.setDemo(Data.demo + "123");
 
-        // --- SAVE USER TO FIRESTORE WITH FCM TOKEN ---
-        const saveUserToFirestore = async () => {
-          try {
-            const { id, name, email, mobile, profile_pic, token } = user;
-            const userRef = doc(db, "datingUser", id);
+      // --- CHECK ONBOARDING STATUS FROM LOCALSTORAGE ---
+      const onboardingStatus = user.onboarding_status;
+      let redirectPath = "/";
+      
+      console.log("📊 Onboarding status from login response:", onboardingStatus);
+      
+      if (onboardingStatus === "completed" || onboardingStatus === "Completed") {
+        redirectPath = "/dashboard"; // or your main dashboard page
+      } else {
+        redirectPath = "/image"; // onboarding image upload page
+      }
+      
+      console.log("✅ Redirecting to:", redirectPath);
 
-            let fcmToken = "";
+      // --- SAVE USER TO FIRESTORE WITH FCM TOKEN (in background) ---
+      const saveUserToFirestore = async () => {
+        try {
+          const { id, name, email, mobile, profile_pic, token } = user;
+          const userRef = doc(db, "datingUser", id);
 
-            console.log("🔄 Starting Firestore save for user:", id);
+          let fcmToken = "";
 
-            // Initialize OneSignal and get FCM token
-            if (window.OneSignal) {
+          console.log("🔄 Starting Firestore save for user:", id);
+
+          // Initialize OneSignal and get FCM token
+          if (window.OneSignal) {
+            try {
+              console.log("🔄 Initializing OneSignal...");
+              
+              await window.OneSignal.init({
+                appId: "720a0530-a6f1-42b6-8725-f1a47dc284f3",
+                allowLocalhostAsSecureOrigin: true,
+              });
+
+              console.log("✅ OneSignal initialized");
+
+              await new Promise((resolve) => {
+                window.OneSignal.push(() => {
+                  console.log("✅ OneSignal is ready");
+                  resolve();
+                });
+              });
+
+              await window.OneSignal.setExternalUserId(user.id);
+              console.log("✅ External user ID set:", user.id);
+
               try {
-                console.log("🔄 Initializing OneSignal...");
-                
-                // Initialize OneSignal with your actual App ID
-                await window.OneSignal.init({
-                  appId: "720a0530-a6f1-42b6-8725-f1a47dc284f3", // Your OneSignal App ID
-                  allowLocalhostAsSecureOrigin: true,
-                });
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                fcmToken = await window.OneSignal.getUserId();
+                console.log("✅ FCM Token from OneSignal:", fcmToken);
 
-                console.log("✅ OneSignal initialized");
-
-                // Wait for OneSignal to be ready
-                await new Promise((resolve) => {
-                  window.OneSignal.push(() => {
-                    console.log("✅ OneSignal is ready");
-                    resolve();
-                  });
-                });
-
-                // Set external user ID
-                await window.OneSignal.setExternalUserId(user.id);
-                console.log("✅ External user ID set:", user.id);
-
-                // Get the FCM token (OneSignal player ID)
-                try {
-                  // Wait a bit for token to be available
-                  await new Promise(resolve => setTimeout(resolve, 1000));
-                  
+                if (!fcmToken) {
+                  console.log("⚠️ No FCM token available, trying alternative method...");
+                  await new Promise(resolve => setTimeout(resolve, 2000));
                   fcmToken = await window.OneSignal.getUserId();
-                  console.log("✅ FCM Token from OneSignal:", fcmToken);
-
-                  if (!fcmToken) {
-                    console.log("⚠️ No FCM token available, trying alternative method...");
-                    
-                    // Alternative method to get token
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    fcmToken = await window.OneSignal.getUserId();
-                    console.log("✅ FCM Token (retry):", fcmToken);
-                  }
-
-                  if (!fcmToken) {
-                    console.log("❌ Still no FCM token available");
-                  }
-
-                } catch (tokenError) {
-                  console.warn("❌ Error getting FCM token:", tokenError);
+                  console.log("✅ FCM Token (retry):", fcmToken);
                 }
 
-              } catch (oneSignalError) {
-                console.warn("❌ OneSignal initialization error:", oneSignalError);
+              } catch (tokenError) {
+                console.warn("❌ Error getting FCM token:", tokenError);
               }
-            } else {
-              console.log("⚠️ OneSignal not available in window");
-            }
 
-            // Prepare user data
-            const userData = {
+            } catch (oneSignalError) {
+              console.warn("❌ OneSignal initialization error:", oneSignalError);
+            }
+          } else {
+            console.log("⚠️ OneSignal not available in window");
+          }
+
+          // Prepare user data
+          const userData = {
+            uid: id,
+            name: name || "",
+            email: email || "",
+            number: mobile || "",
+            token: fcmToken || "",
+            pro_pic: profile_pic || "null",
+            isOnline: true,
+            last_seen: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+
+          console.log("📦 Data to save to Firestore:", userData);
+
+          await setDoc(userRef, userData, { merge: true });
+          console.log("✅ Firestore save completed");
+
+          // Verify the save
+          const savedDoc = await getDoc(userRef);
+          if (savedDoc.exists()) {
+            const savedData = savedDoc.data();
+            console.log("🔍 VERIFICATION - Firestore document saved successfully");
+          } else {
+            console.error("❌ Document doesn't exist after save!");
+          }
+
+        } catch (error) {
+          console.error("🔥 Firestore save error:", error);
+          
+          // Fallback: Save without token
+          try {
+            const { id, name, email, mobile, profile_pic } = user;
+            const userRef = doc(db, "datingUser", id);
+            
+            const fallbackData = {
               uid: id,
               name: name || "",
               email: email || "",
               number: mobile || "",
-              token: fcmToken || "", // FCM token or empty string
+              token: "",
               pro_pic: profile_pic || "null",
               isOnline: true,
               last_seen: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
             };
-
-            console.log("📦 Data to save to Firestore:", userData);
-
-            // Use setDoc with merge: true
-            await setDoc(userRef, userData, { merge: true });
-            console.log("✅ Firestore save completed");
-
-            // Verify the save
-            const savedDoc = await getDoc(userRef);
-            if (savedDoc.exists()) {
-              const savedData = savedDoc.data();
-              console.log("🔍 VERIFICATION - Firestore document saved successfully");
-              console.log("🔍 VERIFICATION - isOnline:", savedData.isOnline);
-              console.log("🔍 VERIFICATION - token:", savedData.token);
-            } else {
-              console.error("❌ Document doesn't exist after save!");
-            }
-
-          } catch (error) {
-            console.error("🔥 Firestore save error:", error);
             
-            // Fallback: Save without token
-            try {
-              const { id, name, email, mobile, profile_pic } = user;
-              const userRef = doc(db, "datingUser", id);
-              
-              const fallbackData = {
-                uid: id,
-                name: name || "",
-                email: email || "",
-                number: mobile || "",
-                token: "",
-                pro_pic: profile_pic || "null",
-                isOnline: true,
-                last_seen: new Date().toISOString(),
-              };
-              
-              await setDoc(userRef, fallbackData, { merge: true });
-              console.log("✅ Fallback Firestore save completed");
-            } catch (fallbackError) {
-              console.error("🔥 Fallback Firestore save failed:", fallbackError);
-            }
+            await setDoc(userRef, fallbackData, { merge: true });
+            console.log("✅ Fallback Firestore save completed");
+          } catch (fallbackError) {
+            console.error("🔥 Fallback Firestore save failed:", fallbackError);
           }
-        };
+        }
+      };
 
-        // Don't wait for Firestore save to complete - let it happen in background
-        saveUserToFirestore();
+      // Start Firestore save in background (don't await it)
+      saveUserToFirestore();
 
-        console.log("✅ Login successful, navigating to home...");
-        setTimeout(() => navigate("/"), 500);
+      // Navigate after short delay
+      setTimeout(() => navigate(redirectPath), 500);
 
-      } else {
-        showTost({ title: res.data.ResponseMsg });
-      }
-    } catch (err) {
-      console.error("🔥 SigninHandler crashed:", err);
-      showTost({ title: "Login failed" });
+    } else {
+      showTost({ title: res.data.ResponseMsg });
     }
-  };
+  } catch (err) {
+    console.error("🔥 SigninHandler crashed:", err);
+    showTost({ title: "Login failed" });
+  }
+};
 
 
   const toggleBottomSheet = () => {

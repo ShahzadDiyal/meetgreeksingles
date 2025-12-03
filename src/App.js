@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 /* jshint ignore:start */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./LoginComponent/Login";
 import { ToastContainer } from "react-toastify";
@@ -10,11 +10,15 @@ import Gender from "./MobilComponent/Gender";
 import Golas from "./MobilComponent/Goals";
 import Nearby from "./MobilComponent/Nearby";
 import Location from "./MobilComponent/Location";
+import InfoForm from "./MobilComponent/InfoForm";
+import LookingFor from "./MobilComponent/WhatLookingfor";
+import FaithCultureTradition from "./MobilComponent/FaithCultureTradition";
 import Hobbies from "./MobilComponent/Hobbies";
 import Languages from "./MobilComponent/Languages";
 import Religion from "./MobilComponent/Religion";
 import Gender2 from "./MobilComponent/Gender-2";
 import Image from "./MobilComponent/Image";
+import RelocationPreference from "./MobilComponent/RelocationPreference";
 import Home from "./MobilComponent/Home";
 import Header from "./LoginComponent/Header";
 import Detail from "./LoginComponent/Detail";
@@ -44,6 +48,7 @@ import Register from "./MobilComponent/Register";
 import Validate from "./MobilComponent/Validate";
 import PaymentRespons from "./PaymentMethod/PaymentRespons";
 import { CallListener } from "./utils/CallListener";
+import GreekConnection from "./MobilComponent/GreekConnection";
 
 
 const App = () => {
@@ -231,12 +236,17 @@ useEffect(() => {
               <Route path="/gender" element={<Gender />} />
               <Route path="/golas" element={<Golas />} />
               <Route path="/location" element={<Location />} />
+              <Route path="/info" element={<InfoForm />} />
+              <Route path="/looking-for" element={<LookingFor />} />
+              <Route path="/greek-connection" element={<GreekConnection />} />
+              <Route path="/faith-culture-tradition" element={<FaithCultureTradition />} />
               <Route path="/nearby" element={<Nearby />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/hobbies" element={<Hobbies />} />
               <Route path="/languages" element={<Languages />} />
               <Route path="/religion" element={<Religion />} />
               <Route path="/preference" element={<Gender2 />} />
+              <Route path="/relocation-preference" element={<RelocationPreference />} />
               <Route path="/image" element={<Image />} />
               <Route path="/login" element={<Login />} />
               <Route path="/home" element={<Home />} />
