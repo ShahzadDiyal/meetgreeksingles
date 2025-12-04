@@ -56,6 +56,9 @@ const App = () => {
   const [Index, setindex] = useState();
   const [oneSignalInitialized, setOneSignalInitialized] = useState(false); // Move state here
   const isAuthenticated = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("Register_User"));
+  const isOnboardingCompleted =
+  user?.onboarding_status?.toLowerCase() === "completed";
 
  useEffect(() => {
     const setOneSignalUser = async () => {
@@ -223,13 +226,19 @@ useEffect(() => {
       <MyProvider>
         <TodoContext.Provider value={{ demo, setDemo, oneSignalInitialized }}> {/* Pass to context */}
           <Router>
-            {isAuthenticated && <Header />}
+           {isAuthenticated && isOnboardingCompleted && <Header />}
             <Routes>
-              {isAuthenticated ? (
-                <Route path="/" element={<Dashboard />} />
-              ) : (
-                <Route path="/" element={<Home />} />
-              )}
+
+              {!isAuthenticated && <Route path="/" element={<Home />} />}
+              
+              {isAuthenticated && isOnboardingCompleted && (
+  <Route path="/" element={<Dashboard />} />
+)}
+
+{isAuthenticated && !isOnboardingCompleted && (
+  <Route path="/" element={<Image />} />
+)}
+
               <Route path="/register" element={<Register />} />
               <Route path="/phonenumber" element={<PhoneNum />} />
               <Route path="/birthdate" element={<Birthdate />} />

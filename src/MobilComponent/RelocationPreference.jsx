@@ -63,7 +63,7 @@ const RelocationPreference = () => {
   const navigation = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
+  const localUserId = localStorage.getItem("UserId")
   // const userid = localStorage.getItem("UserId")
   // const Data = localStorage.getItem("Register_User");
   // const Userid = JSON.parse(Data);
@@ -112,7 +112,7 @@ const RelocationPreference = () => {
       otherpic5: profileImages?.pic5 || '',
       
       // Optional: Add user ID if available
-      uid: userId || '',
+      uid: userId || localUserId || '',
       
       // Timestamp
       created_at: new Date().toISOString(),
@@ -250,7 +250,7 @@ const submitToApi = async (payload) => {
       }
       
       // Navigate to home or dashboard
-      navigation("/");
+      navigation("/login");
       
     } catch (error) {
       console.error("❌ Submission Error:", error);
