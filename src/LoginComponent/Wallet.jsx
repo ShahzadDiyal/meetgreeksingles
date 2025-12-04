@@ -98,7 +98,7 @@ const Wallet = () => {
                                         <div className="fw-medium fs-15">{t('Total Balance')}</div>
                                         <h2 className='m-0 text-[30px]'>{currency ? currency : "$"}{coin ? coin : "0"}</h2>
                                     </div>
-                                    <button onClick={() => { setToggleButton(true); setPageName("Wallet") }} className="flex items-center gap-[10px] bg-[#0066CC] text-white rounded-full px-[8px] py-[5px]">
+                                    <button onClick={() => { setToggleButton(true); setPageName("Wallet") }} className="flex items-center gap-[10px] bg-[#0066CC] text-[#333333] rounded-full px-[8px] py-[5px]">
                                         <img src={ArrowUp} alt="" className='bg-white rounded-full p-[7px] w-[30px] h-[30px]' />
                                         <h6 className='mt-[8px]'>{t("Top-up")}</h6>
                                     </button>

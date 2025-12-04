@@ -168,7 +168,7 @@ const PhoneNum = () => {
                 className="btn btn-w-md nextstep mt-[30px]"
               >
                 <div className="flex items-center justify-center gap-[10px]">
-                  <span className="font-bold text-[1.25rem] text-white">
+                  <span className="font-bold text-[1.25rem] text-[#333333]">
                     Submit
                   </span>
                 </div>
@@ -209,7 +209,7 @@ const PhoneNum = () => {
                 className="btn btn-w-md nextstep mt-[120px]"
               >
                 <div className="flex items-center justify-center gap-[10px]">
-                  <span className="font-bold text-[1.25rem] text-white">
+                  <span className="font-bold text-[1.25rem] text-[#333333]">
                     Next
                   </span>
                   <svg

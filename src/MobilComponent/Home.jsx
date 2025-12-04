@@ -173,11 +173,11 @@ const Home = () => {
                 <div className="flex items-center space-x-4">
                   <Link
                     to="/login"
-                    className="backdrop-blur-sm text-white py-1.5 px-4 rounded-[15px] hover:bg-white/30 transition duration-200 border-3 border-amber-600"
+                    className="backdrop-blur-sm bg-[#1F5799] text-white text-lg border-3 border-[#C89A3D] py-1.5 px-4 rounded-[15px] transition duration-200"
                   >
                     Login
                   </Link>
-                  <button className="backdrop-blur-sm text-white py-1.5 px-4 rounded-[15px] hover:bg-white/30 transition duration-200 border-3 border-amber-600">
+                  <button className="backdrop-blur-sm bg-[#1F5799] text-white text-lg border-3 border-[#C89A3D] py-1.5 px-4 rounded-[15px] transition duration-200">
                     Language
                   </button>
                 </div>
@@ -204,7 +204,7 @@ const Home = () => {
                   {/* Create Account Button */}
                   <Link
                     to="/register"
-                    className="inline-block transition duration-300 py-2 px-8 rounded-xl text-white text-lg border-3 border-gray-600"
+                    className="inline-block transition duration-300 py-2 px-8 rounded-xl bg-[#1F5799] text-white text-lg border-3 border-[#C89A3D]"
                   >
                     Create a Free Account Now
                   </Link>

@@ -291,30 +291,30 @@ const submitToApi = async (payload) => {
     return payload;
   };
 
-  return (
-    <div className="w-[100%] multisteup-wrapper pt-[20px] Test">
+ return (
+    <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
-        <section className="steps step-1 active rounded-[40px] relative">
+        <section className="steps step-1 active rounded-[40px] relative bg-white">
           {/* ----- Progress Bar ----- */}
           <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
             <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-              <div className="bg-[#0066CC] rounded-full w-[92%] h-[5px]"></div>
+              <div className="bg-[#1F5799] rounded-full w-[92%] h-[5px]"></div>
             </div>
           </div>
 
           <div className="mt-[10px]">
-            <h1 className="text-[28px] max-_430_:text-[27px] font-[600]">
+            <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
               Lifestyle & Future Preferences 🌍
             </h1>
-            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px]">
+            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
               Help us understand your lifestyle choices and future plans
             </p>
           </div>
 
           <div className="mt-[20px] w-[100%] space-y-8">
             {/* Relocation Preference */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-6">
-              <label className="block font-medium text-xl mb-2">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
+              <label className="block font-medium text-xl mb-2 text-[#333333]">
                 Would you consider relocating to another country for the right person? *
               </label>
               <div>
@@ -325,24 +325,24 @@ const submitToApi = async (payload) => {
                   "Maybe — I'm open to discussing it",
                   "No — I prefer staying where I live"
                 ].map((option) => (
-                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors">
+                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50">
                     <input
                       type="radio"
                       name="relocationPreference"
                       value={option}
                       checked={relocationPreference === option}
                       onChange={(e) => setRelocationPreference(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC] mt-1 flex-shrink-0"
+                      className="w-5 h-5 text-[#C89A3D] mt-1 flex-shrink-0"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Dating someone with children */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-6">
-              <label className="block font-medium mb-2 text-xl">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
+              <label className="block font-medium mb-2 text-xl text-[#333333]">
                 Would you date someone with children? *
               </label>
               <div className="space-y-4">
@@ -352,24 +352,24 @@ const submitToApi = async (payload) => {
                   "Maybe — it depends on the dynamics",
                   "No — I prefer dating someone without children"
                 ].map((option) => (
-                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-1 rounded-lg transition-colors">
+                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-1 rounded-lg transition-colors hover:bg-gray-50">
                     <input
                       type="radio"
                       name="dateWithChildren"
                       value={option}
                       checked={dateWithChildren === option}
                       onChange={(e) => setDateWithChildren(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC] mt-1 flex-shrink-0"
+                      className="w-5 h-5 text-[#C89A3D] mt-1 flex-shrink-0"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Have children */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-6">
-              <label className="block font-medium mb-2 text-xl">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
+              <label className="block font-medium mb-2 text-xl text-[#333333]">
                 Do you have children? *
               </label>
               <div className="">
@@ -379,24 +379,24 @@ const submitToApi = async (payload) => {
                   "No",
                   "Prefer not to answer"
                 ].map((option) => (
-                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors">
+                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50">
                     <input
                       type="radio"
                       name="haveChildren"
                       value={option}
                       checked={haveChildren === option}
                       onChange={(e) => setHaveChildren(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC] mt-1 flex-shrink-0"
+                      className="w-5 h-5 text-[#C89A3D] mt-1 flex-shrink-0"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Want children */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-6">
-              <label className="block font-medium mb-2 text-xl">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
+              <label className="block font-medium mb-2 text-xl text-[#333333]">
                 Do you want to have children? *
               </label>
               <div>
@@ -407,24 +407,24 @@ const submitToApi = async (payload) => {
                   "I already have children and don't want more",
                   "I'm open to having more children"
                 ].map((option) => (
-                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors">
+                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50">
                     <input
                       type="radio"
                       name="wantChildren"
                       value={option}
                       checked={wantChildren === option}
                       onChange={(e) => setWantChildren(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC] mt-1 flex-shrink-0"
+                      className="w-5 h-5 text-[#C89A3D] mt-1 flex-shrink-0"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Willing to travel */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-6">
-              <label className="block font-medium mb-2 text-xl">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
+              <label className="block font-medium mb-2 text-xl text-[#333333]">
                 Are you willing to travel to meet someone? *
               </label>
               <div>
@@ -434,16 +434,16 @@ const submitToApi = async (payload) => {
                   "Maybe — I'm open to traveling if the connection feels right",
                   "No — I prefer someone near my location"
                 ].map((option) => (
-                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors">
+                  <label key={option} className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50">
                     <input
                       type="radio"
                       name="travelWillingness"
                       value={option}
                       checked={travelWillingness === option}
                       onChange={(e) => setTravelWillingness(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC] mt-1 flex-shrink-0"
+                      className="w-5 h-5 text-[#C89A3D] mt-1 flex-shrink-0"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
@@ -464,7 +464,7 @@ const submitToApi = async (payload) => {
                 type: "info"
               });
             }}
-            className="btn btn-w-md mt-4 w-full py-3 rounded-xl bg-gray-600 hover:bg-gray-700 transition-colors"
+            className="btn btn-w-md mt-4 w-full py-3 rounded-full bg-[#333333] hover:bg-[#222222] transition-colors shadow-sm"
           >
             <div className="flex items-center justify-center gap-[10px]">
               <span className="font-bold text-[1.25rem] text-white">Test & Preview Payload</span>
@@ -473,10 +473,10 @@ const submitToApi = async (payload) => {
 
           {/* Submit Profile Button */}
           <button
-            style={{ background: "#0066CC" }}
+            style={{ background: "#1F5799" }}
             onClick={SubmitHandler}
             disabled={isSubmitting}
-            className={`btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-xl transition-colors shadow-lg hover:shadow-xl ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#0055aa]'}`}
+            className={`btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full transition-colors shadow-md hover:shadow-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#1A4A87]'}`}
           >
             <div className="flex items-center justify-center gap-[10px]">
               {isSubmitting ? (

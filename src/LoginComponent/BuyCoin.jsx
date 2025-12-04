@@ -290,7 +290,7 @@ const BuyCoin = () => {
                   <div className="flex flex-wrap justify-center gap-[40px] max-_430_:gap-[15px] mt-[20px]">
                     <button
                       onClick={TopUpHandler}
-                      className="flex items-center gap-[10px] bg-[#0066CC] text-white rounded-full ps-[8px] pe-[15px] py-[5px]"
+                      className="flex items-center gap-[10px] bg-[#0066CC] text-[#333333] rounded-full ps-[8px] pe-[15px] py-[5px]"
                     >
                       <img
                         src={ArrowUp}
@@ -301,7 +301,7 @@ const BuyCoin = () => {
                     </button>
                     <button
                       onClick={toggleBottomSheet}
-                      className="flex items-center gap-[10px] bg-[#0066CC] text-white rounded-full ps-[8px] pe-[15px] py-[5px]"
+                      className="flex items-center gap-[10px] bg-[#0066CC] text-[#333333] rounded-full ps-[8px] pe-[15px] py-[5px]"
                     >
                       <img
                         src={ArrowDown}
@@ -374,7 +374,7 @@ const BuyCoin = () => {
           <div onClick={(e) => e.stopPropagation()} className="bottom-sheet-content2 relative">
             <div className="flex items-center justify-between">
               <h2 className="m-0 text-[20px] flex items-center gap-[5px]">
-                <FaStar className="bg-[#0066CC] w-[30px] h-[30px] text-white rounded-full p-[5px]" />{" "}
+                <FaStar className="bg-[#0066CC] w-[30px] h-[30px] text-[#333333] rounded-full p-[5px]" />{" "}
                 1 coin = {currency ? currency : "$"}0.02
               </h2>
               <button onClick={FildClearHandler}>
@@ -477,7 +477,7 @@ const BuyCoin = () => {
 
             <div className="mt-[20px] justify-center flex gap-[30px]">
               <button onClick={FildClearHandler} className="py-[10px] px-[25px] font-[500]">{t('Cancel')}</button>
-              <button onClick={ProceedHandler} className="bg-[rgb(152,14,255)] text-white py-[10px] px-[25px] rounded-full">
+              <button onClick={ProceedHandler} className="bg-[rgb(152,14,255)] text-[#333333] py-[10px] px-[25px] rounded-full">
                 {t("Proceed")}
               </button>
             </div>

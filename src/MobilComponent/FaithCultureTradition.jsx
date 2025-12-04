@@ -102,30 +102,30 @@ const FaithCultureTradition = () => {
     navigation("/looking-for");
   };
 
-  return (
-    <div className="w-[100%] multisteup-wrapper pt-[20px] Test">
+ return (
+    <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
-        <section className="steps step-1 active rounded-[40px] relative">
+        <section className="steps step-1 active rounded-[40px] relative bg-white">
           {/* ----- Progress Bar ----- */}
           <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
             <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-              <div className="bg-[#0066CC] rounded-full w-[65%] h-[5px]"></div>
+              <div className="bg-[#1F5799] rounded-full w-[65%] h-[5px]"></div>
             </div>
           </div>
 
           <div className="mt-[10px]">
-            <h1 className="text-[28px] max-_430_:text-[27px] font-[600]">
+            <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
               Faith & Cultural Traditions ⛪
             </h1>
-            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px]">
+            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
               Share about your religious background and cultural practices
             </p>
           </div>
 
           <div className="mt-[20px] w-[100%] space-y-6">
             {/* Religious Background */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-              <label className="block font-medium mb-3 text-lg">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+              <label className="block font-medium mb-3 text-lg text-[#333333]">
                 Religious Background: *
               </label>
               <div className="space-y-3">
@@ -146,17 +146,17 @@ const FaithCultureTradition = () => {
                       value={option}
                       checked={localReligiousBackground === option}
                       onChange={(e) => setLocalReligiousBackground(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC]"
+                      className="w-5 h-5 text-[#C89A3D]"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Importance of Faith */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-              <label className="block font-medium mb-3 text-lg">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+              <label className="block font-medium mb-3 text-lg text-[#333333]">
                 Importance of Faith: *
               </label>
               <div className="space-y-3">
@@ -177,17 +177,17 @@ const FaithCultureTradition = () => {
                       value={option}
                       checked={localFaithImportance === option}
                       onChange={(e) => setLocalFaithImportance(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC]"
+                      className="w-5 h-5 text-[#C89A3D]"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Church Attendance */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-              <label className="block font-medium mb-3 text-lg">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+              <label className="block font-medium mb-3 text-lg text-[#333333]">
                 Church Attendance: *
               </label>
               <div className="space-y-3">
@@ -208,17 +208,17 @@ const FaithCultureTradition = () => {
                       value={option}
                       checked={localChurchAttendance === option}
                       onChange={(e) => setLocalChurchAttendance(e.target.value)}
-                      className="w-5 h-5 text-[#0066CC]"
+                      className="w-5 h-5 text-[#C89A3D]"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Partner Faith Preference */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-              <label className="block font-medium mb-3 text-lg">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+              <label className="block font-medium mb-3 text-lg text-[#333333]">
                 Would you prefer a partner who shares your faith and traditions?
                 *
               </label>
@@ -241,20 +241,20 @@ const FaithCultureTradition = () => {
                       onChange={(e) =>
                         setLocalPartnerFaithPreference(e.target.value)
                       }
-                      className="w-5 h-5 text-[#0066CC]"
+                      className="w-5 h-5 text-[#C89A3D]"
                     />
-                    <span className="text-gray-700">{option}</span>
+                    <span className="text-[#333333]">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Favorite Greek Traditions */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-              <label className="block font-medium mb-3 text-lg">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+              <label className="block font-medium mb-3 text-lg text-[#333333]">
                 Favorite Greek traditions:
               </label>
-              <p className="text-gray-600 mb-4 text-sm">
+              <p className="text-[#333333] mb-4 text-sm">
                 Select all that apply
               </p>
               <div className="gap-3">
@@ -267,7 +267,7 @@ const FaithCultureTradition = () => {
                         onChange={() => handleTraditionToggle(tradition)}
                         className="w-5 h-5 text-[#C89A3D] rounded flex-shrink-0"
                       />
-                      <span className="text-gray-700 w-full">{tradition}</span>
+                      <span className="text-[#333333] w-full">{tradition}</span>
                     </label>
                   </div>
                 ))}
@@ -275,7 +275,7 @@ const FaithCultureTradition = () => {
               {/* Show selected traditions count */}
               {localFavoriteTraditions.length > 0 && (
                 <div className="mt-3">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[#333333]">
                     Selected: <span className="font-medium">{localFavoriteTraditions.length}</span> tradition(s)
                   </p>
                 </div>
@@ -284,20 +284,20 @@ const FaithCultureTradition = () => {
 
             {/* Additional Information (Optional) */}
             <div>
-              <label className="block font-medium mb-3 text-lg">
+              <label className="block font-medium mb-3 text-lg text-[#333333]">
                 Optional: Share anything about your faith, culture, or values
               </label>
               <textarea
                 value={localAdditionalInfo}
                 onChange={(e) => setLocalAdditionalInfo(e.target.value)}
-                className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px] min-h-[170px] resize-none"
+                className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[170px] resize-none shadow-sm"
                 placeholder="You can share about:
                     • Your personal spiritual journey
                     • Cultural traditions important to you
                     • Values that guide your life
                     • Anything else you'd like to mention..."
               />
-              <p className="text-gray-600 text-sm mt-2">
+              <p className="text-[#333333] text-sm mt-2">
                 This is optional but helps others understand you better
               </p>
             </div>
@@ -305,9 +305,9 @@ const FaithCultureTradition = () => {
 
           {/* Next Button */}
           <button
-            style={{ background: "#0066CC" }}
+            style={{ background: "#1F5799" }}
             onClick={SubmitHandler}
-            className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-xl hover:bg-[#0055aa] transition-colors"
+            className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full hover:bg-[#1A4A87] transition-colors shadow-md"
           >
             <div className="flex items-center justify-center gap-[10px]">
               <span className="font-bold text-[1.25rem] text-white">Next</span>

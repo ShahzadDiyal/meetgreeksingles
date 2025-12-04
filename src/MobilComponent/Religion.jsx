@@ -68,7 +68,7 @@ const Religion = () => {
               <div className="text-center max-_430_:text-start">
                 {
                   Data.map((el, i) => {
-                    return <button onClick={() => SelectHandler(el.id)} className={` ${select === el.id ? "border-[#0066CC] bg-[#0066CC] text-white" : "border-gray-300 text-black"} text-[18px] max-_430_:text-[14px] border-[2px] mb-[10px] px-[15px] py-[8px] max-_430_:py-[5px] rounded-full me-[10px]`}>{el.title}</button>
+                    return <button onClick={() => SelectHandler(el.id)} className={` ${select === el.id ? "border-[#0066CC] bg-[#0066CC] text-[#333333]" : "border-gray-300 text-black"} text-[18px] max-_430_:text-[14px] border-[2px] mb-[10px] px-[15px] py-[8px] max-_430_:py-[5px] rounded-full me-[10px]`}>{el.title}</button>
                   })
                 }
               </div>
@@ -79,7 +79,7 @@ const Religion = () => {
               className="btn btn-w-md nextstep mt-[50px]"
             >
               <div className="flex items-center justify-center gap-[10px]">
-                <span className="font-bold text-[1.25rem] text-white">Next</span>
+                <span className="font-bold text-[1.25rem] text-[#333333]">Next</span>
                 <svg
                   className="mx-6"
                   width="19"

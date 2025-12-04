@@ -261,18 +261,49 @@ const SigninHandler = async () => {
   console.log("SigninHandler clicked");
 
   try {
-    const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    
-    // Input validation
-    if (!Email) return showTost({ title: "Please Enter Email" });
+    // Check if input is empty
+    if (!Email) return showTost({ title: "Please Enter Email or Mobile Number" });
     if (!Password) return showTost({ title: "Please Enter Password" });
 
-    // API call for login
-    const res = await axios.post(`${basUrl}user_login.php`, {
-      mobile: Email,
-      ccode: "+91",
-      password: Password,
-    });
+    // Determine if input is email or mobile
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    const isEmail = emailRegex.test(Email);
+    
+    // Prepare request data based on input type
+    let requestData;
+    
+    if (isEmail) {
+      // For email login
+      requestData = {
+        email: Email,  // Send as email
+        password: Password,
+      };
+    } else {
+      // For mobile login (extract country code if present)
+      let mobileNumber = Email;
+      let countryCode = "+91"; // Default to India
+      
+      // Check if number includes country code
+      if (Email.startsWith('+')) {
+        // Extract country code (assume it's + followed by 1-4 digits)
+        const match = Email.match(/^(\+\d{1,4})(\d+)$/);
+        if (match) {
+          countryCode = match[1];
+          mobileNumber = match[2];
+        }
+      }
+      
+      requestData = {
+        mobile: mobileNumber,
+        ccode: countryCode,
+        password: Password,
+      };
+    }
+
+    console.log("Sending login request:", requestData);
+
+    // API call for login - use different endpoint or parameters based on your backend
+    const res = await axios.post(`${basUrl}user_login.php`, requestData);
 
     if (res.data.Result === "true") {
       const user = res.data.UserLogin;
@@ -288,15 +319,8 @@ const SigninHandler = async () => {
 
       // --- ONBOARDING STATUS CHECK ---
       const onboardingStatus = (user.onboarding_status || "").toLowerCase();
-      const redirectPath =
-  onboardingStatus === "completed"
-    ? "/dashboard"
-    : "/image";
+      const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
       
-     setTimeout(() => {
-  window.location.replace(redirectPath);
-}, 300);
-
       // --- SAVE USER TO FIRESTORE (background process) ---
       const saveUserToFirestore = async () => {
         try {
@@ -309,7 +333,6 @@ const SigninHandler = async () => {
           // Get FCM token from OneSignal if available
           if (window.OneSignal) {
             try {
-              // Check if OneSignal is already initialized
               await new Promise((resolve) => {
                 window.OneSignal.push(() => {
                   console.log("✅ OneSignal is ready");
@@ -317,11 +340,9 @@ const SigninHandler = async () => {
                 });
               });
 
-              // Set external user ID
               await window.OneSignal.setExternalUserId(id);
               console.log("✅ External user ID set:", id);
 
-              // Try to get FCM token with retry logic
               for (let attempt = 0; attempt < 3; attempt++) {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 fcmToken = await window.OneSignal.getUserId();
@@ -350,7 +371,7 @@ const SigninHandler = async () => {
             isOnline: true,
             last_seen: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            onboarding_status: onboardingStatus || "pending", // Save onboarding status to Firestore too
+            onboarding_status: onboardingStatus || "pending",
           };
 
           console.log("📦 Saving data to Firestore...");
@@ -365,11 +386,11 @@ const SigninHandler = async () => {
       // Start Firestore save in background
       saveUserToFirestore();
 
-      // Navigate after short delay to ensure toast is visible
+      // Navigate
       setTimeout(() => navigate(redirectPath), 500);
 
     } else {
-      showTost({ title: res.data.ResponseMsg });
+      showTost({ title: res.data.ResponseMsg || "Invalid email or password" });
     }
   } catch (err) {
     console.error("🔥 SigninHandler error:", err);
@@ -514,165 +535,188 @@ const SigninHandler = async () => {
     <div>
       <div>
         <div className="w-[100%] max-_430_:bg-white multisteup-wrapper max-_430_:h-[100vh] relative Test">
-          <div className="container mx-auto">
-            <section className="steps step-1 active rounded-[40px] relative ">
-              <div className="text-start mt-[10px] ">
-                <h1 className="text-[28px] max-_430_:text-[26px] font-[600]">
-                  Sign in
+  <div className="container mx-auto">
+    <section className="steps step-1 active rounded-[40px] relative ">
+      <div className="text-start mt-[10px] ">
+        <h1 className="text-[28px] max-_430_:text-[26px] font-[600]">
+          Sign in
+        </h1>
+        <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
+          Welcome back! Please enter your details.
+        </p>
+      </div>
+      <div className="mt-[20px] w-[100%] space-y-5">
+        {/* Email/Phone Input */}
+        <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
+          <img src={EmailIcon} alt="" className="w-[20px] h-[20px]" />
+          <input
+            className="text-black w-[100%] outline-none bg-transparent"
+            type="Email"
+            placeholder="Email or Mobile Number (Without Country Code..)"
+            onChange={(e) => setemail(e.target.value)}
+            value={Email}
+          />
+        </div>
+
+        {/* Password Input */}
+        <div className="relative">
+          <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
+            <img
+              src={UblockIcon}
+              alt=""
+              className="w-[20px] h-[20px]"
+            />
+            <input
+              id="input"
+              type="text"
+              className="text-black w-[100%] outline-none bg-transparent"
+              placeholder="Password"
+              onChange={(e) => setpassword(e.target.value)}
+              value={Password}
+            />
+          </div>
+          <button onClick={() => myFunction()}>
+            <img
+              ref={Show}
+              src={ShowPassword}
+              alt="Show"
+              className="w-[25px] h-[25px] absolute top-[18px] right-5"
+            />
+            <img
+              ref={Hide}
+              src={HidePassword}
+              alt="Hide"
+              className="w-[25px] h-[25px] hidden absolute top-[18px] right-5"
+            />
+          </button>
+        </div>
+
+        {/* Forgot Password */}
+        <button
+          onClick={toggleBottomSheet}
+          className="font-[500] text-[16px] no-underline text-black block w-full text-left"
+        >
+          Forgot password?{" "}
+          <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">Reset it</span>
+        </button>
+
+        {/* Sign In Button */}
+        <button
+          onClick={SigninHandler}
+          className="font-bold text-[18px] rounded-xl mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
+        >
+          Sign In
+        </button>
+      </div>
+
+      {/* Sign Up Link */}
+      <Link
+        to="/register"
+        className="pt-[20px] font-[500] text-[16px] no-underline text-black block w-full text-center"
+      >
+        Don't have an Account?{" "}
+        <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">Sign Up</span>
+      </Link>
+
+      {/* Bottom Sheet */}
+      {isVisible && (
+        <div onClick={toggleBottomSheet} className="bottom-sheet">
+          <div onClick={(e) => e.stopPropagation()} className="bottom-sheet-content">
+            <div className="bg-white rounded-2xl shadow-lg p-5">
+              <div className="flex items-center justify-between mb-[15px]">
+                <h1 className="text-[18px] m-0 text-black font-[500]">
+                  Enter Number
                 </h1>
-                <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
-                  Welcome back! Please enter your details.
-                </p>
+                <img
+                  onClick={toggleBottomSheet}
+                  src={CloseIcon}
+                  alt=""
+                  className="cursor-pointer"
+                />
               </div>
-              <div className="mt-[20px] w-[100%]">
-                <div className="border-[2px] flex items-center gap-[15px] mt-[20px] focus-within:border-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]">
-                  <img src={EmailIcon} alt="" className="w-[20px] h-[20px]" />
+              
+              {/* Phone Input */}
+              <div className="bg-white border-2 border-gray-300 relative rounded-xl focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all duration-200">
+                {!value && (
+                  <label onClick={() => inputFocus.current.focus()} className="text-[16px] absolute top-[10px] left-[60px] text-gray-400 font-[500] pointer-events-none">
+                    Mobile Number
+                  </label>
+                )}
+                <PhoneInput ref={inputFocus}
+                  className="text-black w-[100%] px-[15px] py-[10px] font-[500] bg-transparent"
+                  international
+                  defaultCountry="IN"
+                  value={value}
+                  onChange={setValue}
+                  inputStyle={{ outline: "none", backgroundColor: "transparent" }}
+                />
+              </div>
+
+              {/* OTP Section */}
+              {otpShow && <div className="mt-[15px]">
+                <h1 className="text-[18px] m-0 text-black font-[500]">
+                  Enter Otp
+                </h1>
+                <div className="flex items-center mt-[20px] justify-center gap-[10px]">
+                  {
+                    Inputref.current.map((ref, index) => {
+                      return <input
+                        ref={(e) => (Inputref.current[index] = e)}
+                        onChange={(e) => HandleChange(index, e.target.value)}
+                        onKeyDown={(e) => InputHandler(index, e)}
+                        type="text"
+                        className="form-control font-[600] input-otpnumber outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] bg-white border-2 border-gray-300 rounded-xl w-12 h-12 text-center"
+                        name="otp1"
+                        id="otp1"
+                        maxLength="1"
+                      />
+                    })
+                  }
+                </div>
+              </div>}
+
+              {/* Password Section */}
+              {passwordShow && <div className="space-y-4">
+                <div>
+                  <h1 className="text-[18px] mt-[15px] mb-0 text-black font-[500]">
+                    Password
+                  </h1>
                   <input
-                    className="text-black w-[100%] outline-none"
-                    type="Email"
-                    placeholder="Email or Mobile Number (Without Contry Code..)"
-                    onChange={(e) => setemail(e.target.value)}
-                    value={Email}
+                    onChange={(e) => setpassword2(e.target.value)}
+                    value={Password2}
+                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
+                    type="text"
+                    placeholder="Password"
                   />
                 </div>
-                <div className="relative">
-                  <div className="border-[2px] flex items-center gap-[15px] mt-[20px] focus-within:border-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]">
-                    <img
-                      src={UblockIcon}
-                      alt=""
-                      className="w-[20px] h-[20px]"
-                    />
-                    <input
-                      id="input"
-                      type="text"
-                      className="text-black w-[100%] outline-none"
-                      placeholder="Password"
-                      onChange={(e) => setpassword(e.target.value)}
-                      value={Password}
-                    />
-                  </div>
-                  <button onClick={() => myFunction()}>
-                    <img
-                      ref={Show}
-                      src={ShowPassword}
-                      alt="Show"
-                      className="w-[25px] h-[25px] absolute top-[18px] right-5"
-                    />
-                    <img
-                      ref={Hide}
-                      src={HidePassword}
-                      alt="Hide"
-                      className="w-[25px] h-[25px] hidden absolute top-[18px] right-5"
-                    />
-                  </button>
+                <div>
+                  <h1 className="text-[18px] m-0 text-black font-[500]">
+                    Confirm Password
+                  </h1>
+                  <input
+                    value={Confirm}
+                    onChange={(e) => setconfirm(e.target.value)}
+                    className="text-black w-[100%] border-2 mt-[10px] outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
+                    type="text"
+                    placeholder="Confirm"
+                  />
                 </div>
-                <button
-                  onClick={toggleBottomSheet}
-                  className="font-[500] text-[16px] no-underline text-black"
-                >
-                  Forgot password?{" "}
-                  <span className="text-[#0066CC]">Reset it</span>
-                </button>
-                <button
-                  onClick={SigninHandler}
-                  className="font-bold text-[18px] rounded-[10px] mt-[20px] text-white py-[10px] w-[100%] bg-[#0066CC]"
-                >
-                  Sign In
-                </button>
-              </div>
-              <Link
-                to="/register"
-                className="pt-[20px] font-[500] text-[16px] no-underline text-black"
+              </div>}
+
+              {/* Action Button */}
+              <button
+                onClick={otpShow ? OtpCheckHandler : passwordShow ? SubmitHandler : PhoneHandler}
+                className="font-bold text-[18px] rounded-xl mt-[20px] text-white py-[10px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
               >
-                Don't have an Account?{" "}
-                <span className="text-[#0066CC]">Sign Up</span>
-              </Link>
-              {isVisible && (
-                <div onClick={toggleBottomSheet} className="bottom-sheet">
-                  <div onClick={(e) => e.stopPropagation()} className="bottom-sheet-content">
-                    <div className="bg-white rounded-[20px]">
-                      <div className="flex items-center justify-between mb-[15px]">
-                        <h1 className="text-[18px] m-0 text-black font-[500]">
-                          Enter Number
-                        </h1>
-                        <img
-                          onClick={toggleBottomSheet}
-                          src={CloseIcon}
-                          alt=""
-                          className="cursor-pointer"
-                        />
-                      </div>
-                      <div className="border-gray-300 border-[2px] relative rounded-[10px] focus-within:border-[#0066CC]">
-                        {!value && (
-                          <label onClick={() => inputFocus.current.focus()} className="text-[16px] absolute top-[10px] left-[60px] text-gray-400 font-[500]">
-                            Mobile Number
-                          </label>
-                        )}
-                        <PhoneInput ref={inputFocus}
-                          className="text-black w-[100%] px-[15px] py-[10px] font-[500]"
-                          international
-                          defaultCountry="IN"
-                          value={value}
-                          onChange={setValue}
-                          inputStyle={{ outline: "none" }}
-                        />
-                      </div>
-                      {otpShow && <div className="mt-[15px]">
-                        <h1 className="text-[18px] m-0 text-black font-[500]">
-                          Enter Otp
-                        </h1>
-                        <div className="flex items-center mt-[20px] justify-center gap-[10px]">
-                          {
-                            Inputref.current.map((ref, index) => {
-                              return <input
-                                ref={(e) => (Inputref.current[index] = e)}
-                                onChange={(e) => HandleChange(index, e.target.value)}
-                                onKeyDown={(e) => InputHandler(index, e)}
-                                type="text"
-                                className="form-control font-[600] input-otpnumber outline-[#0066CC]"
-                                name="otp1"
-                                id="otp1"
-                                maxlength="1"
-                              />
-                            })
-                          }
-                        </div>
-                      </div>}
-                      {passwordShow && <div className="">
-                        <h1 className="text-[18px] mt-[15px] mb-0 text-black font-[500]">
-                          Password
-                        </h1>
-                        <input
-                          onChange={(e) => setpassword2(e.target.value)}
-                          value={Password2}
-                          className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[10px] rounded-[10px]"
-                          type="text"
-                          placeholder="Password"
-                        />
-                        <h1 className="text-[18px] m-0 text-black font-[500] pt-[15px]">
-                          Confirm Password
-                        </h1>
-                        <input
-                          value={Confirm}
-                          onChange={(e) => setconfirm(e.target.value)}
-                          className="text-black w-[100%] border-[2px] mt-[10px] outline-[#0066CC] border-gray-300 px-[15px] py-[10px] rounded-[10px]"
-                          type="text"
-                          placeholder="Confirm"
-                        />
-                      </div>}
-                      <button
-                        onClick={otpShow ? OtpCheckHandler : passwordShow ? SubmitHandler : PhoneHandler}
-                        className="font-bold text-[18px] rounded-[10px] mt-[20px] text-white py-[10px] w-[100%] bg-[#0066CC]"
-                      >
-                        {otpShow ? "Check" : passwordShow ? "Change" : "Continue"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </section>
+                {otpShow ? "Check" : passwordShow ? "Change" : "Continue"}
+              </button>
+            </div>
           </div>
         </div>
+      )}
+    </section>
+  </div>
+</div>
       </div >
 
     </div >

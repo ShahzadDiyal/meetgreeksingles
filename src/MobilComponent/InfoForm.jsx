@@ -133,24 +133,24 @@ const selectInterestHandler = (id) => {
     navigation("/greek-connection");
   };
 
-  return (
-    <div className="w-[100%] multisteup-wrapper pt-[20px] Test">
+ return (
+    <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
-        <section className="steps step-1 active rounded-[40px] relative">
+        <section className="steps step-1 active rounded-[40px] relative bg-white">
           {/* ----- Progress Bar ----- */}
           <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
             <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-              <div className="bg-[#0066CC] rounded-full w-[25%] h-[5px]"></div>
+              <div className="bg-[#1F5799] rounded-full w-[25%] h-[5px]"></div>
             </div>
           </div>
 
           {/* ----- Registration Form ----- */}
           <>
             <div className="mt-[10px]">
-              <h1 className="text-[28px] max-_430_:text-[27px] font-[600]">
+              <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
                 Can You elaborate on your identity? 😎
               </h1>
-              <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px]">
+              <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
                 It will Display on your Profile and you will not able to
                 change it later
               </p>
@@ -163,7 +163,7 @@ const selectInterestHandler = (id) => {
                   <input
                     value={localFirstName}
                     onChange={(e) => setLocalFirstName(e.target.value)}
-                    className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                    className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm"
                     type="text"
                     placeholder="First Name *"
                   />
@@ -175,7 +175,7 @@ const selectInterestHandler = (id) => {
                   <input
                     value={localLastName}
                     onChange={(e) => setLocalLastName(e.target.value)}
-                    className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                    className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm"
                     type="text"
                     placeholder="Last Name *"
                   />
@@ -186,8 +186,8 @@ const selectInterestHandler = (id) => {
               </div>
 
               {/* Relationship Status */}
-              <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-                <label className="block font-medium mb-3">Relationship Status: *</label>
+              <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+                <label className="block font-medium mb-3 text-[#333333]">Relationship Status: *</label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {["Single", "Separated", "Divorced", "Widowed"].map((status) => (
                     <label key={status} className="flex items-center space-x-2 cursor-pointer">
@@ -197,9 +197,9 @@ const selectInterestHandler = (id) => {
                         value={status}
                         checked={localRelationshipStatus === status}
                         onChange={(e) => setLocalRelationshipStatus(e.target.value)}
-                        className="w-5 h-5 text-gray-500"
+                        className="w-5 h-5 text-[#C89A3D]"
                       />
-                      <span className="text-gray-700">{status}</span>
+                      <span className="text-[#333333]">{status}</span>
                     </label>
                   ))}
                 </div>
@@ -210,7 +210,7 @@ const selectInterestHandler = (id) => {
                 <select
                   value={localEducation}
                   onChange={(e) => setLocalEducation(e.target.value)}
-                  className="w-full border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                  className="w-full border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm text-[#333333]"
                 >
                   <option value="">Select Education Level</option>
                   <option value="High School">High School</option>
@@ -228,7 +228,7 @@ const selectInterestHandler = (id) => {
                 <input
                   value={localProfession}
                   onChange={(e) => setLocalProfession(e.target.value)}
-                  className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px]"
+                  className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm"
                   type="text"
                   placeholder="Profession *"
                 />
@@ -238,8 +238,8 @@ const selectInterestHandler = (id) => {
               </div>
 
               {/* Smoking */}
-              <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-                <label className="block font-medium mb-3">Smoking: *</label>
+              <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+                <label className="block font-medium mb-3 text-[#333333]">Smoking: *</label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {["Non-smoker", "Social smoker", "Smoker", "Trying to quit"].map((option) => (
                     <label key={option} className="flex items-center space-x-2 cursor-pointer">
@@ -249,17 +249,17 @@ const selectInterestHandler = (id) => {
                         value={option}
                         checked={localSmoking === option}
                         onChange={(e) => setLocalSmoking(e.target.value)}
-                        className="w-5 h-5 text-[#0066CC]"
+                        className="w-5 h-5 text-[#C89A3D]"
                       />
-                      <span className="text-gray-700">{option}</span>
+                      <span className="text-[#333333]">{option}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Drinking */}
-              <div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-                <label className="block font-medium mb-3">Drinking: *</label>
+              <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+                <label className="block font-medium mb-3 text-[#333333]">Drinking: *</label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {["Non-drinker", "Social drinker", "Drinker", "Occasionally"].map((option) => (
                     <label key={option} className="flex items-center space-x-2 cursor-pointer">
@@ -269,99 +269,97 @@ const selectInterestHandler = (id) => {
                         value={option}
                         checked={localDrinking === option}
                         onChange={(e) => setLocalDrinking(e.target.value)}
-                        className="w-5 h-5 text-[#0066CC]"
+                        className="w-5 h-5 text-[#C89A3D]"
                       />
-                      <span className="text-gray-700">{option}</span>
+                      <span className="text-[#333333]">{option}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Languages */}
-              {/* Languages */}
-<div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-  <label className="block font-medium mb-3">Languages:</label>
-  {localLanguages.map((el) => {
-    return (
-      <button
-        key={el.id}
-        onClick={() => selectLanguageHandler(el.id)}
-        style={{
-          borderColor: selectedLanguages.includes(el.id)
-            ? "#0066CC"
-            : "",
-        }}
-        className="w-[100%] flex items-center justify-between text-[18px] max-_430_:text-[14px] px-[13px] py-[8px] border-[2px] border-gray-300 rounded-[10px] mt-[15px]"
-      >
-        <div className="flex items-center gap-[10px]">
-          <img
-            src={imageBaseURL + el.img}
-            alt={el.title}
-            className="w-[45px] h-[45px]"
-          />
-          {el.title}
-        </div>
-        <img
-          src={Check}
-          style={{
-            display: selectedLanguages.includes(el.id) ? "block" : "none",
-          }}
-          alt="check"
-          className="w-[20px] h-[20px] me-[20px]"
-        />
-      </button>
-    );
-  })}
-</div>
+              <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+                <label className="block font-medium mb-3 text-[#333333]">Languages:</label>
+                {localLanguages.map((el) => {
+                  return (
+                    <button
+                      key={el.id}
+                      onClick={() => selectLanguageHandler(el.id)}
+                      style={{
+                        borderColor: selectedLanguages.includes(el.id)
+                          ? "#C89A3D"
+                          : "",
+                      }}
+                      className="w-[100%] flex items-center justify-between text-[18px] max-_430_:text-[14px] px-[13px] py-[8px] border-[2px] border-gray-300 bg-white rounded-[10px] mt-[15px] shadow-sm"
+                    >
+                      <div className="flex items-center gap-[10px]">
+                        <img
+                          src={imageBaseURL + el.img}
+                          alt={el.title}
+                          className="w-[45px] h-[45px]"
+                        />
+                        <span className="text-[#333333]">{el.title}</span>
+                      </div>
+                      <img
+                        src={Check}
+                        style={{
+                          display: selectedLanguages.includes(el.id) ? "block" : "none",
+                        }}
+                        alt="check"
+                        className="w-[20px] h-[20px] me-[20px]"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
 
               {/* Interests & Hobbies */}
-{/* Interests & Hobbies */}
-<div className="border-[2px] border-gray-300 rounded-[10px] p-4">
-  <label className="block font-medium mb-3">Interests & Hobbies:</label>
-  {localInterests.map((el) => {
-    return (
-      <button
-        key={el.id}
-        onClick={() => selectInterestHandler(el.id)}
-        style={{
-          borderColor: selectedInterests.includes(el.id)
-            ? "#0066CC"
-            : "",
-        }}
-        className="w-[100%] flex items-center justify-between text-[18px] max-_430_:text-[14px] px-[13px] py-[8px] border-[2px] border-gray-300 rounded-[10px] mt-[15px]"
-      >
-        <div className="flex items-center gap-[10px]">
-          <img
-            src={imageBaseURL + el.img}
-            alt={el.title}
-            className="w-[45px] h-[45px]"
-          />
-          {el.title}
-        </div>
-        <img
-          src={Check}
-          style={{
-            display: selectedInterests.includes(el.id) ? "block" : "none",
-          }}
-          alt="check"
-          className="w-[20px] h-[20px] me-[20px]"
-        />
-      </button>
-    );
-  })}
-</div>
+              <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+                <label className="block font-medium mb-3 text-[#333333]">Interests & Hobbies:</label>
+                {localInterests.map((el) => {
+                  return (
+                    <button
+                      key={el.id}
+                      onClick={() => selectInterestHandler(el.id)}
+                      style={{
+                        borderColor: selectedInterests.includes(el.id)
+                          ? "#C89A3D"
+                          : "",
+                      }}
+                      className="w-[100%] flex items-center justify-between text-[18px] max-_430_:text-[14px] px-[13px] py-[8px] border-[2px] border-gray-300 bg-white rounded-[10px] mt-[15px] shadow-sm"
+                    >
+                      <div className="flex items-center gap-[10px]">
+                        <img
+                          src={imageBaseURL + el.img}
+                          alt={el.title}
+                          className="w-[45px] h-[45px]"
+                        />
+                        <span className="text-[#333333]">{el.title}</span>
+                      </div>
+                      <img
+                        src={Check}
+                        style={{
+                          display: selectedInterests.includes(el.id) ? "block" : "none",
+                        }}
+                        alt="check"
+                        className="w-[20px] h-[20px] me-[20px]"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
 
               {/* Bio */}
               <div>
                 <textarea
                   value={localBio}
                   onChange={handleBioChange}
-                  className="w-full border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[15px] rounded-[10px] min-h-[120px] resize-none"
+                  className="w-full border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[120px] resize-none shadow-sm text-[#333333]"
                   placeholder="Tell us about yourself, your interests, what you're looking for... (minimum 5 characters)"
                   maxLength={maxBioLength}
                 />
                 <div className="flex justify-between mt-2">
-                  <span className="text-sm text-gray-500">
+                  <span className={`text-sm ${bioCharCount >= 5 ? "text-green-600" : "text-[#C95B5B]"}`}>
                     {bioCharCount >= 5 ? "✓ Bio is long enough" : `Minimum 5 characters required`}
                   </span>
                   <span className={`text-sm ${bioCharCount > maxBioLength - 50 ? "text-orange-500" : "text-gray-500"}`}>
@@ -373,9 +371,9 @@ const selectInterestHandler = (id) => {
 
             {/* Next Button */}
             <button
-              style={{ background: "#0066CC" }}
+              style={{ background: "#1F5799" }}
               onClick={SubmitHandler}
-              className="btn btn-w-md nextstep mt-[20px] w-full py-2"
+              className="btn btn-w-md nextstep mt-[20px] w-full py-2 rounded-full shadow-md hover:bg-[#1A4A87]"
             >
               <div className="flex items-center justify-center gap-[10px]">
                 <span className="font-bold text-[1.25rem] text-white">

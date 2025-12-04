@@ -7708,7 +7708,7 @@ textarea.form-control-lg {
     color: #212529!important
 }
 
-.text-white {
+.text-[#333333] {
     color: #fff!important
 }
 
@@ -7724,7 +7724,7 @@ textarea.form-control-lg {
     color: rgba(0,0,0,.5)!important
 }
 
-.text-white-50 {
+.text-[#333333]-50 {
     color: rgba(255,255,255,.5)!important
 }
 

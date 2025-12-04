@@ -62,7 +62,7 @@ const Validate = () => {
                 placeholder="Enter Purchase Code"
                 onChange={(e) => setInput(e.target.value)}
               />
-              <button onClick={ValidateHandle} className='text-center w-[100%] bg-[#0066CC] text-white rounded-[10px] mt-4 py-2 font-[500]'>Validate My Account</button>
+              <button onClick={ValidateHandle} className='text-center w-[100%] bg-[#0066CC] text-[#333333] rounded-[10px] mt-4 py-2 font-[500]'>Validate My Account</button>
             </div>
           </section>
         </div>

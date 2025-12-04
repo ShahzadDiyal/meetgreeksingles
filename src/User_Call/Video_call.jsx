@@ -161,8 +161,8 @@ const Basics = ({ Id, img, name, channelname }) => {
                 </div>
               )) : (
                 <div className="w-[100%] h-[100%] text-center z-[999] relative">
-                  <h2 className="text-white">{name}</h2>
-                  <h4 className="text-white">Ringing...</h4>
+                  <h2 className="text-[#333333]">{name}</h2>
+                  <h4 className="text-[#333333]">Ringing...</h4>
                 </div>
               )}
             </div>
@@ -175,16 +175,16 @@ const Basics = ({ Id, img, name, channelname }) => {
                   <>
                     <button className="btn" onClick={() => setMic((a) => !a)}>
                       {micOn ? (
-                        < FiMic className="bg-slate-600 text-white rounded-full p-[10px] w-[40px] h-[40px]" />
+                        < FiMic className="bg-slate-600 text-[#333333] rounded-full p-[10px] w-[40px] h-[40px]" />
                       ) : (
-                        <FiMicOff className="bg-slate-600 text-white rounded-full p-[10px] w-[40px] h-[40px]" />
+                        <FiMicOff className="bg-slate-600 text-[#333333] rounded-full p-[10px] w-[40px] h-[40px]" />
                       )}
                     </button>
                     <button className="btn" onClick={() => setCamera((a) => !a)}>
                       {cameraOn ? (
-                        <FaVideo className="bg-blue-600 text-white rounded-full p-[10px] w-[40px] h-[40px]" />
+                        <FaVideo className="bg-blue-600 text-[#333333] rounded-full p-[10px] w-[40px] h-[40px]" />
                       ) : (
-                        <FaVideoSlash className="bg-blue-600 text-white rounded-full p-[10px] w-[40px] h-[40px]" />
+                        <FaVideoSlash className="bg-blue-600 text-[#333333] rounded-full p-[10px] w-[40px] h-[40px]" />
                       )}
                     </button>
                   </>
@@ -193,7 +193,7 @@ const Basics = ({ Id, img, name, channelname }) => {
                   className={` btn btn-phone ${calling ? "btn-phone-active" : ""}`}
                   onClick={LeaveCall}
                 >
-                  <IoCall className="bg-red-500 text-white w-[40px] h-[40px] p-[10px] rounded-full" />
+                  <IoCall className="bg-red-500 text-[#333333] w-[40px] h-[40px] p-[10px] rounded-full" />
                 </button>
               </div>
             </div>

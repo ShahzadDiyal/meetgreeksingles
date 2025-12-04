@@ -66,7 +66,7 @@ const Gender = () => {
               className="btn btn-w-md nextstep mt-[50px]"
             >
               <div className="flex items-center justify-center gap-[10px]">
-                <span className="font-bold text-[1.25rem] text-white">Next</span>
+                <span className="font-bold text-[1.25rem] text-[#333333]">Next</span>
                 <svg
                   className="mx-6"
                   width="19"

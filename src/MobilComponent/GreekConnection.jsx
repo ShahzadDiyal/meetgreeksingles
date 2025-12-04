@@ -49,22 +49,22 @@ const GreekConnection = () => {
     setLocalGreekConnection(value);
   };
 
-  return (
-    <div className="w-[100%] multisteup-wrapper pt-[20px] Test">
+ return (
+    <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
-        <section className="steps step-1 active rounded-[40px] relative">
+        <section className="steps step-1 active rounded-[40px] relative bg-white">
           {/* ----- Progress Bar ----- */}
           <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
             <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-              <div className="bg-[#0066CC] rounded-full w-[43%] h-[5px]"></div>
+              <div className="bg-[#1F5799] rounded-full w-[43%] h-[5px]"></div>
             </div>
           </div>
 
           <div className="mt-[10px]">
-            <h1 className="text-[28px] max-_430_:text-[27px] font-[600]">
+            <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
               Tell us about your Greek connection 🏛️
             </h1>
-            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px]">
+            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
               This helps us understand your connection to Greek culture and
               heritage
             </p>
@@ -72,8 +72,8 @@ const GreekConnection = () => {
 
           <div className="mt-[20px] w-[100%] space-y-6">
             {/* Greek Connection Options */}
-            <div className="border-[2px] border-gray-300 rounded-[10px] p-3">
-              <label className="block font-medium mb-4 text-lg">
+            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-3 shadow-sm">
+              <label className="block font-medium mb-4 text-lg text-[#333333]">
                 Your Greek Connection: *
               </label>
               <div className="space-y-4">
@@ -84,11 +84,11 @@ const GreekConnection = () => {
                     value="Greek"
                     checked={localGreekConnection === "Greek"}
                     onChange={() => handleGreekConnectionChange("Greek")}
-                    className="w-5 h-5 text-[#0066CC]"
+                    className="w-5 h-5 text-[#C89A3D]"
                   />
                   <div className="flex-1">
-                    <span className="text-gray-800 font-medium">Greek</span>
-                    <p className="text-gray-600 text-sm mt-1">
+                    <span className="text-[#333333] font-medium">Greek</span>
+                    <p className="text-[#333333] text-sm mt-1">
                       I am a Greek citizen/resident
                     </p>
                   </div>
@@ -101,13 +101,13 @@ const GreekConnection = () => {
                     value="Greek origin"
                     checked={localGreekConnection === "Greek origin"}
                     onChange={() => handleGreekConnectionChange("Greek origin")}
-                    className="w-5 h-5 text-[#0066CC]"
+                    className="w-5 h-5 text-[#C89A3D]"
                   />
                   <div className="flex-1">
-                    <span className="text-gray-800 font-medium">
+                    <span className="text-[#333333] font-medium">
                       Greek origin
                     </span>
-                    <p className="text-gray-600 text-sm mt-1">
+                    <p className="text-[#333333] text-sm mt-1">
                       I have Greek ancestry/heritage
                     </p>
                   </div>
@@ -120,13 +120,13 @@ const GreekConnection = () => {
                     value="Philhellene"
                     checked={localGreekConnection === "Philhellene"}
                     onChange={() => handleGreekConnectionChange("Philhellene")}
-                    className="w-5 h-5 text-[#0066CC]"
+                    className="w-5 h-5 text-[#C89A3D]"
                   />
                   <div className="flex-1">
-                    <span className="text-gray-800 font-medium">
+                    <span className="text-[#333333] font-medium">
                       Philhellene
                     </span>
-                    <p className="text-gray-600 text-sm mt-1">
+                    <p className="text-[#333333] text-sm mt-1">
                       I admire and love Greek culture, history, and language
                     </p>
                   </div>
@@ -136,13 +136,13 @@ const GreekConnection = () => {
 
             {/* Greek Roots/Connection Details */}
             <div className="relative">
-              <label className="block font-medium mb-3 text-lg">
+              <label className="block font-medium mb-3 text-lg text-[#333333]">
                 My Greek roots / connection: *
               </label>
               <textarea
                 value={localGreekRootConnection}
                 onChange={(e) => setLocalGreekRootConnection(e.target.value)}
-                className="text-black w-[100%] outline-[#0066CC] border-2 border-gray-300 px-[15px] py-[15px] rounded-[10px] min-h-[150px] resize"
+                className="text-[#333333] w-[100%] outline-none focus:border-[#C89A3D] border-2 border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[150px] resize shadow-sm"
                 placeholder="Tell us more about your Greek connection...
                   • Which Greek regions/places are you connected to?
                   • Family background or ancestry
@@ -152,7 +152,7 @@ const GreekConnection = () => {
               {localGreekRootConnection && (
                 <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-3 right-5 text-green-500" />
               )}
-              <p className="text-gray-600 text-sm mt-2">
+              <p className="text-[#333333] text-sm mt-2">
                 Share details about your Greek heritage, family background, or
                 what draws you to Greek culture
               </p>
@@ -161,9 +161,9 @@ const GreekConnection = () => {
 
           {/* Next Button */}
           <button
-            style={{ background: "#0066CC" }}
+            style={{ background: "#1F5799" }}
             onClick={SubmitHandler}
-            className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-xl hover:bg-[#0055aa] transition-colors"
+            className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full hover:bg-[#1A4A87] transition-colors shadow-md"
           >
             <div className="flex items-center justify-center gap-[10px]">
               <span className="font-bold text-[1.25rem] text-white">Next</span>

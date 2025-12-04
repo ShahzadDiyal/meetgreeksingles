@@ -139,7 +139,7 @@ const Imagecom = () => {
                     <button
                       type="button"
                       onClick={() => ImageHandler("1")}
-                      className={`w-[100%] border-[2px] ${input1 ? "" : "border-[#0066CC]"
+                      className={`w-[100%] border-[2px] ${input1 ? "" : "border-[#C89A3D]"
                         } h-[210px] max-_430_:h-[170px] p-0 m-0 overflow-hidden rounded-tl-[15px] text-[30px] flex items-center justify-center`}
                     >
                       <input
@@ -170,7 +170,7 @@ const Imagecom = () => {
                         className={`w-[100%] ${input2
                           ? "border-gray-300"
                           : input3
-                            ? "border-[#0066CC]"
+                            ? "border-[#C89A3D]"
                             : ""
                           } border-[2px] h-[105px] max-_430_:h-[85px] overflow-hidden rounded-bl-[15px] flex items-center justify-center`}
                       >
@@ -201,7 +201,7 @@ const Imagecom = () => {
                         className={`w-[100%] ${input3
                           ? "border-gray-300"
                           : input6
-                            ? "border-[#0066CC]"
+                            ? "border-[#C89A3D]"
                             : ""
                           } border-[2px] h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
                       >
@@ -235,7 +235,7 @@ const Imagecom = () => {
                       className={`w-[100%] border-[2px] ${input4
                         ? "border-gray-300"
                         : input1
-                          ? "border-[#0066CC]"
+                          ? "border-[#C89A3D]"
                           : ""
                         } rounded-tr-[15px] overflow-hidden h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
                     >
@@ -266,7 +266,7 @@ const Imagecom = () => {
                       className={`w-[100%] ${input5
                         ? "border-gray-300"
                         : input4
-                          ? "border-[#0066CC]"
+                          ? "border-[#C89A3D]"
                           : ""
                         } border-[2px] h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
                     >
@@ -297,7 +297,7 @@ const Imagecom = () => {
                       className={`w-[100%] ${input6
                         ? "border-gray-300"
                         : input5
-                          ? "border-[#0066CC]"
+                          ? "border-[#C89A3D]"
                           : ""
                         } border-[2px] h-[105px] max-_430_:h-[85px] rounded-br-[15px] flex items-center overflow-hidden justify-center`}
                     >

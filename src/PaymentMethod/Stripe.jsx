@@ -167,7 +167,7 @@ const SplitForm = ({ fontSize, amount }) => {
             <button
                 type="submit"
                 disabled={isButtonDisabled}
-                className={`mt-[20px] text-white text-[18px] py-[5px] rounded-[5px] ${isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0066CC]'}`}
+                className={`mt-[20px] text-[#333333] text-[18px] py-[5px] rounded-[5px] ${isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0066CC]'}`}
             >
                 Pay {convertedAmount ? `${convertedAmount} ${currency}` : amount ? `${amount} EUR` : ""}
             </button>

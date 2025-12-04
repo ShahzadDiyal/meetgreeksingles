@@ -264,7 +264,7 @@ const Upgrade = () => {
                                                                 <h3 className="mb-0">{item.title}</h3>
                                                                 <h2 className="mb-0">{currency ? currency : "$"}{item.amt}</h2>
                                                                 <p className="fw-semi-bold mb-2">Per, {item.day_limit} Days</p>
-                                                                <button onClick={() => GetStartedHandler(index, item.id)} style={{ background: "#0066CC" }} className="btn text-white  my-3">
+                                                                <button onClick={() => GetStartedHandler(index, item.id)} style={{ background: "#0066CC" }} className="btn text-[#333333]  my-3">
                                                                     {t('Get Started')}
                                                                 </button>
                                                                 <div className="plans-includes">
@@ -278,8 +278,8 @@ const Upgrade = () => {
                                                             </div>
                                                         </div>
                                                         {item.id === packageId && <div style={{ background: "#0066CC" }} className="position-absolute popular-title flex items-center rounded-[5px]">
-                                                            <h6 style={{ background: "#0066CC", borderRadius: "5px" }} className="card fw-medium m-0 text-white py-[5px] px-[10px] ">Active </h6>
-                                                            <button onClick={PalanDetailsHandler}><MdOutlineErrorOutline className='text-white me-[10px] text-[20px]' /></button>
+                                                            <h6 style={{ background: "#0066CC", borderRadius: "5px" }} className="card fw-medium m-0 text-[#333333] py-[5px] px-[10px] ">Active </h6>
+                                                            <button onClick={PalanDetailsHandler}><MdOutlineErrorOutline className='text-[#333333] me-[10px] text-[20px]' /></button>
                                                         </div>}
                                                     </div>
                                                 </div>
@@ -333,7 +333,7 @@ const Upgrade = () => {
                             </div>
                         </div>
 
-                        <button onClick={() => SendHandler(border)} className="text-white bg-[#0066CC] w-[100%] font-[600] rounded-[10px] py-[10px] mt-[10px]">Continue</button>
+                        <button onClick={() => SendHandler(border)} className="text-[#333333] bg-[#0066CC] w-[100%] font-[600] rounded-[10px] py-[10px] mt-[10px]">Continue</button>
                     </div>
                 </div>
             )}

@@ -781,7 +781,7 @@ const UserChat = () => {
                                 className={`message ${message.senderid === senderId ? 'user-message text-end' : 'bot-message'}`}
                             >
                                 <h6
-                                    className={`message text-[14px] ${message.senderid === senderId ? 'bg-[#0066CC] text-white' : 'bg-[#e4e2e2]'} m-0`}
+                                    className={`message text-[14px] ${message.senderid === senderId ? 'bg-[#0066CC] text-[#333333]' : 'bg-[#e4e2e2]'} m-0`}
                                 >
                                     {message.message}
                                 </h6>
@@ -1004,7 +1004,7 @@ const UserChat = () => {
                                         </button>
                                     })
                                 }
-                                <button onClick={SendReportHamdler} className="w-[100%] bg-[#0066CC] text-white rounded-full text-[18px] py-[8px] mt  -[20px]">{t("Continue")}</button>
+                                <button onClick={SendReportHamdler} className="w-[100%] bg-[#0066CC] text-[#333333] rounded-full text-[18px] py-[8px] mt  -[20px]">{t("Continue")}</button>
                             </div>
                         </div>
                     </div>
@@ -1044,7 +1044,7 @@ const UserChat = () => {
                                     <button onClick={() => toggleBottomSheet('BlockSection')} id="BlockSection" className="text-[16px] text-[#0066CC] h-[40px] max-h-[40px] border-[2px] border-[#0066CC] rounded-full px-[25px]">
                                         {t('Cancel')}
                                     </button>
-                                    <button onClick={BlockHandler} className="text-[16px] text-white border-[2px] bg-[#0066CC] rounded-full px-[25px] py-[8px]">
+                                    <button onClick={BlockHandler} className="text-[16px] text-[#333333] border-[2px] bg-[#0066CC] rounded-full px-[25px] py-[8px]">
                                         {t('Yes, Block')}
                                     </button>
                                 </div>

@@ -157,7 +157,7 @@ const Payment = ({ Amount }) => {
                             }
                         </div>
                     </div>
-                    <button onClick={() => PurchaseHandler(border)} className="text-white bg-[#0066CC] w-[100%] font-[600] rounded-[10px] py-[10px] mt-[10px]">{btnDis ? "Wallte Pay" : "Continue"}</button>
+                    <button onClick={() => PurchaseHandler(border)} className="text-[#333333] bg-[#0066CC] w-[100%] font-[600] rounded-[10px] py-[10px] mt-[10px]">{btnDis ? "Wallte Pay" : "Continue"}</button>
                 </div>
             </div>
 

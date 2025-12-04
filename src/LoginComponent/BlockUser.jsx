@@ -107,14 +107,14 @@ const BlockUser = () => {
                           <div className="card-title">
                             <div className="card-img relative HEIGHT">
                               <div className=" flex justify-center w-[100%] absolute">
-                                <h6 className="m-0 text-white font-[400] text-[14px] bg-[#0066CC] p-2 rounded-b-[15px]">{el.match_ratio.toFixed(0)}% Match</h6>
+                                <h6 className="m-0 text-[#333333] font-[400] text-[14px] bg-[#0066CC] p-2 rounded-b-[15px]">{el.match_ratio.toFixed(0)}% Match</h6>
                               </div>
                               <img src={imageBaseURL + el.profile_images[0]} alt="img" className="img-fluid rounded-[3rem] BEFORE border-[5px] border-[#0066CC]" />
                             </div>
                             <div className="card-content absolute bottom-[1.5rem] px-[15px] w-full">
                               <div className="profile-info">
                                 <div className="text-start flex justify-between items-end">
-                                  <h6 className="font-semibold mb-1 text-white">
+                                  <h6 className="font-semibold mb-1 text-[#333333]">
                                     {el.profile_name}, {el.profile_age}
                                   </h6>
                                   <button onClick={() => UnBlockHandler(el?.profile_id, i)} className="action-btn avatar avatar-lg avatar-rounded bg-white">
@@ -123,7 +123,7 @@ const BlockUser = () => {
                                     </svg>
                                   </button>
                                 </div>
-                                <p className="bio mb-1 text-[18px] text-center mt-[5px] text-white overflow-ellipsis overflow-hidden whitespace-nowrap">
+                                <p className="bio mb-1 text-[18px] text-center mt-[5px] text-[#333333] overflow-ellipsis overflow-hidden whitespace-nowrap">
                                   {el.profile_bio !== "undefined" ? el.profile_bio : ""}
                                 </p>
                               </div>

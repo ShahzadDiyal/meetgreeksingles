@@ -50,7 +50,7 @@ const PayStack = ({ Amount }) => {
 
     return (
         <div className="h-[100%] flex justify-center items-center">
-            <button className='font-[600] bg-[#0066CC] px-[20px] rounded-[5px] py-[8px] text-white' onClick={handlePayment}>
+            <button className='font-[600] bg-[#0066CC] px-[20px] rounded-[5px] py-[8px] text-[#333333]' onClick={handlePayment}>
                 Pay with Paystack
             </button>
         </div>

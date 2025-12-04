@@ -49,7 +49,7 @@ import Validate from "./MobilComponent/Validate";
 import PaymentRespons from "./PaymentMethod/PaymentRespons";
 import { CallListener } from "./utils/CallListener";
 import GreekConnection from "./MobilComponent/GreekConnection";
-
+import { OnboardingRoute } from "./ProtectedRoute";
 
 const App = () => {
   const [demo, setDemo] = useState();
@@ -239,15 +239,63 @@ useEffect(() => {
   <Route path="/" element={<Image />} />
 )}
 
+
+<Route
+  path="/image"
+  element={
+    <OnboardingRoute>
+      <Image />
+    </OnboardingRoute>
+  }
+/>
+<Route
+  path="/info"
+  element={
+    <OnboardingRoute>
+      <InfoForm />
+    </OnboardingRoute>
+  }
+/>
+<Route
+  path="/looking-for"
+  element={
+    <OnboardingRoute>
+      <LookingFor />
+    </OnboardingRoute>
+  }
+/>
+<Route
+  path="/greek-connection"
+  element={
+    <OnboardingRoute>
+      <GreekConnection />
+    </OnboardingRoute>
+  }
+/>
+<Route
+  path="/relocation-preference"
+  element={
+    <OnboardingRoute>
+      <RelocationPreference />
+    </OnboardingRoute>
+  }
+/>
+<Route
+  path="/faith-culture-tradition"
+  element={
+    <OnboardingRoute>
+      <FaithCultureTradition />
+    </OnboardingRoute>
+  }
+/>
+
+
               <Route path="/register" element={<Register />} />
               <Route path="/phonenumber" element={<PhoneNum />} />
               <Route path="/birthdate" element={<Birthdate />} />
               <Route path="/gender" element={<Gender />} />
               <Route path="/golas" element={<Golas />} />
               <Route path="/location" element={<Location />} />
-              <Route path="/info" element={<InfoForm />} />
-              <Route path="/looking-for" element={<LookingFor />} />
-              <Route path="/greek-connection" element={<GreekConnection />} />
               <Route path="/faith-culture-tradition" element={<FaithCultureTradition />} />
               <Route path="/nearby" element={<Nearby />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -255,7 +303,6 @@ useEffect(() => {
               <Route path="/languages" element={<Languages />} />
               <Route path="/religion" element={<Religion />} />
               <Route path="/preference" element={<Gender2 />} />
-              <Route path="/relocation-preference" element={<RelocationPreference />} />
               <Route path="/image" element={<Image />} />
               <Route path="/login" element={<Login />} />
               <Route path="/home" element={<Home />} />

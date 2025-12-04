@@ -658,7 +658,7 @@ const Header = () => {
                 onClick={() => ColorHandler("Upgrade")}
                 to="/upgrade"
                 style={{ background: "#0066CC" }}
-                className="btn text-white gap-1 df-center"
+                className="btn text-[#333333] gap-1 df-center"
               >
                 <svg
                   width="20"
@@ -794,12 +794,12 @@ const Header = () => {
 
         <div className="main-sidebar scroll-container" id="sidebar-scroll">
           <div className="text-right">
-            <div className="rounded-full py-[2px] px-[7px] bg-[#0066CC] inline-block ">
+            <div className="rounded-full py-[2px] px-[7px] bg-[#0066CC] inline-block  hover:bg-[#164271]">
               <button
                 onClick={ProfileHandler}
-                className="text-end text-white flex items-center"
+                className="text-end text-[#333333] flex items-center  hover:text-white"
               >
-                {t("Edit")} <BiEditAlt className="ms-1" />
+                {t("Edit")} <BiEditAlt className="ms-1  hover:text-white" />
               </button>
             </div>
           </div>
@@ -814,53 +814,56 @@ const Header = () => {
                 />
               </div>
             )}
-            <div className="relative size-40 w-[114px]">
-              <svg
-                className="size-full -rotate-90"
-                viewBox="0 0 36 36"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  fill="none"
-                  className="stroke-current text-transparent"
-                  stroke-width="2"
-                ></circle>
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  fill="none"
-                  className="stroke-current text-[#0066CC] dark:text-[#0066CC]"
-                  stroke-width="2"
-                  stroke-dasharray="100"
-                  stroke-dashoffset={
-                    100 - localStorage.getItem("Profile_ratio")
-                  }
-                  stroke-linecap="round"
-                ></circle>
-              </svg>
-              <div
-                onClick={ProfileHandler}
-                className="absolute top-[66px] cursor-pointer start-[66px] transform -translate-y-1/2 -translate-x-1/2 w-full h-full"
-              >
-                {newProfile ? (
-                  <img
-                    src={`${imageBaseURL}${newProfile}`}
-                    alt="User Avatar"
-                    className="mb-3 rounded-circle bg-center"
-                  />
-                ) : (
-                  <div className="bg-gray-300 rounded-circle w-[6rem] h-[6rem] flex justify-center items-center text-[32px] font-bold">
-                    {user?.name?.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-            </div>
+            <div className="relative w-[114px] h-[114px]">
+  <svg
+    className="w-full h-full -rotate-90"
+    viewBox="0 0 36 36"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Background Circle */}
+    <circle
+      cx="18"
+      cy="18"
+      r="16"
+      fill="none"
+      className="stroke-current text-transparent"
+      strokeWidth="2"
+    />
+
+    {/* Progress Circle */}
+    <circle
+      cx="18"
+      cy="18"
+      r="16"
+      fill="none"
+      className="stroke-current text-[#0066CC]"
+      strokeWidth="2"
+      strokeDasharray="100"
+      strokeDashoffset={100 - Number(localStorage.getItem("Profile_ratio"))}
+      strokeLinecap="round"
+    />
+  </svg>
+
+  <div
+    onClick={ProfileHandler}
+    className="absolute inset-0 flex items-center justify-center cursor-pointer"
+  >
+    {newProfile ? (
+      <img
+        src={`${imageBaseURL}${newProfile}`}
+        alt="User Avatar"
+        className="w-[96px] h-[96px] rounded-full object-cover"
+      />
+    ) : (
+      <div className="w-[96px] h-[96px] bg-gray-300 rounded-full flex justify-center items-center text-[32px] font-bold">
+        {user?.name?.charAt(0).toUpperCase()}
+      </div>
+    )}
+  </div>
+</div>
+
             <div className="bg-white py-[2px] px-[4px] rounded-full -mt-[20px] z-[777]">
-              <span className="bg-[#0066CC] text-white rounded-full px-[5px]">
+              <span className="bg-[#0066CC] text-[#333333] rounded-full px-[5px]">
                 {localStorage.getItem("Profile_ratio") + "%"}
               </span>
             </div>
@@ -1322,14 +1325,14 @@ const Header = () => {
             >
               <Link to="/upgrade">
                 <div className="flex items-center">
-                  <h6 className="text-white Demo">
+                  <h6 className="text-[#333333] Demo">
                     {t("You're Activated Membersip")}
                   </h6>
                   <button className="bg-white text-[#0066CC] px-[10px] py-[3px] rounded-[10px] font-[500]">
                     {t("Active")}
                   </button>
                 </div>
-                <h6 className="TITLE font-[400] text-white">
+                <h6 className="TITLE font-[400] text-[#333333]">
                   {t("Enjoy premium and match anyway")}
                 </h6>
               </Link>
@@ -1344,14 +1347,14 @@ const Header = () => {
             >
               <Link to="/upgrade">
                 <div className="flex items-center">
-                  <h6 className="text-white Demo">
+                  <h6 className="text-[#333333] Demo">
                     {t("Join Our Membership Today!")}
                   </h6>
                   <button className="bg-white text-[#0066CC] px-[10px] py-[3px] rounded-[10px] font-[500]">
                     {t("Go")}
                   </button>
                 </div>
-                <h6 className="TITLE font-[400] text-white">
+                <h6 className="TITLE font-[400] text-[#333333]">
                   {t("Checkout Meet Greek Singles Premium..")}
                 </h6>
               </Link>
@@ -1406,7 +1409,7 @@ const Header = () => {
               </div>
               <button
                 onClick={VerificationHandler}
-                className="font-medium text-lg bg-[#0066CC] text-white w-[60%] max-w-[75%] rounded-lg py-2 my-4"
+                className="font-medium text-lg bg-[#0066CC] text-[#333333] w-[60%] max-w-[75%] rounded-lg py-2 my-4"
               >
                 {t("Upload")}
               </button>
@@ -1463,7 +1466,7 @@ const Header = () => {
               </div>
               <button
                 onClick={PhotoHandler}
-                className="font-[500] text-[18px] bg-[#0066CC] text-white w-[60%] max-_430_:w-[75%] rounded-[10px] py-[8px] my-[15px]"
+                className="font-[500] text-[18px] bg-[#0066CC] text-[#333333] w-[60%] max-_430_:w-[75%] rounded-[10px] py-[8px] my-[15px] hover:bg-[#164271] hover:text-white"
               >
                 {t("Add")}
               </button>
@@ -1505,18 +1508,18 @@ const Header = () => {
               }}
             >
               <div className="mb-[15px] text-center">
-                <h2 className="text-white m-0">{notification.name}</h2>
+                <h2 className="text-[#333333] m-0">{notification.name}</h2>
                 {callType === "Audio_Call" ? (
-                  <h6 className="text-white mb-2">In Coming Audio Call ...</h6>
+                  <h6 className="text-[#333333] mb-2">In Coming Audio Call ...</h6>
                 ) : (
-                  <h6 className="text-white mb-2">In Coming Video Call ...</h6>
+                  <h6 className="text-[#333333] mb-2">In Coming Video Call ...</h6>
                 )}
                 <div className=" flex gap-[20px] justify-center">
                   <button onClick={CallAnsuserHandler}>
-                    <IoCall className="bg-green-500 text-white w-[45px] h-[45px] p-[10px] rounded-full" />
+                    <IoCall className="bg-green-500 text-[#333333] w-[45px] h-[45px] p-[10px] rounded-full" />
                   </button>
                   <button onClick={leaveCallHandler}>
-                    <IoCall className="bg-red-500 text-white w-[45px] h-[45px] p-[10px] rounded-full rotate-[135deg]" />
+                    <IoCall className="bg-red-500 text-[#333333] w-[45px] h-[45px] p-[10px] rounded-full rotate-[135deg]" />
                   </button>
                 </div>
               </div>
@@ -1574,7 +1577,7 @@ const Header = () => {
                 </div>
                 <h6>🔄 Refresh the page after enabling.</h6>
               </div>
-              <button className="bg-[#0066CC] text-white w-[100%] rounded-[5px] py-[5px] mt-2 font-[500]">
+              <button className="bg-[#0066CC] text-[#333333] w-[100%] rounded-[5px] py-[5px] mt-2 font-[500]">
                 Enable Now
               </button>
             </div>
@@ -1592,7 +1595,7 @@ const Header = () => {
               onClick={ProfileViewHandle}
               className="absolute -right-[8px] -top-[8px] bg-[#0066CC] p-[2px] rounded-full"
             >
-              <IoMdClose className="text-[22px] text-white" />
+              <IoMdClose className="text-[22px] text-[#333333]" />
             </button>
             {totalLiked.length > 1 ? (
               <Slider {...settings}>
@@ -1645,7 +1648,7 @@ const Header = () => {
                               strokeLinecap="round"
                             ></circle>
                           </svg>
-                          <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
+                          <h6 className="m-0 absolute text-[#333333] text-[14px] p-[5px]">
                             {item.match_ratio.toFixed(0)}%
                           </h6>
                         </div>
@@ -1728,7 +1731,7 @@ const Header = () => {
                             strokeLinecap="round"
                           ></circle>
                         </svg>
-                        <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
+                        <h6 className="m-0 absolute text-[#333333] text-[14px] p-[5px]">
                           {item.match_ratio.toFixed(0)}%
                         </h6>
                       </div>
@@ -2431,7 +2434,7 @@ export default Header;
 //               <Link onClick={() => ColorHandler("Upgrade")}
 //                 to="/upgrade"
 //                 style={{ background: "#0066CC" }}
-//                 className="btn text-white gap-1 df-center"
+//                 className="btn text-[#333333] gap-1 df-center"
 //               >
 //                 <svg
 //                   width="20"
@@ -2546,7 +2549,7 @@ export default Header;
 //             <div className="rounded-full py-[2px] px-[7px] bg-[#0066CC] inline-block ">
 //               <button
 //                 onClick={ProfileHandler}
-//                 className="text-end text-white flex items-center"
+//                 className="text-end text-[#333333] flex items-center"
 //               >
 //                 {t('Edit')} <BiEditAlt className="ms-1" />
 //               </button>
@@ -2605,7 +2608,7 @@ export default Header;
 //               </div>
 //             </div>
 //             <div className="bg-white py-[2px] px-[4px] rounded-full -mt-[20px] z-[777]">
-//               <span className="bg-[#0066CC] text-white rounded-full px-[5px]">
+//               <span className="bg-[#0066CC] text-[#333333] rounded-full px-[5px]">
 //                 {localStorage.getItem("Profile_ratio") + '%'}
 //               </span>
 //             </div>
@@ -2902,12 +2905,12 @@ export default Header;
 //             ? <div onClick={() => { ColorHandler(""); SlidBarHAndler() }} className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#0066CC] mt-[20px]">
 //               <Link to="/upgrade">
 //                 <div className="flex items-center">
-//                   <h6 className="text-white Demo">{t("You're Activated Membersip")}</h6>
+//                   <h6 className="text-[#333333] Demo">{t("You're Activated Membersip")}</h6>
 //                   <button className="bg-white text-[#0066CC] px-[10px] py-[3px] rounded-[10px] font-[500]">
 //                     {t('Active')}
 //                   </button>
 //                 </div>
-//                 <h6 className="TITLE font-[400] text-white">
+//                 <h6 className="TITLE font-[400] text-[#333333]">
 //                   {t('Enjoy premium and match anyway')}
 //                 </h6>
 //               </Link>
@@ -2915,12 +2918,12 @@ export default Header;
 //             : <div onClick={() => { ColorHandler(""); SlidBarHAndler() }} className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#0066CC] mt-[20px]">
 //               <Link to="/upgrade">
 //                 <div className="flex items-center">
-//                   <h6 className="text-white Demo">{t("Join Our Membership Today!")}</h6>
+//                   <h6 className="text-[#333333] Demo">{t("Join Our Membership Today!")}</h6>
 //                   <button className="bg-white text-[#0066CC] px-[10px] py-[3px] rounded-[10px] font-[500]">
 //                     {t('Go')}
 //                   </button>
 //                 </div>
-//                 <h6 className="TITLE font-[400] text-white">
+//                 <h6 className="TITLE font-[400] text-[#333333]">
 //                   {t('Checkout Meet Greek Singles Premium..')}
 //                 </h6>
 //               </Link>
@@ -2963,7 +2966,7 @@ export default Header;
 //               </div>
 //               <button
 //                 onClick={VerificationHandler}
-//                 className="font-medium text-lg bg-[#0066CC] text-white w-[60%] max-w-[75%] rounded-lg py-2 my-4"
+//                 className="font-medium text-lg bg-[#0066CC] text-[#333333] w-[60%] max-w-[75%] rounded-lg py-2 my-4"
 //               >
 //                 {t('Upload')}
 //               </button>
@@ -3013,7 +3016,7 @@ export default Header;
 //               </div>
 //               <button
 //                 onClick={PhotoHandler}
-//                 className="font-[500] text-[18px] bg-[#0066CC] text-white w-[60%] max-_430_:w-[75%] rounded-[10px] py-[8px] my-[15px]"
+//                 className="font-[500] text-[18px] bg-[#0066CC] text-[#333333] w-[60%] max-_430_:w-[75%] rounded-[10px] py-[8px] my-[15px]"
 //               >
 //                 {t('Add')}
 //               </button>
@@ -3048,14 +3051,14 @@ export default Header;
 //             width: "100%",
 //           }}>
 //             <div className="mb-[15px] text-center">
-//               <h2 className="text-white m-0">{notification.name}</h2>
+//               <h2 className="text-[#333333] m-0">{notification.name}</h2>
 //               {callType === "Audio_Call"
-//                 ? <h6 className="text-white mb-2">In Coming Audio Call ...</h6>
-//                 : <h6 className="text-white mb-2">In Coming Video Call ...</h6>
+//                 ? <h6 className="text-[#333333] mb-2">In Coming Audio Call ...</h6>
+//                 : <h6 className="text-[#333333] mb-2">In Coming Video Call ...</h6>
 //               }
 //               <div className=" flex gap-[20px] justify-center">
-//                 <button onClick={CallAnsuserHandler}><IoCall className="bg-green-500 text-white w-[45px] h-[45px] p-[10px] rounded-full" /></button>
-//                 <button onClick={leaveCallHandler} ><IoCall className="bg-red-500 text-white w-[45px] h-[45px] p-[10px] rounded-full rotate-[135deg]" /></button>
+//                 <button onClick={CallAnsuserHandler}><IoCall className="bg-green-500 text-[#333333] w-[45px] h-[45px] p-[10px] rounded-full" /></button>
+//                 <button onClick={leaveCallHandler} ><IoCall className="bg-red-500 text-[#333333] w-[45px] h-[45px] p-[10px] rounded-full rotate-[135deg]" /></button>
 //               </div>
 //             </div>
 //           </div>
@@ -3088,7 +3091,7 @@ export default Header;
 //                 </div>
 //                 <h6>🔄 Refresh the page after enabling.</h6>
 //               </div>
-//               <button className="bg-[#0066CC] text-white w-[100%] rounded-[5px] py-[5px] mt-2 font-[500]">Enable Now</button>
+//               <button className="bg-[#0066CC] text-[#333333] w-[100%] rounded-[5px] py-[5px] mt-2 font-[500]">Enable Now</button>
 //             </div>
 //           </div>
 //         </div>
@@ -3096,7 +3099,7 @@ export default Header;
 
 //       {likeMatch && <div className="px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
 //         <div onClick={(e) => e.stopPropagation()} className="w-[25%] relative likeMatch bg-white max-_430_:w-[100%] p-[20px] max-_580_:w-[60%] max-_768_:w-[60%] max-_991_:w-[60%] max-_1030_:w-[50%] max-_1500_:w-[40%] rounded-[15px]">
-//           <button onClick={ProfileViewHandle} className="absolute -right-[8px] -top-[8px] bg-[#0066CC] p-[2px] rounded-full">< IoMdClose className="text-[22px] text-white" /></button>
+//           <button onClick={ProfileViewHandle} className="absolute -right-[8px] -top-[8px] bg-[#0066CC] p-[2px] rounded-full">< IoMdClose className="text-[22px] text-[#333333]" /></button>
 //           {totalLiked.length > 1
 //             ? <Slider {...settings}>
 //               {
@@ -3134,7 +3137,7 @@ export default Header;
 //                             strokeLinecap="round"
 //                           ></circle>
 //                         </svg>
-//                         <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
+//                         <h6 className="m-0 absolute text-[#333333] text-[14px] p-[5px]">
 //                           {item.match_ratio.toFixed(0)}%
 //                         </h6>
 //                       </div>
@@ -3189,7 +3192,7 @@ export default Header;
 //                         strokeLinecap="round"
 //                       ></circle>
 //                     </svg>
-//                     <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
+//                     <h6 className="m-0 absolute text-[#333333] text-[14px] p-[5px]">
 //                       {item.match_ratio.toFixed(0)}%
 //                     </h6>
 //                   </div>

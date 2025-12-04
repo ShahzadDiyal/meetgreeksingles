@@ -34,7 +34,7 @@ const Faqs = () => {
                           onClick={() => setSelectedLanguage(option.content)}
                           className={`px-4 py-2 rounded-md font-medium transition-all duration-200 ${
                             selectedLanguage === option.content
-                              ? "bg-[#0066CC] text-white shadow-sm"
+                              ? "bg-[#0066CC] text-[#333333] shadow-sm"
                               : "text-gray-700 hover:bg-gray-100"
                           }`}
                         >

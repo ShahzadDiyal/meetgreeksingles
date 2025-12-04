@@ -46,22 +46,22 @@ const WhatLookingFor = () => {
     navigation("/relocation-preference");
   };
 
-  return (
-    <div className="w-[100%] multisteup-wrapper pt-[20px] Test">
+return (
+    <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
-        <section className="steps step-1 active rounded-[40px] relative">
+        <section className="steps step-1 active rounded-[40px] relative bg-white">
           {/* ----- Progress Bar ----- */}
           <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
             <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-              <div className="bg-[#0066CC] rounded-full w-[75%] h-[5px]"></div>
+              <div className="bg-[#1F5799] rounded-full w-[75%] h-[5px]"></div>
             </div>
           </div>
 
           <div className="mt-[10px]">
-            <h1 className="text-[28px] max-_430_:text-[27px] font-[600]">
+            <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
               What You're Looking For 💖
             </h1>
-            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px]">
+            <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
               Tell us about your relationship goals and preferences
             </p>
           </div>
@@ -78,25 +78,25 @@ const WhatLookingFor = () => {
                       onClick={() => handleGoalToggle(goal)}
                       className={`flex items-center justify-between w-full p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-md ${
                         relationshipGoals.includes(goal)
-                          ? "bg-gradient-to-r from-[#0066CC] to-[#004d99] text-white border-[#0066CC] shadow-lg"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-[#0066CC]"
+                          ? "bg-gradient-to-r from-[#1F5799] to-[#1A4A87] text-white border-[#C89A3D] shadow-lg"
+                          : "bg-white text-[#333333] border-gray-300 hover:border-[#C89A3D] shadow-sm"
                       }`}
                     >
                       <div className="flex items-center space-x-4">
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                           relationshipGoals.includes(goal)
-                            ? "border-white bg-white"
+                            ? "border-white bg-transparent"
                             : "border-gray-400 bg-gray-100"
                         }`}>
                           {relationshipGoals.includes(goal) && (
-                            <div className="w-3 h-3 rounded-full bg-[#0066CC]"></div>
+                            <div className="w-3 h-3 rounded-full bg-white"></div>
                           )}
                         </div>
                         <span className="text-xl font-medium">{goal}</span>
                       </div>
                       {relationshipGoals.includes(goal) && (
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       )}
                     </button>
@@ -105,25 +105,23 @@ const WhatLookingFor = () => {
               </div>
               
               {relationshipGoals.length > 0 && (
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-blue-800 font-medium">
-                    Selected: <span className="font-semibold">{relationshipGoals.join(", ")}</span>
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+                  <p className="text-[#333333] font-medium">
+                    Selected: <span className="font-semibold text-[#1F5799]">{relationshipGoals.join(", ")}</span>
                   </p>
                 </div>
               )}
             </div>
 
-            
-
             {/* Important Note */}
-            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg shadow-sm">
               <div className="flex items-start space-x-3">
-                <svg className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-6 h-6 text-[#C89A3D] flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 <div>
-                  <p className="text-yellow-800 font-medium">Important Note</p>
-                  <p className="text-yellow-700 text-sm mt-1">
+                  <p className="text-[#333333] font-medium">Important Note</p>
+                  <p className="text-[#333333] text-sm mt-1">
                     Your preferences will help us match you with compatible members. 
                     You can update these settings anytime in your profile.
                   </p>
@@ -134,9 +132,9 @@ const WhatLookingFor = () => {
 
           {/* Next Button */}
           <button
-            style={{ background: "#0066CC" }}
+            style={{ background: "#1F5799" }}
             onClick={SubmitHandler}
-            className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-xl hover:bg-[#0055aa] transition-colors shadow-lg hover:shadow-xl"
+            className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full hover:bg-[#1A4A87] transition-colors shadow-md hover:shadow-lg"
           >
             <div className="flex items-center justify-center gap-[10px]">
               <span className="font-bold text-[1.25rem] text-white">Next</span>

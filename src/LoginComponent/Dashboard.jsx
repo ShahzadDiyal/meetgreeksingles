@@ -541,7 +541,7 @@ const Dashboard = () => {
                             {filterinclude == "1" && (localStorage.getItem("FilterData")
                               ? <button
                                 onClick={() => FilterResetHandler(1)}
-                                className="btn gap-1 df-center text-white "
+                                className="btn gap-1 df-center text-[#333333] "
                                 id="toggleFilterBtn"
                                 style={{ background: "#0066CC" }}
                               >
@@ -555,14 +555,14 @@ const Dashboard = () => {
                                 >
                                   <path
                                     d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
-                                    fill="white"
+                                    fill="#333333"
                                   ></path>
                                 </svg>
                                 {t('Reset')}
                               </button>
                               : <button
                                 onClick={FilterHandler}
-                                className="btn gap-1 df-center text-white"
+                                className="btn gap-1 df-center text-[#333333]"
                                 id="toggleFilterBtn"
                                 style={{ background: "#0066CC" }}
                               >
@@ -576,7 +576,7 @@ const Dashboard = () => {
                                 >
                                   <path
                                     d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
-                                    fill="white"
+                                    fill="#333333"
                                   ></path>
                                 </svg>
                                 {t('Filter')}
@@ -643,7 +643,7 @@ const Dashboard = () => {
                                   </div>
                                   <div className="card-content absolute bottom-[2rem] px-[15px] w-[100%] z-[2]">
                                     <div className="flex items-end justify-between gap-2">
-                                      <h6 className="fw-semi-bold text-[18px] overflow-ellipsis overflow-hidden whitespace-nowrap mb-1 text-white">
+                                      <h6 className="fw-semi-bold text-[18px] overflow-ellipsis overflow-hidden whitespace-nowrap mb-1 text-[#333333]">
                                         {el.profile_name}, {el.profile_age}
                                       </h6>
                                       <div className="">
@@ -656,7 +656,7 @@ const Dashboard = () => {
                                               className="bg-[#0066CC] rounded-full p-[2px]"
                                             />
                                           </div>
-                                          <h1 className="text-[15px] text-white font-[500] m-0">{t('Premium')}</h1>
+                                          <h1 className="text-[15px] text-[#333333] font-[500] m-0">{t('Premium')}</h1>
                                         </div>}
                                         <div className="relative flex items-center justify-center mt-[8px] mb-[8px]">
                                           <svg
@@ -677,14 +677,14 @@ const Dashboard = () => {
                                               cy="18"
                                               r="16"
                                               fill="none"
-                                              className="stroke-current text-white dark:text-white"
+                                              className="stroke-current text-[#333333] dark:text-[#333333]"
                                               strokeWidth="3"
                                               strokeDasharray="100"
                                               strokeDashoffset={`${100 - el.match_ratio.toFixed(0)}`}
                                               strokeLinecap="round"
                                             ></circle>
                                           </svg>
-                                          <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
+                                          <h6 className="m-0 absolute text-[#333333] text-[14px] p-[5px]">
                                             {el.match_ratio.toFixed(0)}%
                                           </h6>
                                         </div>
@@ -693,7 +693,7 @@ const Dashboard = () => {
                                         </div>
                                       </div>
                                     </div>
-                                    <p className="mb-1 text-[19px] text-start mt-[5px] text-white overflow-ellipsis overflow-hidden whitespace-nowrap">
+                                    <p className="mb-1 text-[19px] text-start mt-[5px] text-[#333333] overflow-ellipsis overflow-hidden whitespace-nowrap">
                                       {el.profile_bio === "undefined" ? "" : el.profile_bio}
                                     </p>
                                   </div>
@@ -758,7 +758,7 @@ const Dashboard = () => {
               ? <div className="h-[100vh] ms-[16rem] max-_991_:ms-0 flex justify-center items-center">
                 <div className="text-center">
                   <h3>{t('No Any Match Profile...')}</h3>
-                  <button onClick={() => FilterResetHandler(1)} className="text-[18px] font-[600] mt-[20px] bg-[#0066CC] text-white w-[50%] py-[10px] rounded-[10px]">
+                  <button onClick={() => FilterResetHandler(1)} className="text-[18px] font-[600] mt-[20px] bg-[#0066CC] text-[#333333] w-[50%] py-[10px] rounded-[10px]">
                     {t('Reset')}
                   </button>
                 </div>
@@ -1017,10 +1017,10 @@ const Dashboard = () => {
 
             {/* <!-- Apply Btn Start --> */}
             <div className="flex justify-center gap-[15px] mt-[20px]">
-              <button onClick={FilterResetHandler} className="text-[18px] font-[600] text-white bg-[#0066CC] w-[40%] py-[10px] rounded-[10px]">
+              <button onClick={FilterResetHandler} className="text-[18px] font-[600] text-[#333333] bg-[#0066CC] w-[40%] py-[10px] rounded-[10px]">
                 {t('Reset')}
               </button>
-              <button onClick={FilterApplyHandler} className="text-[18px] font-[600] bg-[#0066CC] text-white w-[40%] py-[10px] rounded-[10px]">
+              <button onClick={FilterApplyHandler} className="text-[18px] font-[600] bg-[#0066CC] text-[#333333] w-[40%] py-[10px] rounded-[10px]">
                 {t('Apply')}
               </button>
             </div>
@@ -1113,7 +1113,7 @@ const Dashboard = () => {
               </div>
               <button
                 onClick={() => SednHandler()}
-                className="font-bold text-[18px] rounded-[10px] mt-[20px] text-white py-[10px] w-[100%] bg-[#0066CC]"
+                className="font-bold text-[18px] rounded-[10px] mt-[20px] text-[#333333] py-[10px] w-[100%] bg-[#0066CC]"
               >
                 {t('Send')}
               </button>

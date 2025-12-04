@@ -279,7 +279,7 @@ const Profile = () => {
                         {item && (
                           <IoMdClose
                             onClick={() => CloseHandler(index)}
-                            className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-red-500 text-white rounded-full "
+                            className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-red-500 text-[#333333] rounded-full "
                           />
                         )}
                         <button type="button"
@@ -301,7 +301,7 @@ const Profile = () => {
                         {item && (
                           <IoMdClose
                             onClick={() => handleRemoveImage(index)}
-                            className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-red-500 text-white rounded-full "
+                            className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-red-500 text-[#333333] rounded-full "
                           />
                         )}
                         <buttton
@@ -667,7 +667,7 @@ const Profile = () => {
                   </div>
 
                   <button type="submit"
-                    className="font-bold text-[18px] rounded-[10px] mt-[20px] text-white py-[10px] w-[100%] bg-[#0066CC] tracking-[2px]"
+                    className="font-bold text-[18px] rounded-[10px] mt-[20px] text-[#333333] py-[10px] w-[100%] bg-[#0066CC] tracking-[2px]"
                   >
                     {" "}
                     {t('Update')}{" "}

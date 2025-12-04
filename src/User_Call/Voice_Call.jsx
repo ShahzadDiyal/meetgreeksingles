@@ -117,7 +117,7 @@ const Basics = ({ Id, name, img, channelname }) => {
     >
       <div className="user-list">
         <div className="z-[999] relative">
-          <div className="text-white text-center w-[100%]">
+          <div className="text-[#333333] text-center w-[100%]">
             <h6 className="text-[30px] m-0">{name}</h6>
             <h6>{!remoteUsers.length > 0 ? 'Ringing...' : 'Connected'}</h6>
           </div>
@@ -126,9 +126,9 @@ const Basics = ({ Id, name, img, channelname }) => {
               <div className="left-control">
                 <button className="btn" onClick={() => setMic((prev) => !prev)}>
                   {micOn ? (
-                    <FiMic className="i-microphone bg-slate-600 text-white rounded-full p-[12px] w-[45px] h-[45px]" />
+                    <FiMic className="i-microphone bg-slate-600 text-[#333333] rounded-full p-[12px] w-[45px] h-[45px]" />
                   ) : (
-                    <FiMicOff className="i-microphone off bg-slate-600 text-white rounded-full p-[12px] w-[45px] h-[45px]" />
+                    <FiMicOff className="i-microphone off bg-slate-600 text-[#333333] rounded-full p-[12px] w-[45px] h-[45px]" />
                   )}
                 </button>
               </div>
@@ -137,7 +137,7 @@ const Basics = ({ Id, name, img, channelname }) => {
                 className={`btn btn-phone ${calling ? 'btn-phone-active' : ''}`}
                 onClick={leaveCall}
               >
-                <IoCall className="i-phone-hangup bg-red-500 text-white rounded-full p-[12px] w-[45px] h-[45px]" />
+                <IoCall className="i-phone-hangup bg-red-500 text-[#333333] rounded-full p-[12px] w-[45px] h-[45px]" />
               </button>
             </div>
           )}

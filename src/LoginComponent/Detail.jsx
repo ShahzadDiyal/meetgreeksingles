@@ -620,7 +620,7 @@ const Detail = () => {
                     {t('Cancel')}
                   </button>
                   <button onClick={BlockHandler} className="text-[16px
-                     ] text-white border-[2px] bg-[#0066CC] rounded-full px-[25px] py-[8px]">
+                     ] text-[#333333] border-[2px] bg-[#0066CC] rounded-full px-[25px] py-[8px]">
                     {t('Yes, Block')}
                   </button>
                 </div>
@@ -649,7 +649,7 @@ const Detail = () => {
                     </button>
                   })
                 }
-                <button onClick={() => SendReportHamdler(api.profile_id)} className="w-[100%] bg-[#0066CC] text-white rounded-full text-[18px] py-[8px] mt  -[20px]">{t("Continue")}</button>
+                <button onClick={() => SendReportHamdler(api.profile_id)} className="w-[100%] bg-[#0066CC] text-[#333333] rounded-full text-[18px] py-[8px] mt  -[20px]">{t("Continue")}</button>
               </div>
             </div>
           </div>
@@ -713,7 +713,7 @@ const Detail = () => {
             </div>
             <button
               onClick={SednHandler}
-              className="font-bold text-[18px] rounded-[10px] mt-[20px] text-white py-[10px] w-[100%] bg-[#0066CC]"
+              className="font-bold text-[18px] rounded-[10px] mt-[20px] text-[#333333] py-[10px] w-[100%] bg-[#0066CC]"
             >
               Send
             </button>
