@@ -235,11 +235,11 @@ const submitToApi = async (payload) => {
       // Send to API
       const apiResponse = await submitToApi(payload);
       
-      console.log("✅ API Response:", apiResponse);
+      console.log(" API Response:", apiResponse);
       
       // Show success message
       showTost({ 
-        title: "Profile Submitted Successfully! ✅", 
+        title: "Profile Submitted Successfully! ", 
         message: apiResponse.message || "Your profile has been saved to our database.",
         type: "success"
       });
@@ -287,7 +287,7 @@ const submitToApi = async (payload) => {
   const saveToLocalStorage = () => {
     const payload = buildApiPayload();
     localStorage.setItem('userProfile_backup', JSON.stringify(payload));
-    console.log("✅ Profile backup saved to localStorage");
+    console.log(" Profile backup saved to localStorage");
     return payload;
   };
 
@@ -451,7 +451,7 @@ const submitToApi = async (payload) => {
           </div>
 
           {/* Debug/Test Button (optional) */}
-          <button
+          {/* <button
             onClick={() => {
               const payload = buildApiPayload();
               console.log("📋 Complete API Payload:", payload);
@@ -469,11 +469,11 @@ const submitToApi = async (payload) => {
             <div className="flex items-center justify-center gap-[10px]">
               <span className="font-bold text-[1.25rem] text-white">Test & Preview Payload</span>
             </div>
-          </button>
+          </button> */}
 
           {/* Submit Profile Button */}
           <button
-            style={{ background: "#1F5799" }}
+            style={{ background: "#1F5799", borderRadius:"999px" }}
             onClick={SubmitHandler}
             disabled={isSubmitting}
             className={`btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full transition-colors shadow-md hover:shadow-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#1A4A87]'}`}

@@ -76,7 +76,7 @@ const App = () => {
           
           // Set external user ID
           await window.OneSignal.setExternalUserId(user.id);
-          console.log("✅ OneSignal user ID set:", user.id);
+          console.log(" OneSignal user ID set:", user.id);
           
           // WAIT for OneSignal to generate token (this can take a few seconds)
           let fcmToken = await window.OneSignal.getUserId();
@@ -91,7 +91,7 @@ const App = () => {
           }
           
           if (fcmToken) {
-            console.log("✅ OneSignal token received:", fcmToken);
+            console.log(" OneSignal token received:", fcmToken);
             await updateFirebaseToken(user.id, fcmToken);
           } else {
             console.warn("❌ No OneSignal token received after 10 seconds");
@@ -124,7 +124,7 @@ const App = () => {
         updated_at: new Date().toISOString(),
       }, { merge: true });
       
-      console.log("✅ Firebase token updated:", token ? "with token" : "empty token");
+      console.log(" Firebase token updated:", token ? "with token" : "empty token");
       
       // Verify the update
       const savedDoc = await getDoc(userRef);

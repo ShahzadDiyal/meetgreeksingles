@@ -110,89 +110,158 @@ const Payment = ({ Amount }) => {
 
     return (
         <div>
-            <div onClick={() => setToggleButton(false)} className="bottom-sheet2 w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-                <div onClick={(e) => e.stopPropagation()} className="bottom-sheet-content2">
-                    {page !== "BuyCoin" && <div className="">
-                        <h6>Add Wallet Amount</h6>
-                        <div className="flex items-center justify-between">
-                            <div className="mt-[10px] flex gap-[15px] w-[100%] items-center border-[2px] focus-within:border-[#0066CC] border-gray-300 px-[15px] py-[7px] rounded-[10px]">
-                                <img src={wallet} alt="" />
-                                <input type="number" onChange={(e) => setInput(e.target.value)} className='outline-none w-[100%] text-[#0066CC] font-[600]' placeholder='Enter Amount' />
-                            </div>
-                        </div>
-                    </div>}
-                    <div className="">
-                        {page === "Wallet" && <h6 className='text-gray-400 text-[15px] mt-[10px]'>Select Payment Methode</h6>
-                        }
-                        {page === "BuyCoin" && coin > 0 && <div className="flex items-center justify-between">
-                            <div className="mt-[5px] mb-[10px] flex gap-[10px] items-center">
-                                <img src={wallet} alt="" />
-                                <h6 className="m-0">My Wallet (${btnDis ? coin - Amount : coin})</h6>
-                            </div>
-                            <button>
-                                <div className="df-center gap-3">
-                                    <label className="switch">
-                                        <input onClick={SwitchHandler} type="checkbox" checked={btnDis} />
-                                        <span className="slider round"></span>
-                                    </label>
-                                </div>
-                            </button>
-                        </div>}
-                        <div className="scroll-container2 h-[350px]">
-                            {
-                                payDetails.map((item) => {
-                                    return <div onClick={() => SelectPaymentMethodHandle(item.title)} className={`${border === item.title ? "border-[#0066CC]" : "border-gray-300"} mb-[10px] flex items-center justify-between cursor-pointer border-[2px] rounded-[10px] px-[10px] py-[12px]`}>
-                                        <div className="flex items-center gap-[10px]">
-                                            <img src={imageBaseURL + item.img} className='border-[2px] w-[50px] h-[50px] rounded-[10px] bg-gray-200' alt="" />
-                                            <div className="mx-[10px] w-[80%]">
-                                                <h4 className='m-0'>{item.title}</h4>
-                                                <p className={`font-[500] text-[14px]`}>{item.subtitle}</p>
-                                            </div>
-                                        </div>
-                                        <div className={`${border === item.title ? "border-[#0066CC]" : "border-gray-300"} ${item.id === "7" ? "w-[21px]" : item.id === "8" ? "w-[20px]" : "w-[24px]"} h-[20px] border-[2px] rounded-full p-[3px]`}>
-                                            <span className={`${border === item.title && "bg-[#0066CC]"} duration-300 w-[100%] h-[100%] rounded-full block`}></span>
-                                        </div>
-                                    </div>
-                                })
-                            }
-                        </div>
-                    </div>
-                    <button onClick={() => PurchaseHandler(border)} className="text-[#333333] bg-[#0066CC] w-[100%] font-[600] rounded-[10px] py-[10px] mt-[10px]">{btnDis ? "Wallte Pay" : "Continue"}</button>
-                </div>
+  <div
+    onClick={() => setToggleButton(false)}
+    className="bottom-sheet2 w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
+  >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="bottom-sheet-content2 bg-[#F7F5F2] rounded-[15px] p-[20px] w-[95%] max-w-[420px]"
+    >
+
+      {/* WALLET INPUT */}
+      {page !== "BuyCoin" && (
+        <div>
+          <h6 className="text-[#222222] font-[600] mb-[8px]">
+            Add Wallet Amount
+          </h6>
+
+          <div className="flex items-center gap-[12px] border-[2px] border-[#C89A3D] px-[15px] py-[10px] rounded-[10px]">
+            <img src={wallet} alt="" />
+            <input
+              type="number"
+              onChange={(e) => setInput(e.target.value)}
+              className="outline-none w-full text-[#1F5799] font-[600] bg-transparent"
+              placeholder="Enter Amount"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* WALLET BALANCE */}
+      {page === "BuyCoin" && coin > 0 && (
+        <div className="flex items-center justify-between mt-[10px]">
+          <div className="flex items-center gap-[10px]">
+            <img src={wallet} alt="" />
+            <h6 className="m-0 text-[#222222] font-[600]">
+              My Wallet (${btnDis ? coin - Amount : coin})
+            </h6>
+          </div>
+
+          <label className="switch">
+            <input onClick={SwitchHandler} type="checkbox" checked={btnDis} />
+            <span className="slider round"></span>
+          </label>
+        </div>
+      )}
+
+      {/* PAYMENT METHOD TITLE */}
+      {page === "Wallet" && (
+        <h6 className="text-[#333333] text-[15px] mt-[15px] mb-[10px]">
+          Select Payment Method
+        </h6>
+      )}
+
+      {/* PAYMENT METHODS LIST */}
+      <div className="scroll-container2 h-[350px] mt-[10px]">
+        {payDetails.map((item) => (
+          <div
+            key={item.id}
+            onClick={() => SelectPaymentMethodHandle(item.title)}
+            className={`mb-[10px] flex items-center justify-between cursor-pointer border-[2px] rounded-[10px] px-[12px] py-[12px]
+            ${
+              border === item.title
+                ? "border-[#1F5799] bg-[#EAF1FB]"
+                : "border-gray-300 bg-white"
+            }`}
+          >
+            <div className="flex items-center gap-[10px]">
+              <img
+                src={imageBaseURL + item.img}
+                className="border-[2px] w-[50px] h-[50px] rounded-[10px] bg-gray-200"
+                alt=""
+              />
+              <div className="mx-[10px] w-[80%]">
+                <h4 className="m-0 text-[#222222] font-[600]">
+                  {item.title}
+                </h4>
+                <p className="text-[#333333] text-[14px]">
+                  {item.subtitle}
+                </p>
+              </div>
             </div>
 
-            {payId === "Razorpay" && button && <Razorpay Amount={amount} />}
-            {payId === "Paypal" && button && <div onClick={() => setPayId("")} id="BlockSection" className=" px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-                <div onClick={(e) => e.stopPropagation()} className="w-[20%]  max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]">
-                    <div className="flex flex-col justify-center items-center text-center">
-                        <Paypal Amount={amount} />
-                    </div>
-                </div>
-            </div>}
-            {payId === "Stripe" && button && <div onClick={() => setPayId("")} id="BlockSection" className=" px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-                <div onClick={(e) => e.stopPropagation()} className="w-[20%]  max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]">
-                    <div className="flex flex-col justify-center items-center text-center">
-                        <StripePayment Amount={amount} />
-                    </div>
-                </div>
-            </div>}
-            {payId === "PayStack" && button && <div onClick={() => setPayId("")} id="BlockSection" className=" px-[15px] py-[15px] w-full h-full fixed top-0 left-0 flex items-center justify-center bg-black bg-opacity-30 z-[999]">
-                <div onClick={(e) => e.stopPropagation()} className="w-[20%]  max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]">
-                    <div className="flex flex-col justify-center items-center text-center">
-                        <PayStack Amount={amount} />
-                    </div>
-                </div>
-            </div>}
-            {payId === "FlutterWave" && button && <FlutterWave Amount={amount} />}
-            {payId === "SenangPay" && button && <SenangPay Amount={amount} />}
-            {payId === "Payfast" && button && <Payfast Amount={amount} />}
-            {payId === "Midtrans" && button && <Midtrans Amount={amount} />}
-            {payId === "2checkout" && button && <Checkout Amount={amount} />}
-            {payId === "Khalti Payment" && button && <KhaltiPayment Amount={amount} />}
-            {payId === "MercadoPago" && button && <MercadoPagoCheckout Amount={amount} />}
-            {payId === "Paytm" && button && <PaytmPayment Amount={amount} />}
+            {/* RADIO DOT */}
+            <div
+              className={`w-[22px] h-[22px] border-[2px] rounded-full p-[3px]
+              ${
+                border === item.title
+                  ? "border-[#1F5799]"
+                  : "border-gray-400"
+              }`}
+            >
+              <span
+                className={`duration-300 w-full h-full rounded-full block
+                ${border === item.title ? "bg-[#1F5799]" : ""}`}
+              ></span>
+            </div>
+          </div>
+        ))}
+      </div>
 
-        </div>
+      {/* CONTINUE BUTTON */}
+      <button
+        onClick={() => PurchaseHandler(border)}
+        className="bg-[#1F5799] hover:bg-[#17477C] text-white w-full font-[600] rounded-full py-[12px] mt-[10px]"
+      >
+        {btnDis ? "Wallet Pay" : "Continue"}
+      </button>
+    </div>
+  </div>
+
+  {/* ================= PAYMENT POPUPS ================= */}
+
+  {payId === "Razorpay" && button && <Razorpay Amount={amount} />}
+
+  {payId === "Paypal" && button && (
+    <div
+      onClick={() => setPayId("")}
+      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-[999]"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-[#F7F5F2] rounded-[15px] p-[20px] w-[90%] max-w-[420px]"
+      >
+        <Paypal Amount={amount} />
+      </div>
+    </div>
+  )}
+
+  {payId === "Stripe" && button && (
+    <div
+      onClick={() => setPayId("")}
+      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-[999]"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-[#F7F5F2] rounded-[15px] p-[20px] w-[90%] max-w-[420px]"
+      >
+        <StripePayment Amount={amount} />
+      </div>
+    </div>
+  )}
+
+  {payId === "PayStack" && button && <PayStack Amount={amount} />}
+  {payId === "FlutterWave" && button && <FlutterWave Amount={amount} />}
+  {payId === "SenangPay" && button && <SenangPay Amount={amount} />}
+  {payId === "Payfast" && button && <Payfast Amount={amount} />}
+  {payId === "Midtrans" && button && <Midtrans Amount={amount} />}
+  {payId === "2checkout" && button && <Checkout Amount={amount} />}
+  {payId === "Khalti Payment" && button && <KhaltiPayment Amount={amount} />}
+  {payId === "MercadoPago" && button && <MercadoPagoCheckout Amount={amount} />}
+  {payId === "Paytm" && button && <PaytmPayment Amount={amount} />}
+</div>
+
     )
 }
 

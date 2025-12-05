@@ -371,9 +371,9 @@ const selectInterestHandler = (id) => {
 
             {/* Next Button */}
             <button
-              style={{ background: "#1F5799" }}
+              style={{ background: "#1F5799" , borderRadius:"999px"}}
               onClick={SubmitHandler}
-              className="btn btn-w-md nextstep mt-[20px] w-full py-2 rounded-full shadow-md hover:bg-[#1A4A87]"
+              className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full shadow-md hover:bg-[#1A4A87]"
             >
               <div className="flex items-center justify-center gap-[10px]">
                 <span className="font-bold text-[1.25rem] text-white">

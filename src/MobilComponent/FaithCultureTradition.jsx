@@ -305,7 +305,7 @@ const FaithCultureTradition = () => {
 
           {/* Next Button */}
           <button
-            style={{ background: "#1F5799" }}
+            style={{ background: "#1F5799", borderRadius:"999px" }}
             onClick={SubmitHandler}
             className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full hover:bg-[#1A4A87] transition-colors shadow-md"
           >

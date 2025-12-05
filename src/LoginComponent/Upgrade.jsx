@@ -264,7 +264,15 @@ const Upgrade = () => {
                                                                 <h3 className="mb-0">{item.title}</h3>
                                                                 <h2 className="mb-0">{currency ? currency : "$"}{item.amt}</h2>
                                                                 <p className="fw-semi-bold mb-2">Per, {item.day_limit} Days</p>
-                                                                <button onClick={() => GetStartedHandler(index, item.id)} style={{ background: "#0066CC" }} className="btn text-[#333333]  my-3">
+                                                                <button onClick={() => GetStartedHandler(index, item.id)}  style={{
+        background: "#1F5799",   
+        color: "#ffffff",    
+        borderRadius: "999px",        
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
+        padding: "10px 18px"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
+      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"} className="btn text-[#ffffff]  my-3">
                                                                     {t('Get Started')}
                                                                 </button>
                                                                 <div className="plans-includes">
@@ -277,8 +285,8 @@ const Upgrade = () => {
                                                                 </ul>
                                                             </div>
                                                         </div>
-                                                        {item.id === packageId && <div style={{ background: "#0066CC" }} className="position-absolute popular-title flex items-center rounded-[5px]">
-                                                            <h6 style={{ background: "#0066CC", borderRadius: "5px" }} className="card fw-medium m-0 text-[#333333] py-[5px] px-[10px] ">Active </h6>
+                                                        {item.id === packageId && <div style={{ background: "#1F5799" }} className="position-absolute popular-title flex items-center rounded-[5px]">
+                                                            <h6 style={{ background: "#1F5799", borderRadius: "5px" }} className="card fw-medium m-0 text-[#333333] py-[5px] px-[10px] ">Active </h6>
                                                             <button onClick={PalanDetailsHandler}><MdOutlineErrorOutline className='text-[#333333] me-[10px] text-[20px]' /></button>
                                                         </div>}
                                                     </div>
@@ -315,7 +323,7 @@ const Upgrade = () => {
                             <div className="scroll-container2 h-[330px]">
                                 {
                                     payDetails.map((item, index) => {
-                                        return <div onClick={() => { setBorder(item.title); setPId(item.id) }} className={`${border === item.title ? "border-[#0066CC]" : "border-gray-300"} mb-[10px] flex items-center cursor-pointer border-[2px] rounded-[10px] px-[10px] py-[12px]`}>
+                                        return <div onClick={() => { setBorder(item.title); setPId(item.id) }} className={`${border === item.title ? "border-amber-500" : "border-gray-300"} mb-[10px] flex items-center cursor-pointer border-[2px] rounded-[10px] px-[10px] py-[12px]`}>
                                             <div className="flex items-center gap-[10px]">
                                                 <img src={imageBaseURL + item.img} className='border-[2px] w-[50px] h-[50px] rounded-[10px] bg-gray-200' alt="" />
                                                 <div className="mx-[10px]">
@@ -333,7 +341,14 @@ const Upgrade = () => {
                             </div>
                         </div>
 
-                        <button onClick={() => SendHandler(border)} className="text-[#333333] bg-[#0066CC] w-[100%] font-[600] rounded-[10px] py-[10px] mt-[10px]">Continue</button>
+                        <button onClick={() => SendHandler(border)} className="text-[#ffffff] w-[100%] font-[600] rounded-[10px] py-[10px] mt-[10px] "  style={{
+        background: "#1F5799",       
+        borderRadius: "999px",        
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
+        padding: "10px 18px"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
+      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}>Continue</button>
                     </div>
                 </div>
             )}

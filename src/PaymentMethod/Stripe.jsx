@@ -104,74 +104,82 @@ const SplitForm = ({ fontSize, amount }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="DemoWrapper d-flex flex-column w-[100%]">
-            {/* Currency Dropdown */}
-            <label className="mt-[15px]">
-                <span className="text-[18px] font-[500]">Currency</span> <br />
-                <select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    className="border-[2px] w-[100%] outline-none py-[6px] px-[5px] rounded-[5px] mt-[5px]"
-                >
-                    {['EUR', 'USD', 'GBP', 'CAD', 'AUD'].map((code) => (
-                        <option key={code} value={code}>
-                            {code}
-                        </option>
-                    ))}
-                </select>
-            </label>
+       <form onSubmit={handleSubmit} className="DemoWrapper d-flex flex-column w-[100%]">
+    {/* Currency Dropdown */}
+    <label className="mt-[15px]">
+        <span className="text-[18px] font-[500] text-[#222222]">Currency</span> <br />
+        <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[6px] px-[5px] rounded-[5px] mt-[5px]"
+        >
+            {['EUR', 'USD', 'GBP', 'CAD', 'AUD'].map((code) => (
+                <option key={code} value={code}>
+                    {code}
+                </option>
+            ))}
+        </select>
+    </label>
 
-          
-            <label className='mt-[10px]'>
-                <span className='text-[18px] font-[500]'>Converted Amount</span> <br />
-                <input
-                    type="text"
-                    disabled
-                    value={convertedAmount ? `${convertedAmount} ${currency}` : ''}
-                    className='border-[2px] bg-gray-100 text-gray-700 w-[100%] outline-none py-[6px] px-[5px] rounded-[5px] mt-[5px]'
-                />
-            </label>
-            <label>
-                <span className='text-[18px] font-[500]'>Card number</span> <br />
-                <input
-                    type="text"
-                    placeholder="1234 1234 1234 1234"
-                    value={cardNumber}
-                    onChange={handleCardNumberChange}
-                    maxLength="19"
-                    className='border-[2px] w-[100%] outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]'
-                />
-            </label>
-            <div className="flex justify-between items-center mt-[10px]">
-                <label className='w-[40%]'>
-                    <span className='text-[18px] font-[500]' >Expiration date</span>
-                    <input
-                        type="text"
-                        placeholder="MM/YY"
-                        value={expiry}
-                        onChange={handleExpiryChange} 
-                        maxLength="5"  
-                        className='border-[2px] w-[100%] outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]'
-                    />
-                </label>
-                <label className='w-[40%]'>
-                    <span className='text-[18px] font-[500]' >CVC</span>
-                    <input 
-                        type='number' 
-                        onChange={(e) => setCvc(e.target.value)} 
-                        placeholder='CVC' 
-                        className='border-[2px] w-[100%] outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]' 
-                    />
-                </label>
-            </div>
-            <button
-                type="submit"
-                disabled={isButtonDisabled}
-                className={`mt-[20px] text-[#333333] text-[18px] py-[5px] rounded-[5px] ${isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0066CC]'}`}
-            >
-                Pay {convertedAmount ? `${convertedAmount} ${currency}` : amount ? `${amount} EUR` : ""}
-            </button>
-        </form>
+    <label className='mt-[10px]'>
+        <span className='text-[18px] font-[500] text-[#222222]'>Converted Amount</span> <br />
+        <input
+            type="text"
+            disabled
+            value={convertedAmount ? `${convertedAmount} ${currency}` : ''}
+            className='border-[2px] border-[#C89A3D] bg-[#F7F5F2] text-[#333333] w-[100%] outline-none py-[6px] px-[5px] rounded-[5px] mt-[5px]'
+        />
+    </label>
+
+    <label>
+        <span className='text-[18px] font-[500] text-[#222222]'>Card number</span> <br />
+        <input
+            type="text"
+            placeholder="1234 1234 1234 1234"
+            value={cardNumber}
+            onChange={handleCardNumberChange}
+            maxLength="19"
+            className='border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]'
+        />
+    </label>
+
+    <div className="flex justify-between items-center mt-[10px]">
+        <label className='w-[40%]'>
+            <span className='text-[18px] font-[500] text-[#222222]'>Expiration date</span>
+            <input
+                type="text"
+                placeholder="MM/YY"
+                value={expiry}
+                onChange={handleExpiryChange} 
+                maxLength="5"  
+                className='border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]'
+            />
+        </label>
+
+        <label className='w-[40%]'>
+            <span className='text-[18px] font-[500] text-[#222222]'>CVC</span>
+            <input 
+                type='number' 
+                onChange={(e) => setCvc(e.target.value)} 
+                placeholder='CVC' 
+                className='border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]' 
+            />
+        </label>
+    </div>
+
+    <button
+        type="submit"
+        disabled={isButtonDisabled}
+        className={`mt-[20px] text-white text-[18px] py-[5px] rounded-[5px] ${
+            isButtonDisabled 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              : 'bg-[#1F5799]'
+        }`}
+    >
+        Pay {convertedAmount ? `${convertedAmount} ${currency}` : amount ? `${amount} EUR` : ""}
+    </button>
+</form>
+
     );
 };
 

@@ -342,14 +342,15 @@ const Imagecom = () => {
                 type="button"
                 style={{ 
                   background: selectedCount >= 3 ? "#0066CC" : "#CCCCCC",
+                  borderRadius:"999px",
                   cursor: selectedCount >= 3 ? "pointer" : "not-allowed"
                 }}
                 onClick={SubmitHandler}
-                className="btn btn-w-md nextstep mt-[50px] w-full py-3 rounded-xl transition-all duration-300"
+                className="btn btn-w-md nextstep mt-[50px] w-full py-3 rounded-full transition-all duration-300"
                 disabled={selectedCount < 3}
               >
                 <div className="flex items-center justify-center gap-[10px]">
-                  <span className="font-bold text-[1.25rem] text-white">
+                  <span className="font-bold text-[1.25rem] text-white rounded-xl">
                     {selectedCount >= 3 ? "Continue to Next Step" : "Select More Images"}
                   </span>
                   {selectedCount >= 3 && (

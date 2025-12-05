@@ -87,9 +87,9 @@ const Register = () => {
       .get(`https://meetgreek.dhsol.net/location_api.php?country_id=${Country}`)
       .then((res) => {
         setStates(res.data.states || []);
-        setState(""); 
-        setCities([]); 
-        setCity(""); 
+        setState("");
+        setCities([]);
+        setCity("");
       })
       .catch((err) => {
         console.error("Error fetching states:", err);
@@ -109,7 +109,7 @@ const Register = () => {
       .get(`https://meetgreek.dhsol.net/location_api.php?state_id=${State}`)
       .then((res) => {
         setCities(res.data.cities || []);
-        setCity(""); 
+        setCity("");
       })
       .catch((err) => {
         console.error("Error fetching cities:", err);
@@ -188,7 +188,7 @@ const Register = () => {
 
       // REQUIRED FIELDS as per your specification:
       formData.append("gender", Gender);
-      formData.append("origin", GreekStatus); 
+      formData.append("origin", GreekStatus);
       formData.append("country", selectedCountry ? selectedCountry.name : "");
       formData.append("state", selectedState ? selectedState.name : "");
       formData.append("city", selectedCity ? selectedCity.name : "");
@@ -218,9 +218,9 @@ const Register = () => {
         showTost({
           title: response.data.ResponseMsg || "Registration successful!",
         });
-        
-          setUserId(response.data.User?.id)
-          localStorage.setItem("UserId", response.data.User?.id);
+
+        setUserId(response.data.User?.id);
+        localStorage.setItem("UserId", response.data.User?.id);
 
         // Store user data if returned
         // if (response.data.User?.id) {
@@ -308,13 +308,13 @@ const Register = () => {
               <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
                 <button
                   onClick={handleAccept}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#0066CC] text-white font-semibold rounded-lg hover:bg-[#0055aa] transition-all duration-300 shadow-md hover:shadow-lg"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#0066CC] text-white font-semibold rounded-full hover:bg-[#0055aa] transition-all duration-300 shadow-md hover:shadow-lg"
                 >
                   <AiOutlineCheckCircle /> Accept
                 </button>
                 <button
                   onClick={handleDecline}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-all duration-300 shadow-md hover:shadow-lg"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-300 text-gray-800 font-semibold rounded-full hover:bg-gray-400 transition-all duration-300 shadow-md hover:shadow-lg"
                 >
                   <AiOutlineCloseCircle /> Decline
                 </button>
@@ -335,272 +335,290 @@ const Register = () => {
               </div>
 
               <div className="mt-[20px] w-[100%] space-y-6">
-  {/* Phone Number */}
-  <div className="relative">
-    <input
-      onChange={(e) => setPhone(e.target.value)}
-      value={Phone}
-      className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-      type="number"
-      placeholder="Phone Number *"
-    />
-    {Phone && (
-      <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
-    )}
-  </div>
+                {/* Phone Number */}
+                <div className="relative">
+                  <input
+                    onChange={(e) => setPhone(e.target.value)}
+                    value={Phone}
+                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                    type="number"
+                    placeholder="Phone Number *"
+                  />
+                  {Phone && (
+                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
+                  )}
+                </div>
 
-  {/* Email */}
-  <div className="relative">
-    <input
-      onChange={(e) => setemail(e.target.value)}
-      value={Email}
-      className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-      type="email"
-      placeholder="Email *"
-    />
-    {Email && (
-      <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
-    )}
-  </div>
+                {/* Email */}
+                <div className="relative">
+                  <input
+                    onChange={(e) => setemail(e.target.value)}
+                    value={Email}
+                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                    type="email"
+                    placeholder="Email *"
+                  />
+                  {Email && (
+                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
+                  )}
+                </div>
 
-  {/* Password */}
-  <div className="relative">
-    <input
-      onChange={(e) => setpassword(e.target.value)}
-      value={Password}
-      id="input"
-      className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-      type="password"
-      placeholder="Password (min. 8 characters) *"
-    />
-    <button
-      onClick={myFunction}
-      type="button"
-      className="absolute right-4 top-1/2 transform -translate-y-1/2"
-    >
-      <img
-        ref={Show}
-        alt="Show"
-        src={ShowPassword}
-        className="w-[25px] h-[25px] hidden"
-      />
-      <img
-        ref={Hide}
-        alt="Hide"
-        src={HidePassword}
-        className="w-[25px] h-[25px]"
-      />
-    </button>
-  </div>
-  {Password && (
-    <div
-      className={`ml-2 text-sm ${
-        Password.length >= 8 ? "text-green-600" : "text-red-600"
-      }`}
-    >
-      {Password.length >= 8
-        ? "✓ Password is valid"
-        : "Password must be at least 8 characters"}
-    </div>
-  )}
+                {/* Password */}
+                <div className="relative">
+                  <input
+                    onChange={(e) => setpassword(e.target.value)}
+                    value={Password}
+                    id="input"
+                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                    type="password"
+                    placeholder="Password (min. 8 characters) *"
+                  />
+                  <button
+                    onClick={myFunction}
+                    type="button"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                  >
+                    <img
+                      ref={Show}
+                      alt="Show"
+                      src={ShowPassword}
+                      className="w-[25px] h-[25px] hidden"
+                    />
+                    <img
+                      ref={Hide}
+                      alt="Hide"
+                      src={HidePassword}
+                      className="w-[25px] h-[25px]"
+                    />
+                  </button>
+                </div>
+                {Password && (
+                  <div
+                    className={`ml-2 text-sm ${
+                      Password.length >= 8 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {Password.length >= 8
+                      ? "✓ Password is valid"
+                      : "Password must be at least 8 characters"}
+                  </div>
+                )}
 
-  {/* Gender */}
-  <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
-    <label className="block font-medium text-gray-700">I am a: *</label>
-    <div className="flex flex-wrap gap-4">
-      <label className="flex items-center space-x-3 cursor-pointer rounded-lg  px-3 py-2 transition-colors duration-150">
-        <input
-          type="radio"
-          name="gender"
-          value="Male"
-          checked={Gender === "Male"}
-          onChange={(e) => setGender(e.target.value)}
-          className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
-        />
-        <span className="text-gray-700 font-medium">Man</span>
-      </label>
-      <label className="flex items-center cursor-pointer px-3 py-2 rounded-lg transition-colors duration-150">
-        <input
-          type="radio"
-          name="gender"
-          value="Female"
-          checked={Gender === "Female"}
-          onChange={(e) => setGender(e.target.value)}
-          className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
-        />
-        <span className="text-gray-700 font-medium">Woman</span>
-      </label>
-    </div>
-  </div>
+                {/* Gender */}
+                <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <label className="block font-medium text-gray-700">
+                    I am a: *
+                  </label>
+                  <div className="flex flex-wrap gap-4">
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg  px-3 py-2 transition-colors duration-150">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Male"
+                        checked={Gender === "Male"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                      />
+                      <span className="text-gray-700 font-medium">Man</span>
+                    </label>
+                    <label className="flex items-center cursor-pointer px-3 py-2 rounded-lg transition-colors duration-150">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Female"
+                        checked={Gender === "Female"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                      />
+                      <span className="text-gray-700 font-medium">Woman</span>
+                    </label>
+                  </div>
+                </div>
 
-  {/* Greek Status (origin) */}
-  <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
-    <label className="block font-medium text-gray-700">I am: *</label>
-    <div className="space-y-3">
-      <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
-        <input
-          type="radio"
-          name="greekStatus"
-          value="Greek"
-          checked={GreekStatus === "Greek"}
-          onChange={(e) => setGreekStatus(e.target.value)}
-          className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
-        />
-        <span className="text-gray-700 font-medium">Greek</span>
-      </label>
-      <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
-        <input
-          type="radio"
-          name="greekStatus"
-          value="Of Greek origin"
-          checked={GreekStatus === "Of Greek origin"}
-          onChange={(e) => setGreekStatus(e.target.value)}
-          className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
-        />
-        <span className="text-gray-700 font-medium">Of Greek origin</span>
-      </label>
-      <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
-        <input
-          type="radio"
-          name="greekStatus"
-          value="Philhellene"
-          checked={GreekStatus === "Philhellene"}
-          onChange={(e) => setGreekStatus(e.target.value)}
-          className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
-        />
-        <span className="text-gray-700 font-medium">Philhellene</span>
-      </label>
-    </div>
-  </div>
+                {/* Greek Status (origin) */}
+                <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <label className="block font-medium text-gray-700">
+                    I am: *
+                  </label>
+                  <div className="space-y-3">
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
+                      <input
+                        type="radio"
+                        name="greekStatus"
+                        value="Greek"
+                        checked={GreekStatus === "Greek"}
+                        onChange={(e) => setGreekStatus(e.target.value)}
+                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                      />
+                      <span className="text-gray-700 font-medium">Greek</span>
+                    </label>
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
+                      <input
+                        type="radio"
+                        name="greekStatus"
+                        value="Of Greek origin"
+                        checked={GreekStatus === "Of Greek origin"}
+                        onChange={(e) => setGreekStatus(e.target.value)}
+                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                      />
+                      <span className="text-gray-700 font-medium">
+                        Of Greek origin
+                      </span>
+                    </label>
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
+                      <input
+                        type="radio"
+                        name="greekStatus"
+                        value="Philhellene"
+                        checked={GreekStatus === "Philhellene"}
+                        onChange={(e) => setGreekStatus(e.target.value)}
+                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                      />
+                      <span className="text-gray-700 font-medium">
+                        Philhellene
+                      </span>
+                    </label>
+                  </div>
+                </div>
 
-  {/* Birthdate */}
-  <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
-    <label className="block font-medium text-gray-700">Birthdate: *</label>
-    <div className="grid grid-cols-3 gap-4">
-      <select
-        value={BirthDay}
-        onChange={(e) => setBirthDay(e.target.value)}
-        className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
-      >
-        <option value="" className="text-gray-400">Day</option>
-        {days.map((day) => (
-          <option key={day} value={day}>
-            {day}
-          </option>
-        ))}
-      </select>
-      <select
-        value={BirthMonth}
-        onChange={(e) => setBirthMonth(e.target.value)}
-        className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
-      >
-        <option value="" className="text-gray-400">Month</option>
-        {months.map((month) => (
-          <option key={month} value={month}>
-            {month}
-          </option>
-        ))}
-      </select>
-      <select
-        value={BirthYear}
-        onChange={(e) => setBirthYear(e.target.value)}
-        className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
-      >
-        <option value="" className="text-gray-400">Year</option>
-        {years.map((year) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
-    </div>
-  </div>
+                {/* Birthdate */}
+                <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <label className="block font-medium text-gray-700">
+                    Birthdate: *
+                  </label>
+                  <div className="grid grid-cols-3 gap-4">
+                    <select
+                      value={BirthDay}
+                      onChange={(e) => setBirthDay(e.target.value)}
+                      className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
+                    >
+                      <option value="" className="text-gray-400">
+                        Day
+                      </option>
+                      {days.map((day) => (
+                        <option key={day} value={day}>
+                          {day}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={BirthMonth}
+                      onChange={(e) => setBirthMonth(e.target.value)}
+                      className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
+                    >
+                      <option value="" className="text-gray-400">
+                        Month
+                      </option>
+                      {months.map((month) => (
+                        <option key={month} value={month}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={BirthYear}
+                      onChange={(e) => setBirthYear(e.target.value)}
+                      className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
+                    >
+                      <option value="" className="text-gray-400">
+                        Year
+                      </option>
+                      {years.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-  {/* Country */}
-  <select
-    value={Country}
-    onChange={(e) => setCountry(e.target.value)}
-    className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-  >
-    <option value="" className="text-gray-400">Select Country *</option>
-    {Countries.map((country) => (
-      <option key={country.id} value={country.id}>
-        {country.name}
-      </option>
-    ))}
-  </select>
+                {/* Country */}
+                <select
+                  value={Country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                >
+                  <option value="" className="text-gray-400">
+                    Select Country *
+                  </option>
+                  {Countries.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
 
-  {/* State */}
-  <select
-    value={State}
-    onChange={(e) => setState(e.target.value)}
-    disabled={!Country || loadingStates}
-    className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
-  >
-    <option value="" className="text-gray-400">
-      {loadingStates ? "Loading states..." : "Select State *"}
-    </option>
-    {States.map((state) => (
-      <option key={state.id} value={state.id}>
-        {state.name}
-      </option>
-    ))}
-  </select>
+                {/* State */}
+                <select
+                  value={State}
+                  onChange={(e) => setState(e.target.value)}
+                  disabled={!Country || loadingStates}
+                  className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                >
+                  <option value="" className="text-gray-400">
+                    {loadingStates ? "Loading states..." : "Select State *"}
+                  </option>
+                  {States.map((state) => (
+                    <option key={state.id} value={state.id}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
 
-  {/* City */}
-  <select
-    value={City}
-    onChange={(e) => setCity(e.target.value)}
-    disabled={!State || loadingCities}
-    className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
-  >
-    <option value="" className="text-gray-400">
-      {loadingCities ? "Loading cities..." : "Select City *"}
-    </option>
-    {Cities.map((city) => (
-      <option key={city.id} value={city.id}>
-        {city.name}
-      </option>
-    ))}
-  </select>
+                {/* City */}
+                <select
+                  value={City}
+                  onChange={(e) => setCity(e.target.value)}
+                  disabled={!State || loadingCities}
+                  className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                >
+                  <option value="" className="text-gray-400">
+                    {loadingCities ? "Loading cities..." : "Select City *"}
+                  </option>
+                  {Cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
 
-  {/* Terms Agreement */}
-  <div className="bg-white rounded-xl p-3 ">
-    <label className="flex items-start space-x-4 cursor-pointer  rounded-lg transition-colors duration-150">
-      <input
-        type="checkbox"
-        checked={Agreed}
-        onChange={(e) => setAgreed(e.target.checked)}
-        className="mt-1 w-5 h-5 text-amber-500 rounded focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
-        id="agreement"
-      />
-      <span className="text-gray-700 leading-relaxed">
-        I agree to the{" "}
-        <a
-          href="#"
-          className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
-        >
-          Terms & Conditions
-        </a>{" "}
-        and{" "}
-        <a
-          href="#"
-          className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
-        >
-          Privacy Policy
-        </a>
-        . *
-      </span>
-    </label>
-  </div>
-</div>
+                {/* Terms Agreement */}
+                <div className="bg-white rounded-xl p-3 ">
+                  <label className="flex items-start space-x-4 cursor-pointer  rounded-lg transition-colors duration-150">
+                    <input
+                      type="checkbox"
+                      checked={Agreed}
+                      onChange={(e) => setAgreed(e.target.checked)}
+                      className="mt-1 w-5 h-5 text-amber-500 rounded focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                      id="agreement"
+                    />
+                    <span className="text-gray-700 leading-relaxed">
+                      I agree to the{" "}
+                      <a
+                        href="#"
+                        className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
+                      >
+                        Terms & Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a
+                        href="#"
+                        className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
+                      >
+                        Privacy Policy
+                      </a>
+                      . *
+                    </span>
+                  </label>
+                </div>
+              </div>
 
               {/* Create Account Button */}
               <button
-                style={{ background: isRegistering ? "#70859cff" : "#1F5799" }}
+                style={{ background: isRegistering ? "#70859cff" : "#1F5799", borderRadius: "999px" }}
                 onClick={SubmitHandler}
                 disabled={isRegistering}
-                className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-xl transition-all duration-300"
+                className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full transition-all duration-300"
               >
                 <div className="flex items-center justify-center gap-[10px]">
                   {isRegistering ? (

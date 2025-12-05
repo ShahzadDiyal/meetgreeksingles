@@ -538,49 +538,75 @@ const Dashboard = () => {
                             <div className="fw-medium fs-16 px-3">
                               {t("Start Your Search for the Perfect Partner")}
                             </div>
-                            {filterinclude == "1" && (localStorage.getItem("FilterData")
-                              ? <button
-                                onClick={() => FilterResetHandler(1)}
-                                className="btn gap-1 df-center text-[#333333] "
-                                id="toggleFilterBtn"
-                                style={{ background: "#0066CC" }}
-                              >
-                                <svg
-                                  width="15"
-                                  height="10"
-                                  viewBox="0 0 15 10"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="mx-1"
-                                >
-                                  <path
-                                    d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
-                                    fill="#333333"
-                                  ></path>
-                                </svg>
-                                {t('Reset')}
-                              </button>
-                              : <button
-                                onClick={FilterHandler}
-                                className="btn gap-1 df-center text-[#333333]"
-                                id="toggleFilterBtn"
-                                style={{ background: "#0066CC" }}
-                              >
-                                <svg
-                                  width="15"
-                                  height="10"
-                                  viewBox="0 0 15 10"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="mx-1"
-                                >
-                                  <path
-                                    d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
-                                    fill="#333333"
-                                  ></path>
-                                </svg>
-                                {t('Filter')}
-                              </button>)}
+                            {filterinclude == "1" && (
+  localStorage.getItem("FilterData") ? (
+
+    //  RESET BUTTON (Greek Blue + Gold Accent on Hover)
+    <button
+      onClick={() => FilterResetHandler(1)}
+      className="btn gap-2 df-center text-white font-medium transition-all duration-200"
+      id="toggleFilterBtn"
+      style={{
+        background: "#1F5799",          // Greek Blue
+        borderRadius: "999px",          // Pill Shape
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", // Soft Shadow
+        padding: "10px 18px"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.background = "#174173"}  // Darker Blue Hover
+      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}
+    >
+      <svg
+        width="15"
+        height="10"
+        viewBox="0 0 15 10"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="mx-1"
+      >
+        <path
+          d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
+          fill="white"
+        />
+      </svg>
+      {t("Reset")}
+    </button>
+
+  ) : (
+
+    <button
+      onClick={FilterHandler}
+      className="btn gap-2 df-center text-white font-medium transition-all duration-200"
+      id="toggleFilterBtn"
+      style={{
+        background: "#1F5799",          
+        borderRadius: "999px",          
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+        padding: "10px 20px"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.background = "#174173"}
+      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}
+    >
+      <svg
+        width="15"
+        height="10"
+        viewBox="0 0 15 10"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="mx-1"
+      >
+        <path
+          d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
+          fill="white"
+        />
+      </svg>
+      <span className="text-white">
+        {t("Filter")}
+      </span>
+    </button>
+
+  )
+)}
+
                           </div>
                         </div>
                       </div>
@@ -1017,13 +1043,21 @@ const Dashboard = () => {
 
             {/* <!-- Apply Btn Start --> */}
             <div className="flex justify-center gap-[15px] mt-[20px]">
-              <button onClick={FilterResetHandler} className="text-[18px] font-[600] text-[#333333] bg-[#0066CC] w-[40%] py-[10px] rounded-[10px]">
-                {t('Reset')}
-              </button>
-              <button onClick={FilterApplyHandler} className="text-[18px] font-[600] bg-[#0066CC] text-[#333333] w-[40%] py-[10px] rounded-[10px]">
-                {t('Apply')}
-              </button>
-            </div>
+  <button
+    onClick={FilterResetHandler}
+    className="text-[18px] font-[600] text-white bg-[#1F5799] hover:bg-[#17477C] w-[40%] py-[10px] rounded-full transition duration-300"
+  >
+    {t('Reset')}
+  </button>
+
+  <button
+    onClick={FilterApplyHandler}
+    className="text-[18px] font-[600] text-white bg-[#1F5799] hover:bg-[#17477C] w-[40%] py-[10px] rounded-full transition duration-300"
+  >
+    {t('Apply')}
+  </button>
+</div>
+
             {/* <!-- Apply Btn End --> */}
           </div>
         </div>

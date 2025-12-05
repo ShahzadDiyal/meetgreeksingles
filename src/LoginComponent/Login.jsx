@@ -130,7 +130,7 @@ const Login = () => {
 //         redirectPath = "/image"; // onboarding image upload page
 //       }
       
-//       console.log("✅ Redirecting to:", redirectPath);
+//       console.log(" Redirecting to:", redirectPath);
 
 //       // --- SAVE USER TO FIRESTORE WITH FCM TOKEN (in background) ---
 //       const saveUserToFirestore = async () => {
@@ -152,28 +152,28 @@ const Login = () => {
 //                 allowLocalhostAsSecureOrigin: true,
 //               });
 
-//               console.log("✅ OneSignal initialized");
+//               console.log(" OneSignal initialized");
 
 //               await new Promise((resolve) => {
 //                 window.OneSignal.push(() => {
-//                   console.log("✅ OneSignal is ready");
+//                   console.log(" OneSignal is ready");
 //                   resolve();
 //                 });
 //               });
 
 //               await window.OneSignal.setExternalUserId(user.id);
-//               console.log("✅ External user ID set:", user.id);
+//               console.log(" External user ID set:", user.id);
 
 //               try {
 //                 await new Promise(resolve => setTimeout(resolve, 1000));
 //                 fcmToken = await window.OneSignal.getUserId();
-//                 console.log("✅ FCM Token from OneSignal:", fcmToken);
+//                 console.log(" FCM Token from OneSignal:", fcmToken);
 
 //                 if (!fcmToken) {
 //                   console.log("⚠️ No FCM token available, trying alternative method...");
 //                   await new Promise(resolve => setTimeout(resolve, 2000));
 //                   fcmToken = await window.OneSignal.getUserId();
-//                   console.log("✅ FCM Token (retry):", fcmToken);
+//                   console.log(" FCM Token (retry):", fcmToken);
 //                 }
 
 //               } catch (tokenError) {
@@ -203,7 +203,7 @@ const Login = () => {
 //           console.log("📦 Data to save to Firestore:", userData);
 
 //           await setDoc(userRef, userData, { merge: true });
-//           console.log("✅ Firestore save completed");
+//           console.log(" Firestore save completed");
 
 //           // Verify the save
 //           const savedDoc = await getDoc(userRef);
@@ -234,7 +234,7 @@ const Login = () => {
 //             };
             
 //             await setDoc(userRef, fallbackData, { merge: true });
-//             console.log("✅ Fallback Firestore save completed");
+//             console.log(" Fallback Firestore save completed");
 //           } catch (fallbackError) {
 //             console.error("🔥 Fallback Firestore save failed:", fallbackError);
 //           }
@@ -273,12 +273,11 @@ const SigninHandler = async () => {
     let requestData;
     
     if (isEmail) {
-      // For email login
-      requestData = {
-        email: Email,  // Send as email
-        password: Password,
-      };
-    } else {
+  requestData = {
+    mobile: Email,        // backend expects mobile
+    password: Password,
+  };
+}  else {
       // For mobile login (extract country code if present)
       let mobileNumber = Email;
       let countryCode = "+91"; // Default to India
@@ -294,9 +293,9 @@ const SigninHandler = async () => {
       }
       
       requestData = {
-        mobile: mobileNumber,
-        ccode: countryCode,
-        password: Password,
+      mobile: Email,
+      ccode: "+91",
+      password: Password,
       };
     }
 
@@ -335,19 +334,19 @@ const SigninHandler = async () => {
             try {
               await new Promise((resolve) => {
                 window.OneSignal.push(() => {
-                  console.log("✅ OneSignal is ready");
+                  console.log(" OneSignal is ready");
                   resolve();
                 });
               });
 
               await window.OneSignal.setExternalUserId(id);
-              console.log("✅ External user ID set:", id);
+              console.log(" External user ID set:", id);
 
               for (let attempt = 0; attempt < 3; attempt++) {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 fcmToken = await window.OneSignal.getUserId();
                 if (fcmToken) {
-                  console.log("✅ FCM Token received on attempt", attempt + 1, ":", fcmToken);
+                  console.log(" FCM Token received on attempt", attempt + 1, ":", fcmToken);
                   break;
                 }
               }
@@ -376,7 +375,7 @@ const SigninHandler = async () => {
 
           console.log("📦 Saving data to Firestore...");
           await setDoc(userRef, userData, { merge: true });
-          console.log("✅ Firestore save completed");
+          console.log(" Firestore save completed");
 
         } catch (error) {
           console.error("🔥 Firestore save error:", error);
@@ -603,7 +602,7 @@ const SigninHandler = async () => {
         {/* Sign In Button */}
         <button
           onClick={SigninHandler}
-          className="font-bold text-[18px] rounded-xl mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
+          className="font-bold text-[18px] rounded-full mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
         >
           Sign In
         </button>
@@ -706,7 +705,7 @@ const SigninHandler = async () => {
               {/* Action Button */}
               <button
                 onClick={otpShow ? OtpCheckHandler : passwordShow ? SubmitHandler : PhoneHandler}
-                className="font-bold text-[18px] rounded-xl mt-[20px] text-white py-[10px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
+                className="font-bold text-[18px] rounded-full mt-[20px] text-white py-[10px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
               >
                 {otpShow ? "Check" : passwordShow ? "Change" : "Continue"}
               </button>

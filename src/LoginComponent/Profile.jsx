@@ -260,424 +260,417 @@ const Profile = () => {
       onSubmit={handleSubmit}
     >
       {(props) => (
-        <div style={{ userSelect: "none", cursor: "default" }}>
-          <div className="content-body bg-[#e5e5e5]">
-            <div className="container mw-lg-100 py-4 px-sm-4 px-3">
-              <div className="bg-white p-[30px] max-_430_:py-[30px] max-_430_:px-[10px] rounded-[15px]">
-                <h1 className="text-[18px] font-[400]">
-                  {t('Update your personal photos here.')}
-                </h1>
+     <div style={{ userSelect: "none", cursor: "default" }}>
+<div className="content-body bg-[#F7F5F2]">
+  <div className="container mw-lg-100 py-4 px-sm-4 px-3">
+    <div className="bg-white p-[30px] max-_430_:py-[30px] max-_430_:px-[10px] rounded-[15px] shadow-sm">
+      <h1 className="text-[18px] font-[400] text-[#222222]">
+        {t('Update your personal photos here.')}
+      </h1>
 
-                <form onSubmit={props.handleSubmit} className="mt-[20px] ">
-                  {/* <------------- Select Image Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap gap-[25px] max-_430_:gap-[10px] max-_430_:justify-center max-_1030_:justify-center">
-                    {imagearray.map((item, index) =>
-                      <div
-                        key={index}
-                        className="w-[20%] max-_1445_:w-[30%] max-_1030_:w-[40%] relative max-_430_:w-[45%] cursor-pointer border-[2px] border-dotted p-[10px] max-_430_:p-[5px] border-gray-400 rounded-[10px]"
-                      >
-                        {item && (
-                          <IoMdClose
-                            onClick={() => CloseHandler(index)}
-                            className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-red-500 text-[#333333] rounded-full "
-                          />
-                        )}
-                        <button type="button"
-                          className="bg-[#e5e5e5] w-[100%] flex items-center justify-center h-[300px] max-_430_:h-[200px] rounded-[10px]"
-                        >
-                          <img
-                            src={`${imageBaseURL}${item}`}
-                            className="w-[100%] h-[100%] rounded-[10px] object-cover"
-                            alt=""
-                          />
-                        </button>
-                      </div>
-                    )}
-                    {images.map((item, index) => {
-                      return <div
-                        key={index}
-                        className="w-[20%] max-_1445_:w-[30%] max-_1030_:w-[40%] relative max-_430_:w-[45%] cursor-pointer border-[2px] border-dotted max-_430_:p-[5px] p-[10px] border-gray-400 rounded-[10px]"
-                      >
-                        {item && (
-                          <IoMdClose
-                            onClick={() => handleRemoveImage(index)}
-                            className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-red-500 text-[#333333] rounded-full "
-                          />
-                        )}
-                        <buttton
-                          onClick={() => InputRef.current[index].click()}
-                          className="bg-[#e5e5e5] w-[100%] flex items-center justify-center h-[300px] max-_430_:h-[200px] rounded-[10px]"
-                        >
-                          {item ? (
-                            <img
-                              src={URL.createObjectURL(item)}
-                              className="w-[100%] h-[100%] object-cover rounded-[10px]"
-                              alt=""
-                            />
-                          ) : (
-                            <div className="text-[40px]">+</div>
-                          )}
+      <form onSubmit={props.handleSubmit} className="mt-[20px]">
+        {/* <------------- Select Image Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap gap-[25px] max-_430_:gap-[10px] max-_430_:justify-center max-_1030_:justify-center">
+          {imagearray.map((item, index) =>
+            <div
+              key={index}
+              className="w-[20%] max-_1445_:w-[30%] max-_1030_:w-[40%] relative max-_430_:w-[45%] cursor-pointer border-[2px] border-dotted p-[10px] max-_430_:p-[5px] border-gray-300 rounded-[10px]"
+            >
+              {item && (
+                <IoMdClose
+                  onClick={() => CloseHandler(index)}
+                  className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-[#C95B5B] text-white rounded-full shadow-sm"
+                />
+              )}
+              <button type="button"
+                className="bg-[#F7F5F2] w-[100%] flex items-center justify-center h-[300px] max-_430_:h-[200px] rounded-[10px]"
+              >
+                <img
+                  src={`${imageBaseURL}${item}`}
+                  className="w-[100%] h-[100%] rounded-[10px] object-cover"
+                  alt=""
+                />
+              </button>
+            </div>
+          )}
+          {images.map((item, index) => {
+            return <div
+              key={index}
+              className="w-[20%] max-_1445_:w-[30%] max-_1030_:w-[40%] relative max-_430_:w-[45%] cursor-pointer border-[2px] border-dotted max-_430_:p-[5px] p-[10px] border-gray-300 rounded-[10px]"
+            >
+              {item && (
+                <IoMdClose
+                  onClick={() => handleRemoveImage(index)}
+                  className="z-[666] w-[25px] h-[25px] absolute -right-2 -top-2 p-1 bg-[#C95B5B] text-white rounded-full shadow-sm"
+                />
+              )}
+              <buttton
+                onClick={() => InputRef.current[index].click()}
+                className="bg-[#F7F5F2] w-[100%] flex items-center justify-center h-[300px] max-_430_:h-[200px] rounded-[10px]"
+              >
+                {item ? (
+                  <img
+                    src={URL.createObjectURL(item)}
+                    className="w-[100%] h-[100%] object-cover rounded-[10px]"
+                    alt=""
+                  />
+                ) : (
+                  <div className="text-[40px] text-[#333333]">+</div>
+                )}
 
-                          <input disabled={item && true}
-                            ref={(el) => (InputRef.current[index] = el)}
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={(e) => {
-                              const file = e.target.files[0];
-                              if (file) {
-                                handleImageChange(index, file);
-                              }
-                            }}
-                          />
-                        </buttton>
-                      </div>
-                    })
+                <input disabled={item && true}
+                  ref={(el) => (InputRef.current[index] = el)}
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      handleImageChange(index, file);
                     }
-                  </div>
+                  }}
+                />
+              </buttton>
+            </div>
+          })
+          }
+        </div>
 
-                  {/* <------------- Select Nick Name And Email Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap items-center  max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px]">
-                    <div className="w-[40%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Nick Name')}
-                      </h6>
-                      <input
-                        value={nickName}
-                        onChange={(e) => {
-                          const { name, value } = e.target;
-                          if (name === "name") setNickName(value);
-                        }}
-                        type="text"
-                        name="name"
-                        className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[10px] rounded-[10px]"
-                        placeholder="Nick Name"
-                      />
-                    </div>
-                    <div className="w-[40%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Email')}
-                      </h6>
-                      <input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="Email"
-                        name="email"
-                        className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[10px] rounded-[10px]"
-                        placeholder="Email"
-                      />
-                    </div>
-                  </div>
+        {/* <------------- Select Nick Name And Email Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap items-center  max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px]">
+          <div className="w-[40%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Nick Name')}
+            </h6>
+            <input
+              value={nickName}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                if (name === "name") setNickName(value);
+              }}
+              type="text"
+              name="name"
+              className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+              placeholder="Nick Name"
+            />
+          </div>
+          <div className="w-[40%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Email')}
+            </h6>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="Email"
+              name="email"
+              className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+              placeholder="Email"
+            />
+          </div>
+        </div>
 
-                  {/* <------------- Select Number And Password Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap items-center max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
-                    <div className="w-[40%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Mobile Number')}
-                      </h6>
-                      <div className="flex gap-[10px] items-center border-gray-300 px-[15px] py-[10px] rounded-[10px]  border-[2px] focus-within:border-[#0066CC]">
-                        <label htmlFor="" className="text-[16px]">
-                          {ccode}
-                        </label>
-                        <input
-                          value={number}
-                          name="mobile"
-                          onChange={(e) => setNummber(e.target.value)}
-                          type="number"
-                          className="text-black w-[100%]  outline-none"
-                          placeholder="Mobile Number"
-                        />
-                      </div>
-                    </div>
-                    <div className="relative w-[40%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Password')}
-                      </h6>
-                      <div className="border-[2px] flex  gap-[15px] focus-within:border-[#0066CC] border-gray-300 px-[15px] py-[10px] rounded-[10px]">
-                        <img
-                          src={UblockIcon}
-                          alt=""
-                          className="w-[20px] h-[20px]"
-                        />
-                        <input
-                          id="input"
-                          type="password"
-                          className="text-black w-[100%] outline-none"
-                          placeholder="Password"
-                          name="password"
-                          value={Password}
-                          onChange={(e) => setpassword(e.target.value)}
-                        />
-                      </div>
-                      <button type="button"
-                        className="absolute top-[42px] right-5"
-                        onClick={() => myFunction()}
-                      >
-                        <img
-                          ref={Show}
-                          alt="Show"
-                          src={ShowPassword}
-                          className="w-[25px] h-[25px] hidden "
-                        />
-                        <img
-                          ref={Hide}
-                          alt="Hide"
-                          src={HidePassword}
-                          className="w-[25px] h-[25px]"
-                        />
-                      </button>
-                    </div>
-                  </div>
+        {/* <------------- Select Number And Password Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap items-center max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
+          <div className="w-[40%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Mobile Number')}
+            </h6>
+            <div className="flex gap-[10px] items-center border-gray-300 bg-white px-[15px] py-[15px] rounded-xl border-2 focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all duration-200">
+              <label htmlFor="" className="text-[16px] text-black">
+                {ccode}
+              </label>
+              <input
+                value={number}
+                name="mobile"
+                onChange={(e) => setNummber(e.target.value)}
+                type="number"
+                className="text-black w-[100%] bg-transparent outline-none"
+                placeholder="Mobile Number"
+              />
+            </div>
+          </div>
+          <div className="relative w-[40%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Password')}
+            </h6>
+            <div className="flex gap-[10px] items-center border-gray-300 bg-white px-[15px] py-[15px] rounded-xl border-2 focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all duration-200">
+              <img
+                src={UblockIcon}
+                alt=""
+                className="w-[20px] h-[20px]"
+              />
+              <input
+                id="input"
+                type="password"
+                className="text-[#333333] w-[100%] bg-transparent outline-none"
+                placeholder="Password"
+                name="password"
+                value={Password}
+                onChange={(e) => setpassword(e.target.value)}
+              />
+            </div>
+            <button type="button"
+              className="absolute top-[42px] right-5"
+              onClick={() => myFunction()}
+            >
+              <img
+                ref={Show}
+                alt="Show"
+                src={ShowPassword}
+                className="w-[25px] h-[25px] hidden"
+              />
+              <img
+                ref={Hide}
+                alt="Hide"
+                src={HidePassword}
+                className="w-[25px] h-[25px]"
+              />
+            </button>
+          </div>
+        </div>
 
-                  {/* <------------- Select Distance And BirthDate Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap items-center max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
-                    <div className="w-[40%] max-_430_:w-[90%]">
-                      <div className="flex justify-between items-center">
-                        <h1 className="text-[20px] font-[400] max-_430_:text-[16px] text-black">
-                          {t('Distance Preference')}
-                        </h1>
-                        <h1 className="text-[20px] font-[400] max-_1030_:text-[16px] text-black">
-                          {kilometers}.{centimeters} km
-                        </h1>
-                      </div>
-                      <input
-                        style={sliderStyle}
-                        type="range"
-                        className="Range"
-                        min="0"
-                        name="radius_search"
-                        max="50000"
-                        value={distance}
-                        onChange={(e) => setDistance(e.target.value)}
-                      />
-                    </div>
-                    <div className=" w-[40%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Birthdate')}
-                      </h6>
-                      <div className="border-[2px] focus-within:border-[#0066CC] text-[18px] px-[15px] py-[10px] rounded-[10px]">
-                        <input
-                          type="date"
-                          className=" outline-none bg-transparent w-[100%]"
-                          id="date-picker"
-                          name="birth_date"
-                          value={birthdate}
-                          onChange={(e) => setBirthDate(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
+        {/* <------------- Select Distance And BirthDate Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap items-center max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
+          <div className="w-[40%] max-_430_:w-[90%]">
+            <div className="flex justify-between items-center">
+              <h1 className="text-[20px] font-[400] max-_430_:text-[16px] text-[#222222]">
+                {t('Distance Preference')}
+              </h1>
+              <h1 className="text-[20px] font-[400] max-_1030_:text-[16px] text-[#222222]">
+                {kilometers}.{centimeters} km
+              </h1>
+            </div>
+            <input
+              style={sliderStyle}
+              type="range"
+              className="Range"
+              min="0"
+              name="radius_search"
+              max="50000"
+              value={distance}
+              onChange={(e) => setDistance(e.target.value)}
+            />
+          </div>
+          <div className=" w-[40%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Birthdate')}
+            </h6>
+            <div className="flex gap-[10px] items-center border-gray-300 bg-white px-[15px] py-[15px] rounded-xl border-2 focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all duration-200">
+              <input
+                type="date"
+                className="text-[#333333] outline-none bg-transparent w-[100%]"
+                id="date-picker"
+                name="birth_date"
+                value={birthdate}
+                onChange={(e) => setBirthDate(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
 
-                  {/* <------------- Select Bio And Gender Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap items-center max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
-                    <div className="w-[40%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Bio')}
-                      </h6>
-                      <input
-                        value={bio === "undefined" ? "" : bio}
-                        onChange={(e) => setBio(e.target.value)}
-                        type="text"
-                        name="bio"
-                        className="text-black w-[100%] border-[2px] outline-[#0066CC] border-gray-300 px-[15px] py-[10px] rounded-[10px]"
-                        placeholder={bio === "undefined" && "Add Bio"}
-                      />
-                    </div>
-                    <div className="w-[40%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Gender')}
-                      </h6>
-                      <div className="">
-                        <ul className="flex flex-wrap items-center gap-[10px]  m-0 p-0">
-                          <li
-                            onClick={() => setGender("MALE")}
-                            className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${gender === "MALE" ? "Active" : "hover:bg-[#ddd]"
-                              }`}
-                          >
-                            MALE
-                          </li>
-                          <li
-                            onClick={() => setGender("FEMALE")}
-                            className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${gender === "FEMALE" ? "Active" : "hover:bg-[#ddd]"
-                              }`}
-                          >
-                            FEMALE
-                          </li>
-                          <li
-                            onClick={() => setGender("OTHER")}
-                            className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${gender === "OTHER" ? "Active" : "hover:bg-[#ddd]"
-                              }`}
-                          >
-                            OTHER
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+        {/* <------------- Select Bio And Gender Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap items-center max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
+          <div className="w-[40%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Bio')}
+            </h6>
+            <input
+              value={bio === "undefined" ? "" : bio}
+              onChange={(e) => setBio(e.target.value)}
+              type="text"
+              name="bio"
+              className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+              placeholder= " Add Bio" 
+            />
+          </div>
+          <div className="w-[40%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Gender')}
+            </h6>
+            <div className="">
+              <ul className="flex flex-wrap items-center gap-[10px] m-0 p-0">
+                <li
+                  onClick={() => setGender("MALE")}
+                  className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${gender === "MALE" ? "bg-[#1F5799] text-white border-[#1F5799]" : "text-[#333333] hover:bg-gray-100"}`}
+                >
+                  MALE
+                </li>
+                <li
+                  onClick={() => setGender("FEMALE")}
+                  className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${gender === "FEMALE" ? "bg-[#1F5799] text-white border-[#1F5799]" : "text-[#333333] hover:bg-gray-100"}`}
+                >
+                  FEMALE
+                </li>
+                <li
+                  onClick={() => setGender("OTHER")}
+                  className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${gender === "OTHER" ? "bg-[#1F5799] text-white border-[#1F5799]" : "text-[#333333] hover:bg-gray-100"}`}
+                >
+                  OTHER
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-                  {/* <------------- Select Interest And Langusges Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
-                    <div className="w-[40%] max-_430_:w-[90%] block">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Interests')}
-                      </h6>
-                      <div className=" items-center">
-                        {interestList.map((el) => {
-                          return (
-                            <button type="button"
-                              onClick={() => InterestMapHandler(el.id)}
-                              className="inline-block"
-                            >
-                              <div
-                                className={`button text-[16px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-center gap-[10px] ${interest.includes(el.id) && "selected"
-                                  }`}
-                              >
-                                {el.title}{" "}
-                                <img
-                                  src={imageBaseURL + el.img}
-                                  alt=""
-                                  className="w-[20px] h-[20px]"
-                                />
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                    <div className="w-[50%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Langusges I Know')}
-                      </h6>
-                      {languageList.map((el) => {
-                        return (
-                          <button type="button"
-                            onClick={() => LanguageMapHandler(el.id)}
-                            className="inline-block"
-                          >
-                            <div
-                              className={`button text-[18px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-cente ${language.includes(el.id) && "selected"
-                                }`}
-                            >
-                              {el.title}{" "}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* <------------- Select Religion And Relationship Golas Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
-                    <div className="w-[40%] max-_430_:w-[90%] block">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Religion')}
-                      </h6>
-                      {religionList.map((el) => {
-                        return (
-                          <h6
-                            onClick={() => setReligion(el.id)}
-                            key={el.id}
-                            className={`text-[18px] font-[400] max-_430_:text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${religion === el.id ? "Active" : "hover:bg-[#ddd]"
-                              }`}
-                          >
-                            {el.title}
-                          </h6>
-                        );
-                      })}
-                    </div>
-                    <div className="w-[45%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Relationship Goals')}
-                      </h6>
-                      {relationshipList.map((el) => {
-                        return (
-                          <h6
-                            onClick={() => setRelationship(el.id)}
-                            key={el.id}
-                            className={`text-[18px] font-[400] max-_430_:text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${relationship === el.id
-                              ? "Active"
-                              : "hover:bg-[#ddd]"
-                              }`}
-                          >
-                            {el.title}
-                          </h6>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* <------------- Select Serach Preference And height Section -----------> */}
-                  <div className="mt-[30px] flex flex-wrap max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
-                    <div className="w-[40%] max-_430_:w-[90%] block">
-                      <div className="">
-                        <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                          {t('Serach Preference')}
-                        </h6>
-                        <div className="">
-                          <ul className="flex flex-wrap items-center gap-[10px]  m-0 p-0">
-                            <li
-                              onClick={() => setPreference("MALE")}
-                              className={`${preference === "MALE"
-                                ? "Active"
-                                : "hover:bg-[#ddd]"
-                                } text-[18px]  max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
-                            >
-                              MALE
-                            </li>
-                            <li
-                              onClick={() => setPreference("FEMALE")}
-                              className={`${preference === "FEMALE"
-                                ? "Active"
-                                : "hover:bg-[#ddd]"
-                                } text-[18px]  max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
-                            >
-                              FEMALE
-                            </li>
-                            <li
-                              onClick={() => setPreference("BOTH")}
-                              className={`${preference === "BOTH"
-                                ? "Active"
-                                : "hover:bg-[#ddd]"
-                                } text-[18px]  max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
-                            >
-                              BOTH
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-[50%] max-_430_:w-[90%]">
-                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                        {t('Height')}
-                      </h6>
-                      <div className="py-[5px] w-[150px] px-[10px] border-[2px] border-gray-300 rounded-[10px] focus-within:border-[#0066CC]">
-                        <input
-                          type="number"
-                          className="w-[70px] outline-none"
-                          placeholder="Height"
-                          name="height"
-                          value={height}
-                          onChange={(e) => setHeight(e.target.value)}
-                        />
-                        <label htmlFor="" className="text-[16px] ms-[10px]">
-                          {t('CM')}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button type="submit"
-                    className="font-bold text-[18px] rounded-[10px] mt-[20px] text-[#333333] py-[10px] w-[100%] bg-[#0066CC] tracking-[2px]"
+        {/* <------------- Select Interest And Langusges Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
+          <div className="w-[40%] max-_430_:w-[90%] block">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Interests')}
+            </h6>
+            <div className="items-center">
+              {interestList.map((el) => {
+                return (
+                  <button type="button"
+                    onClick={() => InterestMapHandler(el.id)}
+                    className="inline-block"
                   >
-                    {" "}
-                    {t('Update')}{" "}
+                    <div
+                      className={`text-[16px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] border-gray-200 rounded-[50px] mb-[10px] me-[10px] flex items-center gap-[10px] transition-colors ${interest.includes(el.id) ? "bg-[#1F5799] text-white border-[#1F5799]" : "text-[#333333] hover:bg-gray-100"}`}
+                    >
+                      {el.title}{" "}
+                      <img
+                        src={imageBaseURL + el.img}
+                        alt=""
+                        className="w-[20px] h-[20px]"
+                      />
+                    </div>
                   </button>
-                </form>
+                );
+              })}
+            </div>
+          </div>
+          <div className="w-[50%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Langusges I Know')}
+            </h6>
+            {languageList.map((el) => {
+              return (
+                <button type="button"
+                  onClick={() => LanguageMapHandler(el.id)}
+                  className="inline-block"
+                >
+                  <div
+                    className={`text-[18px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-200 rounded-[50px] mb-[10px] me-[10px] flex items-center transition-colors ${language.includes(el.id) ? "bg-[#1F5799] text-white border-[#1F5799]" : "text-[#333333] hover:bg-gray-100"}`}
+                  >
+                    {el.title}{" "}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* <------------- Select Religion And Relationship Golas Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
+          <div className="w-[40%] max-_430_:w-[90%] block">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Religion')}
+            </h6>
+            {religionList.map((el) => {
+              return (
+                <h6
+                  onClick={() => setReligion(el.id)}
+                  key={el.id}
+                  className={`text-[18px] font-[400] max-_430_:text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${religion === el.id ? "bg-[#1F5799] text-white border-[#1F5799]" : "text-[#333333] hover:bg-gray-100"}`}
+                >
+                  {el.title}
+                </h6>
+              );
+            })}
+          </div>
+          <div className="w-[45%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Relationship Goals')}
+            </h6>
+            {relationshipList.map((el) => {
+              return (
+                <h6
+                  onClick={() => setRelationship(el.id)}
+                  key={el.id}
+                  className={`text-[18px] font-[400] max-_430_:text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${relationship === el.id
+                    ? "bg-[#1F5799] text-white border-[#1F5799]"
+                    : "text-[#333333] hover:bg-gray-100"
+                    }`}
+                >
+                  {el.title}
+                </h6>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* <------------- Select Serach Preference And height Section -----------> */}
+        <div className="mt-[30px] flex flex-wrap max-_1030_:justify-center gap-[30px] max-_430_:gap-[15px] max-_430_:mt-[15px]">
+          <div className="w-[40%] max-_430_:w-[90%] block">
+            <div className="">
+              <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+                {t('Serach Preference')}
+              </h6>
+              <div className="">
+                <ul className="flex flex-wrap items-center gap-[10px] m-0 p-0">
+                  <li
+                    onClick={() => setPreference("MALE")}
+                    className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${preference === "MALE"
+                      ? "bg-[#1F5799] text-white border-[#1F5799]"
+                      : "text-[#333333] hover:bg-gray-100"
+                      }`}
+                  >
+                    MALE
+                  </li>
+                  <li
+                    onClick={() => setPreference("FEMALE")}
+                    className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${preference === "FEMALE"
+                      ? "bg-[#1F5799] text-white border-[#1F5799]"
+                      : "text-[#333333] hover:bg-gray-100"
+                      }`}
+                  >
+                    FEMALE
+                  </li>
+                  <li
+                    onClick={() => setPreference("BOTH")}
+                    className={`text-[18px] max-_430_:text-[16px] cursor-pointer border-[2px] border-gray-200 rounded-full py-[5px] px-[15px] transition-colors ${preference === "BOTH"
+                      ? "bg-[#1F5799] text-white border-[#1F5799]"
+                      : "text-[#333333] hover:bg-gray-100"
+                      }`}
+                  >
+                    BOTH
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-
+          <div className="w-[50%] max-_430_:w-[90%]">
+            <h6 className="text-[18px] font-[500] max-_430_:text-[16px] text-[#222222]">
+              {t('Height')}
+            </h6>
+            <div className="py-[5px] w-[150px] px-[10px] border-[2px] border-gray-200 rounded-[8px] focus-within:border-[#C89A3D] focus-within:shadow-sm bg-white">
+              <input
+                type="number"
+                className="w-[70px] outline-none text-[#333333] bg-transparent"
+                placeholder="Height"
+                name="height"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+              />
+              <label htmlFor="" className="text-[16px] ms-[10px] text-[#333333]">
+                {t('CM')}
+              </label>
+            </div>
+          </div>
         </div>
+
+        <button type="submit"
+          className="font-bold text-[18px] rounded-full mt-[20px] text-white py-[12px] w-[100%] bg-[#1F5799] tracking-[2px] shadow-sm hover:bg-[#1A4A87] transition-colors"
+        >
+          {" "}
+          {t('Update')}{" "}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
       )}
     </Formik>
   );

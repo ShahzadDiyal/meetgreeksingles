@@ -657,8 +657,15 @@ const Header = () => {
               <Link
                 onClick={() => ColorHandler("Upgrade")}
                 to="/upgrade"
-                style={{ background: "#0066CC" }}
-                className="btn text-[#333333] gap-1 df-center"
+                style={{
+        background: "#1F5799",       
+        borderRadius: "999px",        
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
+        padding: "10px 18px"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
+      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}
+                className="btn text-[#ffffff] gap-1 df-center"
               >
                 <svg
                   width="20"
@@ -669,14 +676,14 @@ const Header = () => {
                 >
                   <path
                     d="M18.1965 12.3945L17.8358 13.959C17.762 14.2782 17.4779 14.5039 17.1502 14.5039H3.08775C2.7601 14.5039 2.47603 14.2782 2.40221 13.959L2.0415 12.3945H18.1965Z"
-                    fill="currentColor"
+                    fill="#ffffff"
                   ></path>
                   <path
                     d="M19.9447 4.81846L18.5209 10.9884H1.71619L0.292359 4.81846C0.229781 4.54635 0.333843 4.26228 0.55814 4.09564C0.78314 3.929 1.08478 3.91142 1.32665 4.04994L5.67829 6.53689L9.53282 0.7551C9.65868 0.566662 9.8668 0.449944 10.0925 0.441506C10.3203 0.431662 10.5348 0.534319 10.6733 0.712912L15.1937 6.52494L18.8689 4.07525C19.1087 3.91635 19.4216 3.91775 19.6585 4.08158C19.8962 4.24541 20.0087 4.53791 19.9447 4.81846Z"
-                    fill="currentColor"
+                    fill="#ffffff"
                   ></path>
                 </svg>
-                <span className="fs-13 d-sm-block d-none">
+                <span className="fs-13 d-sm-block d-none text-white">
                   {t("Upgrade Now")}
                 </span>
               </Link>
@@ -797,9 +804,9 @@ const Header = () => {
             <div className="rounded-full py-[2px] px-[7px] bg-[#0066CC] inline-block  hover:bg-[#164271]">
               <button
                 onClick={ProfileHandler}
-                className="text-end text-[#333333] flex items-center  hover:text-white"
+                className="text-end text-[#ffffff] flex items-center  hover:text-[#ffffff]"
               >
-                {t("Edit")} <BiEditAlt className="ms-1  hover:text-white" />
+                {t("Edit")} <BiEditAlt className="ms-1 text-[#ffffff] hover:text-[#ffffff]" />
               </button>
             </div>
           </div>
@@ -1343,14 +1350,21 @@ const Header = () => {
                 ColorHandler("");
                 SlidBarHAndler();
               }}
-              className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#0066CC] mt-[20px]"
+              className="mx-[10px] px-[10px] py-[10px] rounded-[10px] bg-[#F7F5F2] mt-[20px]"
             >
               <Link to="/upgrade">
                 <div className="flex items-center">
                   <h6 className="text-[#333333] Demo">
                     {t("Join Our Membership Today!")}
                   </h6>
-                  <button className="bg-white text-[#0066CC] px-[10px] py-[3px] rounded-[10px] font-[500]">
+                  <button className="bg-white px-[10px] py-[3px] rounded-[10px] font-[500]"  style={{
+        background: "#1F5799",       
+        borderRadius: "999px",        
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
+        padding: "10px 18px"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
+      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}>
                     {t("Go")}
                   </button>
                 </div>
@@ -1466,8 +1480,15 @@ const Header = () => {
               </div>
               <button
                 onClick={PhotoHandler}
-                className="font-[500] text-[18px] bg-[#0066CC] text-[#333333] w-[60%] max-_430_:w-[75%] rounded-[10px] py-[8px] my-[15px] hover:bg-[#164271] hover:text-white"
-              >
+                className="font-[500] text-[18px] bg-[#0066CC] text-[#ffffff] w-[60%] max-_430_:w-[75%] py-[8px] my-[15px] "
+               style={{
+        background: "#1F5799",       
+        borderRadius: "999px",        
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
+        padding: "10px 18px"
+      }}
+      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
+      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}>
                 {t("Add")}
               </button>
             </div>
