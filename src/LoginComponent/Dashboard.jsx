@@ -195,14 +195,24 @@ const Dashboard = () => {
     }
   };
 
+  // const IdHandler = (i, index, name) => {
+  //   const Title = name.replace(/\s+/g, '_');
+  //   const FinalText = Title.toLowerCase();
+  //   navigate(`/detail/${FinalText}`);
+  //   setDetails(i);
+  //   setBlockId(index);
+  //   localStorage.setItem("DetailsId", index);
+  // };
+
   const IdHandler = (i, index, name) => {
     const Title = name.replace(/\s+/g, '_');
     const FinalText = Title.toLowerCase();
-    navigate(`/detail/${FinalText}`);
+    // Pass the profile_id as a URL parameter instead of just slug
+    navigate(`/detail/${FinalText}/${index}`);
     setDetails(i);
     setBlockId(index);
     localStorage.setItem("DetailsId", index);
-  };
+};
 
   const CloseAnimationHandler = (Id, Name) => {
     setClose((e) => [...e, Id]);

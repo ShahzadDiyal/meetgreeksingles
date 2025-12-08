@@ -103,6 +103,8 @@ const MyProvider = ({ children }) => {
     pic5: null
   });
 
+  const [imageCount, setImageCount] = useState(0);
+
   const [registrationStep, setRegistrationStep] = useState(1);
   const [userId, setUserId] = useState("");
 
@@ -263,7 +265,9 @@ const MyProvider = ({ children }) => {
     setWantChildren,
     travelWillingness,
     setTravelWillingness,
-
+  
+    imageCount, 
+    setImageCount,
     profileImages, setProfileImages,
     registrationStep, setRegistrationStep,
     userId, setUserId

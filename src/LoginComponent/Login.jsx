@@ -177,11 +177,11 @@ const Login = () => {
 //                 }
 
 //               } catch (tokenError) {
-//                 console.warn("❌ Error getting FCM token:", tokenError);
+//                 console.warn(" Error getting FCM token:", tokenError);
 //               }
 
 //             } catch (oneSignalError) {
-//               console.warn("❌ OneSignal initialization error:", oneSignalError);
+//               console.warn(" OneSignal initialization error:", oneSignalError);
 //             }
 //           } else {
 //             console.log("⚠️ OneSignal not available in window");
@@ -211,7 +211,7 @@ const Login = () => {
 //             const savedData = savedDoc.data();
 //             console.log("🔍 VERIFICATION - Firestore document saved successfully");
 //           } else {
-//             console.error("❌ Document doesn't exist after save!");
+//             console.error(" Document doesn't exist after save!");
 //           }
 
 //         } catch (error) {
@@ -355,7 +355,7 @@ const SigninHandler = async () => {
                 console.warn("⚠️ No FCM token available after 3 attempts");
               }
             } catch (oneSignalError) {
-              console.warn("❌ OneSignal error:", oneSignalError);
+              console.warn(" OneSignal error:", oneSignalError);
             }
           }
 

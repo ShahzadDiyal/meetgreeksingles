@@ -6,15 +6,16 @@ import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
 
 const Imagecom = () => {
-  const { 
-    setLatitude, 
+  const {
+    setLatitude,
     setLongitude,
     profileImages,
     setProfileImages,
+    setImageCount,
     registrationStep,
-    setRegistrationStep
+    setRegistrationStep,
   } = useContext(MyContext);
-  
+
   const navigate = useNavigate();
 
   const inp1 = useRef();
@@ -25,29 +26,35 @@ const Imagecom = () => {
   const inp6 = useRef();
 
   const [input1, setInput1] = useState(profileImages.pic0 || null);
-  const [input2, setInput2] = useState(profileImages.pic3 || null);
-  const [input3, setInput3] = useState(profileImages.pic4 || null);
-  const [input4, setInput4] = useState(profileImages.pic1 || null);
-  const [input5, setInput5] = useState(profileImages.pic2 || null);
+  const [input2, setInput2] = useState(profileImages.pic1 || null);
+  const [input3, setInput3] = useState(profileImages.pic2 || null);
+  const [input4, setInput4] = useState(profileImages.pic3 || null);
+  const [input5, setInput5] = useState(profileImages.pic4 || null);
   const [input6, setInput6] = useState(profileImages.pic5 || null);
-  
+
   const [selectedImages, setSelectedImages] = useState(profileImages);
   const [selectedCount, setSelectedCount] = useState(0);
 
+  const isButtonEnabled = (buttonId) => {
+    if (buttonId === "1") return true;
+    if (buttonId === "2") return !!input1;
+    if (buttonId === "3") return !!input2;
+    if (buttonId === "4") return !!input3;
+    if (buttonId === "5") return !!input4;
+    if (buttonId === "6") return !!input5;
+
+    return false;
+  };
+
   const ImageHandler = (id) => {
-    if (id === "1") {
-      inp1.current.click();
-    } else if (id === "2") {
-      inp2.current.click();
-    } else if (id === "3") {
-      inp3.current.click();
-    } else if (id === "4") {
-      inp4.current.click();
-    } else if (id === "5") {
-      inp5.current.click();
-    } else if (id === "6") {
-      inp6.current.click();
-    }
+    if (!isButtonEnabled(id)) return;
+
+    if (id === "1") inp1.current.click();
+    else if (id === "2") inp2.current.click();
+    else if (id === "3") inp3.current.click();
+    else if (id === "4") inp4.current.click();
+    else if (id === "5") inp5.current.click();
+    else if (id === "6") inp6.current.click();
   };
 
   useEffect(() => {
@@ -57,51 +64,49 @@ const Imagecom = () => {
     });
   }, []);
 
-  // Count how many images have been selected
   useEffect(() => {
-    const count = Object.values(selectedImages).filter(img => img !== null).length;
+    const count = Object.values(selectedImages).filter(
+      (img) => img !== null
+    ).length;
     setSelectedCount(count);
+    if (setImageCount) {
+      setImageCount(count);
+    }
   }, [selectedImages]);
 
   const handleFileSelect = (id, file) => {
     if (!file) return;
-    
+
     const newSelectedImages = { ...selectedImages };
-    
-    // Update local state
+
     if (id === "1") {
       setInput1(file);
       newSelectedImages.pic0 = file;
     } else if (id === "2") {
       setInput2(file);
-      newSelectedImages.pic3 = file;
+      newSelectedImages.pic1 = file;
     } else if (id === "3") {
       setInput3(file);
-      newSelectedImages.pic4 = file;
+      newSelectedImages.pic2 = file;
     } else if (id === "4") {
       setInput4(file);
-      newSelectedImages.pic1 = file;
+      newSelectedImages.pic3 = file;
     } else if (id === "5") {
       setInput5(file);
-      newSelectedImages.pic2 = file;
+      newSelectedImages.pic4 = file;
     } else if (id === "6") {
       setInput6(file);
       newSelectedImages.pic5 = file;
     }
-    
-    // Update both local and context state
+
     setSelectedImages(newSelectedImages);
     setProfileImages(newSelectedImages);
   };
 
   const SubmitHandler = () => {
-    // Check if at least 3 images are selected
     if (selectedCount >= 3) {
       setRegistrationStep(registrationStep + 1);
-      
-  
       navigate("/info");
-      
       showTost({ title: "Images saved successfully!" });
     } else {
       showTost({ title: "Please Select Minimum 3 Images" });
@@ -113,9 +118,9 @@ const Imagecom = () => {
       <div className="w-[100%] multisteup-wrapper pt-[20px]">
         <div className="container mx-auto">
           <section className="steps step-1 active rounded-[40px] relative">
-            <div className="w-[100%] bg-[#EFEDEE]  pt-[30px] z-[999]  pb-[20px] fixed top-[0px] ">
+            <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
               <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-                <div className="bg-[#0066CC]  rounded-full w-[9%] h-[5px] "></div>
+                <div className="bg-[#0066CC] rounded-full w-[9%] h-[5px]"></div>
               </div>
             </div>
             <div className="mt-[10px]">
@@ -123,8 +128,8 @@ const Imagecom = () => {
                 Show your best self 📸
               </h1>
               <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
-                Upload a clear photo to help others get to know you<br /> video to make
-                a fantastic first impression. <br />
+                Upload a clear photo to help others get to know you
+                <br /> video to make a fantastic first impression. <br />
                 Let your personality shine.
               </p>
               <p className="text-[16px] mt-[5px] text-gray-600 font-medium">
@@ -135,22 +140,22 @@ const Imagecom = () => {
             <div className="mt-[20px] w-[100%]">
               <div>
                 <div className="flex">
-                  <div className="w-[65%] relative ">
+                  <div className="w-[65%] relative">
                     <button
                       type="button"
                       onClick={() => ImageHandler("1")}
-                      className={`w-[100%] border-[2px] ${input1 ? "" : "border-[#C89A3D]"
-                        } h-[210px] max-_430_:h-[170px] p-0 m-0 overflow-hidden rounded-tl-[15px] text-[30px] flex items-center justify-center`}
+                      className={`w-[100%] border-[2px] ${
+                        input1 ? "" : "border-[#C89A3D]"
+                      } h-[210px] max-_430_:h-[170px] p-0 m-0 overflow-hidden rounded-tl-[15px] text-[30px] flex items-center justify-center`}
                     >
                       <input
                         ref={inp1}
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          handleFileSelect("1", file);
-                        }}
+                        onChange={(e) =>
+                          handleFileSelect("1", e.target.files[0])
+                        }
                       />
                       {input1 ? (
                         <img
@@ -165,24 +170,24 @@ const Imagecom = () => {
                     <div className="flex">
                       <button
                         type="button"
-                        disabled={!input3}
                         onClick={() => ImageHandler("2")}
-                        className={`w-[100%] ${input2
-                          ? "border-gray-300"
-                          : input3
+                        disabled={!isButtonEnabled("2")}
+                        className={`w-[100%] border-[2px] ${
+                          input2
+                            ? "border-gray-300"
+                            : isButtonEnabled("2")
                             ? "border-[#C89A3D]"
-                            : ""
-                          } border-[2px] h-[105px] max-_430_:h-[85px] overflow-hidden rounded-bl-[15px] flex items-center justify-center`}
+                            : "border-gray-200 opacity-50"
+                        } h-[105px] max-_430_:h-[85px] overflow-hidden rounded-bl-[15px] flex items-center justify-center`}
                       >
                         <input
                           ref={inp2}
                           type="file"
                           accept="image/*"
                           className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            handleFileSelect("2", file);
-                          }}
+                          onChange={(e) =>
+                            handleFileSelect("2", e.target.files[0])
+                          }
                         />
                         {input2 ? (
                           <img
@@ -191,29 +196,37 @@ const Imagecom = () => {
                             alt="Uploaded"
                           />
                         ) : (
-                          input3 && <div className="text-2xl text-gray-400">+</div>
+                          <div
+                            className={`text-2xl ${
+                              isButtonEnabled("2")
+                                ? "text-gray-400"
+                                : "text-gray-300"
+                            }`}
+                          >
+                            +
+                          </div>
                         )}
                       </button>
                       <button
                         type="button"
-                        disabled={!input6}
                         onClick={() => ImageHandler("3")}
-                        className={`w-[100%] ${input3
-                          ? "border-gray-300"
-                          : input6
+                        disabled={!isButtonEnabled("3")}
+                        className={`w-[100%] border-[2px] ${
+                          input3
+                            ? "border-gray-300"
+                            : isButtonEnabled("3")
                             ? "border-[#C89A3D]"
-                            : ""
-                          } border-[2px] h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
+                            : "border-gray-200 opacity-50"
+                        } h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
                       >
                         <input
                           ref={inp3}
                           type="file"
                           accept="image/*"
                           className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            handleFileSelect("3", file);
-                          }}
+                          onChange={(e) =>
+                            handleFileSelect("3", e.target.files[0])
+                          }
                         />
                         {input3 ? (
                           <img
@@ -222,7 +235,15 @@ const Imagecom = () => {
                             alt="Uploaded"
                           />
                         ) : (
-                          input6 && <div className="text-2xl text-gray-400">+</div>
+                          <div
+                            className={`text-2xl ${
+                              isButtonEnabled("3")
+                                ? "text-gray-400"
+                                : "text-gray-300"
+                            }`}
+                          >
+                            +
+                          </div>
                         )}
                       </button>
                     </div>
@@ -230,24 +251,24 @@ const Imagecom = () => {
                   <div className="w-[35%]">
                     <button
                       type="button"
-                      disabled={!input1}
                       onClick={() => ImageHandler("4")}
-                      className={`w-[100%] border-[2px] ${input4
-                        ? "border-gray-300"
-                        : input1
+                      disabled={!isButtonEnabled("4")}
+                      className={`w-[100%] border-[2px] ${
+                        input4
+                          ? "border-gray-300"
+                          : isButtonEnabled("4")
                           ? "border-[#C89A3D]"
-                          : ""
-                        } rounded-tr-[15px] overflow-hidden h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
+                          : "border-gray-200 opacity-50"
+                      } rounded-tr-[15px] overflow-hidden h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
                     >
                       <input
                         ref={inp4}
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          handleFileSelect("4", file);
-                        }}
+                        onChange={(e) =>
+                          handleFileSelect("4", e.target.files[0])
+                        }
                       />
                       {input4 ? (
                         <img
@@ -256,29 +277,37 @@ const Imagecom = () => {
                           alt="Uploaded"
                         />
                       ) : (
-                        input1 && <div className="text-2xl text-gray-400">+</div>
+                        <div
+                          className={`text-2xl ${
+                            isButtonEnabled("4")
+                              ? "text-gray-400"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          +
+                        </div>
                       )}
                     </button>
                     <button
                       type="button"
-                      disabled={!input4}
                       onClick={() => ImageHandler("5")}
-                      className={`w-[100%] ${input5
-                        ? "border-gray-300"
-                        : input4
+                      disabled={!isButtonEnabled("5")}
+                      className={`w-[100%] border-[2px] ${
+                        input5
+                          ? "border-gray-300"
+                          : isButtonEnabled("5")
                           ? "border-[#C89A3D]"
-                          : ""
-                        } border-[2px] h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
+                          : "border-gray-200 opacity-50"
+                      } h-[105px] max-_430_:h-[85px] flex items-center justify-center`}
                     >
                       <input
                         ref={inp5}
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          handleFileSelect("5", file);
-                        }}
+                        onChange={(e) =>
+                          handleFileSelect("5", e.target.files[0])
+                        }
                       />
                       {input5 ? (
                         <img
@@ -287,29 +316,37 @@ const Imagecom = () => {
                           alt="Uploaded"
                         />
                       ) : (
-                        input4 && <div className="text-2xl text-gray-400">+</div>
+                        <div
+                          className={`text-2xl ${
+                            isButtonEnabled("5")
+                              ? "text-gray-400"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          +
+                        </div>
                       )}
                     </button>
                     <button
                       type="button"
-                      disabled={!input5}
                       onClick={() => ImageHandler("6")}
-                      className={`w-[100%] ${input6
-                        ? "border-gray-300"
-                        : input5
+                      disabled={!isButtonEnabled("6")}
+                      className={`w-[100%] border-[2px] ${
+                        input6
+                          ? "border-gray-300"
+                          : isButtonEnabled("6")
                           ? "border-[#C89A3D]"
-                          : ""
-                        } border-[2px] h-[105px] max-_430_:h-[85px] rounded-br-[15px] flex items-center overflow-hidden justify-center`}
+                          : "border-gray-200 opacity-50"
+                      } h-[105px] max-_430_:h-[85px] rounded-br-[15px] flex items-center overflow-hidden justify-center`}
                     >
                       <input
                         ref={inp6}
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          handleFileSelect("6", file);
-                        }}
+                        onChange={(e) =>
+                          handleFileSelect("6", e.target.files[0])
+                        }
                       />
                       {input6 ? (
                         <img
@@ -318,21 +355,33 @@ const Imagecom = () => {
                           alt="Uploaded"
                         />
                       ) : (
-                        input5 && <div className="text-2xl text-gray-400">+</div>
+                        <div
+                          className={`text-2xl ${
+                            isButtonEnabled("6")
+                              ? "text-gray-400"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          +
+                        </div>
                       )}
                     </button>
                   </div>
                 </div>
-                
-                {/* Selected Images Counter */}
+
                 <div className="mt-4 text-center">
                   <p className="text-gray-700">
-                    Selected: <span className="font-bold">{selectedCount}</span> / 6 images
+                    Selected: <span className="font-bold">{selectedCount}</span>{" "}
+                    / 6 images
                     {selectedCount >= 3 && " ✓"}
                   </p>
-                  <p className={`text-sm mt-1 ${selectedCount >= 3 ? "text-green-600" : "text-yellow-600"}`}>
-                    {selectedCount >= 3 
-                      ? "Minimum requirement met! You can proceed." 
+                  <p
+                    className={`text-sm mt-1 ${
+                      selectedCount >= 3 ? "text-green-600" : "text-yellow-600"
+                    }`}
+                  >
+                    {selectedCount >= 3
+                      ? "Minimum requirement met! You can proceed."
                       : `Select ${3 - selectedCount} more image(s)`}
                   </p>
                 </div>
@@ -340,10 +389,10 @@ const Imagecom = () => {
 
               <button
                 type="button"
-                style={{ 
+                style={{
                   background: selectedCount >= 3 ? "#0066CC" : "#CCCCCC",
-                  borderRadius:"999px",
-                  cursor: selectedCount >= 3 ? "pointer" : "not-allowed"
+                  borderRadius: "999px",
+                  cursor: selectedCount >= 3 ? "pointer" : "not-allowed",
                 }}
                 onClick={SubmitHandler}
                 className="btn btn-w-md nextstep mt-[50px] w-full py-3 rounded-full transition-all duration-300"
@@ -351,7 +400,9 @@ const Imagecom = () => {
               >
                 <div className="flex items-center justify-center gap-[10px]">
                   <span className="font-bold text-[1.25rem] text-white rounded-xl">
-                    {selectedCount >= 3 ? "Continue to Next Step" : "Select More Images"}
+                    {selectedCount >= 3
+                      ? "Continue to Next Step"
+                      : "Select More Images"}
                   </span>
                   {selectedCount >= 3 && (
                     <svg

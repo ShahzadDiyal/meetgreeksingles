@@ -58,30 +58,30 @@ const App = () => {
   const isAuthenticated = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("Register_User"));
   const isOnboardingCompleted =
-  user?.onboarding_status?.toLowerCase() === "completed";
+    user?.onboarding_status?.toLowerCase() === "completed";
 
- useEffect(() => {
+  useEffect(() => {
     const setOneSignalUser = async () => {
       const raw = localStorage.getItem("Register_user");
       if (raw && window.OneSignal) {
         try {
           const user = JSON.parse(raw);
-          
+
           console.log("🔄 Setting OneSignal user and getting token...");
-          
+
           // Wait for OneSignal to be ready
           await new Promise(resolve => {
             window.OneSignal.push(() => resolve());
           });
-          
+
           // Set external user ID
           await window.OneSignal.setExternalUserId(user.id);
           console.log(" OneSignal user ID set:", user.id);
-          
+
           // WAIT for OneSignal to generate token (this can take a few seconds)
           let fcmToken = await window.OneSignal.getUserId();
           let attempts = 0;
-          
+
           // Keep trying to get token for up to 10 seconds
           while (!fcmToken && attempts < 20) {
             console.log(`🔄 Waiting for OneSignal token... attempt ${attempts + 1}`);
@@ -89,16 +89,16 @@ const App = () => {
             fcmToken = await window.OneSignal.getUserId();
             attempts++;
           }
-          
+
           if (fcmToken) {
             console.log(" OneSignal token received:", fcmToken);
             await updateFirebaseToken(user.id, fcmToken);
           } else {
-            console.warn("❌ No OneSignal token received after 10 seconds");
+            console.warn(" No OneSignal token received after 10 seconds");
             // Still update Firebase to mark as tried
             await updateFirebaseToken(user.id, "");
           }
-          
+
         } catch (error) {
           console.warn("OneSignal user setup failed:", error);
         }
@@ -110,27 +110,25 @@ const App = () => {
     }
   }, [isAuthenticated]);
 
-  // Firebase token update function
   const updateFirebaseToken = async (userId, token) => {
     try {
       const { doc, setDoc, getDoc } = await import("firebase/firestore");
       const { db } = await import("./Users_Chats/Firebase");
-      
+
       const userRef = doc(db, "datingUser", userId);
-      
-      // Update ONLY the token field to avoid overwriting other data
+
       await setDoc(userRef, {
         token: token,
         updated_at: new Date().toISOString(),
       }, { merge: true });
-      
+
       console.log(" Firebase token updated:", token ? "with token" : "empty token");
-      
+
       // Verify the update
       const savedDoc = await getDoc(userRef);
       if (savedDoc.exists()) {
         const savedData = savedDoc.data();
-        console.log("🔍 Firebase verification - token:", savedData.token);
+        console.log("Firebase verification - token:", savedData.token);
       }
     } catch (error) {
       console.error("Error updating Firebase token:", error);
@@ -138,74 +136,70 @@ const App = () => {
   };
 
   useEffect(() => {
-  if (!window.OneSignal) return;
+    if (!window.OneSignal) return;
 
-  // Listen for when OneSignal gets a new token
-  window.OneSignal.push(() => {
-    window.OneSignal.on('notificationPermissionChange', async (permission) => {
-      if (permission === 'granted') {
-        console.log("🔔 Notification permission granted, getting token...");
-        
-        const raw = localStorage.getItem("Register_user");
-        if (raw) {
-          const user = JSON.parse(raw);
-          
-          // Wait a bit for token to be generated
-          setTimeout(async () => {
-            const fcmToken = await window.OneSignal.getUserId();
-            if (fcmToken) {
-              console.log("🎯 OneSignal token generated:", fcmToken);
-              await updateFirebaseToken(user.id, fcmToken);
-            }
-          }, 2000);
-        }
-      }
-    });
-  });
-}, []);
+    window.OneSignal.push(() => {
+      window.OneSignal.on('notificationPermissionChange', async (permission) => {
+        if (permission === 'granted') {
+          console.log(" Notification permission granted, getting token...");
 
+          const raw = localStorage.getItem("Register_user");
+          if (raw) {
+            const user = JSON.parse(raw);
 
-useEffect(() => {
-  if (!isAuthenticated) return;
-
-  const checkAndUpdateToken = async () => {
-    const raw = localStorage.getItem("Register_user");
-    if (!raw || !window.OneSignal) return;
-
-    const user = JSON.parse(raw);
-    
-    try {
-      const fcmToken = await window.OneSignal.getUserId();
-      if (fcmToken) {
-        // Check current token in Firebase
-        const { doc, getDoc } = await import("firebase/firestore");
-        const { db } = await import("./Users_Chats/Firebase");
-        
-        const userRef = doc(db, "datingUser", user.id);
-        const userDoc = await getDoc(userRef);
-        
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          // Update if token is empty or different
-          if (!userData.token || userData.token !== fcmToken) {
-            await updateFirebaseToken(user.id, fcmToken);
+            setTimeout(async () => {
+              const fcmToken = await window.OneSignal.getUserId();
+              if (fcmToken) {
+                console.log("OneSignal token generated:", fcmToken);
+                await updateFirebaseToken(user.id, fcmToken);
+              }
+            }, 2000);
           }
         }
+      });
+    });
+  }, []);
+
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const checkAndUpdateToken = async () => {
+      const raw = localStorage.getItem("Register_user");
+      if (!raw || !window.OneSignal) return;
+
+      const user = JSON.parse(raw);
+
+      try {
+        const fcmToken = await window.OneSignal.getUserId();
+        if (fcmToken) {
+          // Check current token in Firebase
+          const { doc, getDoc } = await import("firebase/firestore");
+          const { db } = await import("./Users_Chats/Firebase");
+
+          const userRef = doc(db, "datingUser", user.id);
+          const userDoc = await getDoc(userRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            if (!userData.token || userData.token !== fcmToken) {
+              await updateFirebaseToken(user.id, fcmToken);
+            }
+          }
+        }
+      } catch (error) {
+        console.warn("Token check failed:", error);
       }
-    } catch (error) {
-      console.warn("Token check failed:", error);
-    }
-  };
+    };
 
-  // Check token after 5 seconds and then every 30 seconds
-  const immediateCheck = setTimeout(checkAndUpdateToken, 5000);
-  const interval = setInterval(checkAndUpdateToken, 30000);
+    const immediateCheck = setTimeout(checkAndUpdateToken, 5000);
+    const interval = setInterval(checkAndUpdateToken, 30000);
 
-  return () => {
-    clearTimeout(immediateCheck);
-    clearInterval(interval);
-  };
-}, [isAuthenticated]);
+    return () => {
+      clearTimeout(immediateCheck);
+      clearInterval(interval);
+    };
+  }, [isAuthenticated]);
 
 
 
@@ -213,7 +207,6 @@ useEffect(() => {
     const raw = localStorage.getItem("Register_user");
     if (raw) {
       const user = JSON.parse(raw);
-      // OneSignal is now handled in the useEffect above
     }
   }, [demo]);
 
@@ -226,68 +219,68 @@ useEffect(() => {
       <MyProvider>
         <TodoContext.Provider value={{ demo, setDemo, oneSignalInitialized }}> {/* Pass to context */}
           <Router>
-           {isAuthenticated && isOnboardingCompleted && <Header />}
+            {isAuthenticated && isOnboardingCompleted && <Header />}
             <Routes>
 
               {!isAuthenticated && <Route path="/" element={<Home />} />}
-              
+
               {isAuthenticated && isOnboardingCompleted && (
-  <Route path="/" element={<Dashboard />} />
-)}
+                <Route path="/" element={<Dashboard />} />
+              )}
 
-{isAuthenticated && !isOnboardingCompleted && (
-  <Route path="/" element={<Image />} />
-)}
+              {isAuthenticated && !isOnboardingCompleted && (
+                <Route path="/" element={<Image />} />
+              )}
 
 
-<Route
-  path="/image"
-  element={
-    <OnboardingRoute>
-      <Image />
-    </OnboardingRoute>
-  }
-/>
-<Route
-  path="/info"
-  element={
-    <OnboardingRoute>
-      <InfoForm />
-    </OnboardingRoute>
-  }
-/>
-<Route
-  path="/looking-for"
-  element={
-    <OnboardingRoute>
-      <LookingFor />
-    </OnboardingRoute>
-  }
-/>
-<Route
-  path="/greek-connection"
-  element={
-    <OnboardingRoute>
-      <GreekConnection />
-    </OnboardingRoute>
-  }
-/>
-<Route
-  path="/relocation-preference"
-  element={
-    <OnboardingRoute>
-      <RelocationPreference />
-    </OnboardingRoute>
-  }
-/>
-<Route
-  path="/faith-culture-tradition"
-  element={
-    <OnboardingRoute>
-      <FaithCultureTradition />
-    </OnboardingRoute>
-  }
-/>
+              <Route
+                path="/image"
+                element={
+                  <OnboardingRoute>
+                    <Image />
+                  </OnboardingRoute>
+                }
+              />
+              <Route
+                path="/info"
+                element={
+                  <OnboardingRoute>
+                    <InfoForm />
+                  </OnboardingRoute>
+                }
+              />
+              <Route
+                path="/looking-for"
+                element={
+                  <OnboardingRoute>
+                    <LookingFor />
+                  </OnboardingRoute>
+                }
+              />
+              <Route
+                path="/greek-connection"
+                element={
+                  <OnboardingRoute>
+                    <GreekConnection />
+                  </OnboardingRoute>
+                }
+              />
+              <Route
+                path="/relocation-preference"
+                element={
+                  <OnboardingRoute>
+                    <RelocationPreference />
+                  </OnboardingRoute>
+                }
+              />
+              <Route
+                path="/faith-culture-tradition"
+                element={
+                  <OnboardingRoute>
+                    <FaithCultureTradition />
+                  </OnboardingRoute>
+                }
+              />
 
 
               <Route path="/register" element={<Register />} />
@@ -307,7 +300,8 @@ useEffect(() => {
               <Route path="/login" element={<Login />} />
               <Route path="/home" element={<Home />} />
               <Route path="/wallet" element={<Wallet />} />
-              <Route path="/detail/:name" element={<Detail />} />
+              {/* <Route path="/detail/:name" element={<Detail />} /> */}
+              <Route path="/detail/:slug/:id" element={<Detail />} />
               <Route path="/explore" element={<Favorites />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/upgrade" element={<Upgrade />} />

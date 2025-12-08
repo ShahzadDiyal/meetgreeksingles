@@ -8,7 +8,7 @@ import plus from "../Icon/plus.svg";
 import Bell from "../Icon/bell-slash.svg";
 import BlockIcon from '../Icon/block.gif';
 import Setting from "../Icon/settings.svg";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate ,useParams} from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import CloseIcon from "../Icon/times.svg";
 import { IoIosCheckmarkCircle } from "react-icons/io";
@@ -27,7 +27,7 @@ import Review from "../images/icons/information.png";
 export const ReportComment = ["Harassment", "inappropriate Content", "Violation of Terms", "Threats", "Castfishing", "Unwanted Advances", "Unsolicited Explicit Content", "Privacy Concerns", "Scam or Spam", "Unwanted Advances"];
 
 const Detail = () => {
-
+  const { id } = useParams();
   const { t } = useTranslation();
 
   const { basUrl, imageBaseURL, setChatUserName, setChatId, chatId } = useContext(MyContext);
@@ -56,13 +56,13 @@ const Detail = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // useEffect(() => {
-  //   const favicon = document.querySelector('link[rel="icon"]');
-
-  //   if (location.pathname.includes('detail')) {
-  //     favicon.href = FaviconIcon ;
-  //   }
-  // }, [location]);
+  useEffect(() => {
+    if (id) {
+      localStorage.setItem("DetailsId", id);
+    }
+    
+    DetailsHandler();
+  }, [id, latitude, longitude]); 
 
   const toggleBottomSheet = (e) => {
     if (e.target.id === 'BlockSection') {
@@ -164,28 +164,83 @@ const Detail = () => {
   };
 
   const DetailsHandler = () => {
-
     setLoding(true);
-    const Local = localStorage.getItem("Register_User");
-    if (Local) {
-      const UserData = JSON.parse(Local);
-      const Id = localStorage.getItem("DetailsId");
-
-      axios
-        .post(`${basUrl}profile_info.php`, {
-          uid: UserData.id,
-          profile_id: Id,
-          lats: latitude,
-          longs: longitude,
-        })
-        .then((res) => {
-          setApi(res.data && res.data.profileinfo);
-          setImageData(res.data && res.data.profileinfo ? res.data.profileinfo.profile_images : undefined);
-          setIsVerify(res.data && res.data.profileinfo ? res.data.profileinfo.is_verify : undefined);
-          setGiftreceiverId(res.data && res.data.profileinfo ? res.data.profileinfo.profile_id : undefined);
-          setLoding(false);
-        });
+    const profileId = id || localStorage.getItem("DetailsId");
+    
+    if (!profileId) {
+      showTost({ title: "Profile ID not found" });
+      navigate("/");
+      return;
     }
+
+    axios
+      .get(`${basUrl}profile_data.php`, {
+        params: {
+          user_id: profileId
+        }
+      })
+      .then((res) => {
+        if (res.data && res.data.status === true && res.data.data) {
+          const userData = res.data.data;
+          
+          // Calculate age from birth_date
+          const calculateAge = (birthDate) => {
+            if (!birthDate) return "N/A";
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+              age--;
+            }
+            return age;
+          };
+          
+          // Parse profile images from other_pic field
+          const parseProfileImages = () => {
+            if (!userData.other_pic) return [];
+            
+            // Split by $; and filter out empty strings
+            const images = userData.other_pic
+              .split('$;')
+              .map(img => img.trim())
+              .filter(img => img !== "");
+            
+            return images;
+          };
+          
+          // Transform the API data
+          const transformedData = {
+            ...userData,
+            
+            // Transformed fields for your component
+            profile_id: userData.id,
+            profile_name: userData.name,
+            profile_age: calculateAge(userData.birth_date),
+            profile_bio: userData.profile_bio || "",
+            profile_distance: userData.radius_search ? 
+              `${parseFloat(userData.radius_search).toFixed(1)} km` : 
+              "Distance unknown",
+            profile_images: parseProfileImages(),
+            is_verify: userData.is_verify,
+          };
+          
+          setApi(transformedData);
+          setImageData(transformedData.profile_images);
+          setIsVerify(transformedData.is_verify);
+          setGiftreceiverId(transformedData.profile_id);
+        } else {
+          showTost({ title: res.data?.message || "Profile not found" });
+          navigate("/");
+        }
+        setLoding(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching profile:", error);
+        showTost({ title: "Error loading profile" });
+        setLoding(false);
+        navigate("/");
+      });
   };
 
   const CoinHandler = () => {
@@ -206,7 +261,6 @@ const Detail = () => {
         setGiftList(res.data.giftlist);
       });
   };
-
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -235,11 +289,8 @@ const Detail = () => {
     }
 
     GetGiftListHandle();
-    DetailsHandler();
     CoinHandler();
   }, [latitude, longitude]);
-
-
 
   var settings = {
     dots: true,
@@ -393,11 +444,11 @@ const Detail = () => {
                               })
                             }
                           </Slider>
-                          : imageData?.map((el) => {
-                            return <div>
-                              <img className="rounded-[1rem]" src={`${imageBaseURL}${el}`} alt="" />
-                            </div>
-                          })
+                          : imageData?.length === 1
+                            ? <img className="rounded-[1rem]" src={`${imageBaseURL}${imageData[0]}`} alt="" />
+                            : <div className="rounded-[1rem] bg-gray-200 w-full h-64 flex items-center justify-center">
+                                <span className="text-gray-500">No images available</span>
+                              </div>
                         }
                         <div className="absolute bottom-10 max-_1445_:bottom-16 max-_430_:hidden flex items-center justify-center w-[100%] gap-[10px]">
                           <div className=" flex items-center gap-[10px] px-[8px] py-[6px] rounded-[50px] bg-black">
@@ -406,16 +457,16 @@ const Detail = () => {
                             </button>}
                             <button onClick={() => ChatHandler(api.profile_id, api.profile_name)} className="action-btn avatar avatar-lg rounded-full z-1 bg-white">
                               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M3.33398 20.0247C3.33398 11.2449 10.3507 3.33301 20.034 3.33301C29.5007 3.33301 36.6673 11.0947 36.6673 19.9746C36.6673 30.2734 28.2673 36.6663 20.0007 36.6663C17.2673 36.6663 14.234 35.9319 11.8007 34.4964C10.9507 33.979 10.234 33.5951 9.31732 33.8955L5.95065 34.897C5.10065 35.1641 4.33398 34.4964 4.58398 33.5951L5.70065 29.8561C5.88398 29.3387 5.85065 28.7879 5.58398 28.3539C4.15065 25.7166 3.33398 22.8289 3.33398 20.0247ZM17.834 20.0247C17.834 21.2098 18.784 22.1612 19.9673 22.1779C21.1507 22.1779 22.1007 21.2098 22.1007 20.0414C22.1007 18.8563 21.1507 17.9049 19.9673 17.9049C18.8007 17.8882 17.834 18.8563 17.834 20.0247ZM25.5173 20.0414C25.5173 21.2098 26.4673 22.1779 27.6507 22.1779C28.834 22.1779 29.784 21.2098 29.784 20.0414C29.784 18.8563 28.834 17.9049 27.6507 17.9049C26.4673 17.9049 25.5173 18.8563 25.5173 20.0414ZM12.284 22.1779C11.1173 22.1779 10.1507 21.2098 10.1507 20.0414C10.1507 18.8563 11.1007 17.9049 12.284 17.9049C13.4673 17.9049 14.4173 18.8563 14.4173 20.0414C14.4173 21.2098 13.4673 22.1612 12.284 22.1779Z" fill="#000000" />
+                                <path fillRule="evenodd" clipRule="evenodd" d="M3.33398 20.0247C3.33398 11.2449 10.3507 3.33301 20.034 3.33301C29.5007 3.33301 36.6673 11.0947 36.6673 19.9746C36.6673 30.2734 28.2673 36.6663 20.0007 36.6663C17.2673 36.6663 14.234 35.9319 11.8007 34.4964C10.9507 33.979 10.234 33.5951 9.31732 33.8955L5.95065 34.897C5.10065 35.1641 4.33398 34.4964 4.58398 33.5951L5.70065 29.8561C5.88398 29.3387 5.85065 28.7879 5.58398 28.3539C4.15065 25.7166 3.33398 22.8289 3.33398 20.0247ZM17.834 20.0247C17.834 21.2098 18.784 22.1612 19.9673 22.1779C21.1507 22.1779 22.1007 21.2098 22.1007 20.0414C22.1007 18.8563 21.1507 17.9049 19.9673 17.9049C18.8007 17.8882 17.834 18.8563 17.834 20.0247ZM25.5173 20.0414C25.5173 21.2098 26.4673 22.1779 27.6507 22.1779C28.834 22.1779 29.784 21.2098 29.784 20.0414C29.784 18.8563 28.834 17.9049 27.6507 17.9049C26.4673 17.9049 25.5173 18.8563 25.5173 20.0414ZM12.284 22.1779C11.1173 22.1779 10.1507 21.2098 10.1507 20.0414C10.1507 18.8563 11.1007 17.9049 12.284 17.9049C13.4673 17.9049 14.4173 18.8563 14.4173 20.0414C14.4173 21.2098 13.4673 22.1612 12.284 22.1779Z" fill="#000000" />
                               </svg>
                             </button>
                             {iconDis?.includes("2") ? "" : <button onClick={() => ProfileLikeHandler(api.profile_id)} className="action-btn avatar avatar-lg rounded-full z-1 bg-red-500">
                               <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M26.4154 4.7698C27.4671 4.7698 28.5171 4.91813 29.5154 5.25313C35.6671 7.25313 37.8837 14.0031 36.0321 19.9031C34.9821 22.9181 33.2654 25.6698 31.0171 27.9181C27.7987 31.0348 24.2671 33.8015 20.4654 36.1848L20.0487 36.4365L19.6154 36.1681C15.8004 33.8015 12.2487 31.0348 9.00039 27.9015C6.76706 25.6531 5.04873 22.9181 3.98206 19.9031C2.09873 14.0031 4.31539 7.25313 10.5337 5.21813C11.0171 5.05146 11.5154 4.9348 12.0154 4.8698H12.2154C12.6837 4.80146 13.1487 4.7698 13.6154 4.7698H13.7987C14.8487 4.80146 15.8654 4.9848 16.8504 5.3198H16.9487C17.0154 5.35146 17.0654 5.38646 17.0987 5.41813C17.4671 5.53646 17.8154 5.6698 18.1487 5.85313L18.7821 6.13646C18.9351 6.21808 19.1069 6.3428 19.2553 6.45058C19.3494 6.51887 19.4341 6.58037 19.4987 6.6198C19.5259 6.63585 19.5536 6.65198 19.5814 6.66825C19.7243 6.75167 19.8732 6.83857 19.9987 6.9348C21.8504 5.5198 24.0987 4.75313 26.4154 4.7698ZM30.8487 16.7698C31.5321 16.7515 32.1154 16.2031 32.1654 15.5015V15.3031C32.2154 12.9681 30.8004 10.8531 28.6487 10.0365C27.9654 9.80146 27.2154 10.1698 26.9654 10.8698C26.7321 11.5698 27.0987 12.3365 27.7987 12.5848C28.8671 12.9848 29.5821 14.0365 29.5821 15.2015V15.2531C29.5504 15.6348 29.6654 16.0031 29.8987 16.2865C30.1321 16.5698 30.4821 16.7348 30.8487 16.7698Z" fill="#FFFFFF" />
+                                <path fillRule="evenodd" clipRule="evenodd" d="M26.4154 4.7698C27.4671 4.7698 28.5171 4.91813 29.5154 5.25313C35.6671 7.25313 37.8837 14.0031 36.0321 19.9031C34.9821 22.9181 33.2654 25.6698 31.0171 27.9181C27.7987 31.0348 24.2671 33.8015 20.4654 36.1848L20.0487 36.4365L19.6154 36.1681C15.8004 33.8015 12.2487 31.0348 9.00039 27.9015C6.76706 25.6531 5.04873 22.9181 3.98206 19.9031C2.09873 14.0031 4.31539 7.25313 10.5337 5.21813C11.0171 5.05146 11.5154 4.9348 12.0154 4.8698H12.2154C12.6837 4.80146 13.1487 4.7698 13.6154 4.7698H13.7987C14.8487 4.80146 15.8654 4.9848 16.8504 5.3198H16.9487C17.0154 5.35146 17.0654 5.38646 17.0987 5.41813C17.4671 5.53646 17.8154 5.6698 18.1487 5.85313L18.7821 6.13646C18.9351 6.21808 19.1069 6.3428 19.2553 6.45058C19.3494 6.51887 19.4341 6.58037 19.4987 6.6198C19.5259 6.63585 19.5536 6.65198 19.5814 6.66825C19.7243 6.75167 19.8732 6.83857 19.9987 6.9348C21.8504 5.5198 24.0987 4.75313 26.4154 4.7698ZM30.8487 16.7698C31.5321 16.7515 32.1154 16.2031 32.1654 15.5015V15.3031C32.2154 12.9681 30.8004 10.8531 28.6487 10.0365C27.9654 9.80146 27.2154 10.1698 26.9654 10.8698C26.7321 11.5698 27.0987 12.3365 27.7987 12.5848C28.8671 12.9848 29.5821 14.0365 29.5821 15.2015V15.2531C29.5504 15.6348 29.6654 16.0031 29.8987 16.2865C30.1321 16.5698 30.4821 16.7348 30.8487 16.7698Z" fill="#FFFFFF" />
                                 <defs>
                                   <linearGradient id="paint0_linear_1606_27736" x1="36.6657" y1="36.4365" x2="-2.66883" y2="24.4315" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#FF0025" />
-                                    <stop offset="1" stop-color="#FF6B81" />
+                                    <stop stopColor="#FF0025" />
+                                    <stop offset="1" stopColor="#FF6B81" />
                                   </linearGradient>
                                 </defs>
                               </svg>
@@ -436,16 +487,16 @@ const Detail = () => {
                               </button>}
                               <button onClick={() => ChatHandler(api.profile_id, api.profile_name)} className="action-btn avatar avatar-lg rounded-full z-1 bg-white">
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M3.33398 20.0247C3.33398 11.2449 10.3507 3.33301 20.034 3.33301C29.5007 3.33301 36.6673 11.0947 36.6673 19.9746C36.6673 30.2734 28.2673 36.6663 20.0007 36.6663C17.2673 36.6663 14.234 35.9319 11.8007 34.4964C10.9507 33.979 10.234 33.5951 9.31732 33.8955L5.95065 34.897C5.10065 35.1641 4.33398 34.4964 4.58398 33.5951L5.70065 29.8561C5.88398 29.3387 5.85065 28.7879 5.58398 28.3539C4.15065 25.7166 3.33398 22.8289 3.33398 20.0247ZM17.834 20.0247C17.834 21.2098 18.784 22.1612 19.9673 22.1779C21.1507 22.1779 22.1007 21.2098 22.1007 20.0414C22.1007 18.8563 21.1507 17.9049 19.9673 17.9049C18.8007 17.8882 17.834 18.8563 17.834 20.0247ZM25.5173 20.0414C25.5173 21.2098 26.4673 22.1779 27.6507 22.1779C28.834 22.1779 29.784 21.2098 29.784 20.0414C29.784 18.8563 28.834 17.9049 27.6507 17.9049C26.4673 17.9049 25.5173 18.8563 25.5173 20.0414ZM12.284 22.1779C11.1173 22.1779 10.1507 21.2098 10.1507 20.0414C10.1507 18.8563 11.1007 17.9049 12.284 17.9049C13.4673 17.9049 14.4173 18.8563 14.4173 20.0414C14.4173 21.2098 13.4673 22.1612 12.284 22.1779Z" fill="#000000" />
+                                  <path fillRule="evenodd" clipRule="evenodd" d="M3.33398 20.0247C3.33398 11.2449 10.3507 3.33301 20.034 3.33301C29.5007 3.33301 36.6673 11.0947 36.6673 19.9746C36.6673 30.2734 28.2673 36.6663 20.0007 36.6663C17.2673 36.6663 14.234 35.9319 11.8007 34.4964C10.9507 33.979 10.234 33.5951 9.31732 33.8955L5.95065 34.897C5.10065 35.1641 4.33398 34.4964 4.58398 33.5951L5.70065 29.8561C5.88398 29.3387 5.85065 28.7879 5.58398 28.3539C4.15065 25.7166 3.33398 22.8289 3.33398 20.0247ZM17.834 20.0247C17.834 21.2098 18.784 22.1612 19.9673 22.1779C21.1507 22.1779 22.1007 21.2098 22.1007 20.0414C22.1007 18.8563 21.1507 17.9049 19.9673 17.9049C18.8007 17.8882 17.834 18.8563 17.834 20.0247ZM25.5173 20.0414C25.5173 21.2098 26.4673 22.1779 27.6507 22.1779C28.834 22.1779 29.784 21.2098 29.784 20.0414C29.784 18.8563 28.834 17.9049 27.6507 17.9049C26.4673 17.9049 25.5173 18.8563 25.5173 20.0414ZM12.284 22.1779C11.1173 22.1779 10.1507 21.2098 10.1507 20.0414C10.1507 18.8563 11.1007 17.9049 12.284 17.9049C13.4673 17.9049 14.4173 18.8563 14.4173 20.0414C14.4173 21.2098 13.4673 22.1612 12.284 22.1779Z" fill="#000000" />
                                 </svg>
                               </button>
                               {iconDis?.includes("2") ? "" : <button onClick={() => ProfileLikeHandler(api.profile_id)} className="action-btn avatar avatar-lg rounded-full z-1 bg-red-500">
                                 <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M26.4154 4.7698C27.4671 4.7698 28.5171 4.91813 29.5154 5.25313C35.6671 7.25313 37.8837 14.0031 36.0321 19.9031C34.9821 22.9181 33.2654 25.6698 31.0171 27.9181C27.7987 31.0348 24.2671 33.8015 20.4654 36.1848L20.0487 36.4365L19.6154 36.1681C15.8004 33.8015 12.2487 31.0348 9.00039 27.9015C6.76706 25.6531 5.04873 22.9181 3.98206 19.9031C2.09873 14.0031 4.31539 7.25313 10.5337 5.21813C11.0171 5.05146 11.5154 4.9348 12.0154 4.8698H12.2154C12.6837 4.80146 13.1487 4.7698 13.6154 4.7698H13.7987C14.8487 4.80146 15.8654 4.9848 16.8504 5.3198H16.9487C17.0154 5.35146 17.0654 5.38646 17.0987 5.41813C17.4671 5.53646 17.8154 5.6698 18.1487 5.85313L18.7821 6.13646C18.9351 6.21808 19.1069 6.3428 19.2553 6.45058C19.3494 6.51887 19.4341 6.58037 19.4987 6.6198C19.5259 6.63585 19.5536 6.65198 19.5814 6.66825C19.7243 6.75167 19.8732 6.83857 19.9987 6.9348C21.8504 5.5198 24.0987 4.75313 26.4154 4.7698ZM30.8487 16.7698C31.5321 16.7515 32.1154 16.2031 32.1654 15.5015V15.3031C32.2154 12.9681 30.8004 10.8531 28.6487 10.0365C27.9654 9.80146 27.2154 10.1698 26.9654 10.8698C26.7321 11.5698 27.0987 12.3365 27.7987 12.5848C28.8671 12.9848 29.5821 14.0365 29.5821 15.2015V15.2531C29.5504 15.6348 29.6654 16.0031 29.8987 16.2865C30.1321 16.5698 30.4821 16.7348 30.8487 16.7698Z" fill="#FFFFFF" />
+                                  <path fillRule="evenodd" clipRule="evenodd" d="M26.4154 4.7698C27.4671 4.7698 28.5171 4.91813 29.5154 5.25313C35.6671 7.25313 37.8837 14.0031 36.0321 19.9031C34.9821 22.9181 33.2654 25.6698 31.0171 27.9181C27.7987 31.0348 24.2671 33.8015 20.4654 36.1848L20.0487 36.4365L19.6154 36.1681C15.8004 33.8015 12.2487 31.0348 9.00039 27.9015C6.76706 25.6531 5.04873 22.9181 3.98206 19.9031C2.09873 14.0031 4.31539 7.25313 10.5337 5.21813C11.0171 5.05146 11.5154 4.9348 12.0154 4.8698H12.2154C12.6837 4.80146 13.1487 4.7698 13.6154 4.7698H13.7987C14.8487 4.80146 15.8654 4.9848 16.8504 5.3198H16.9487C17.0154 5.35146 17.0654 5.38646 17.0987 5.41813C17.4671 5.53646 17.8154 5.6698 18.1487 5.85313L18.7821 6.13646C18.9351 6.21808 19.1069 6.3428 19.2553 6.45058C19.3494 6.51887 19.4341 6.58037 19.4987 6.6198C19.5259 6.63585 19.5536 6.65198 19.5814 6.66825C19.7243 6.75167 19.8732 6.83857 19.9987 6.9348C21.8504 5.5198 24.0987 4.75313 26.4154 4.7698ZM30.8487 16.7698C31.5321 16.7515 32.1154 16.2031 32.1654 15.5015V15.3031C32.2154 12.9681 30.8004 10.8531 28.6487 10.0365C27.9654 9.80146 27.2154 10.1698 26.9654 10.8698C26.7321 11.5698 27.0987 12.3365 27.7987 12.5848C28.8671 12.9848 29.5821 14.0365 29.5821 15.2015V15.2531C29.5504 15.6348 29.6654 16.0031 29.8987 16.2865C30.1321 16.5698 30.4821 16.7348 30.8487 16.7698Z" fill="#FFFFFF" />
                                   <defs>
                                     <linearGradient id="paint0_linear_1606_27736" x1="36.6657" y1="36.4365" x2="-2.66883" y2="24.4315" gradientUnits="userSpaceOnUse">
-                                      <stop stop-color="#FF0025" />
-                                      <stop offset="1" stop-color="#FF6B81" />
+                                      <stop stopColor="#FF0025" />
+                                      <stop offset="1" stopColor="#FF6B81" />
                                     </linearGradient>
                                   </defs>
                                 </svg>
@@ -465,7 +516,7 @@ const Detail = () => {
                     <div className="user-profile">
                       <div className="border-bottom d-sm-flex align-items-cneter px-sm-2 py-4 px-1">
                         <div className="d-flex items-center flex-fill gap-[10px]">
-                          <h3 className="mb-0">{api?.profile_name} ({api?.profile_age})</h3>
+                          <h3 className="mb-0">{api?.name} ({api?.profile_age})</h3>
                           {isverify === "1"
                             ? <div className="tooltip cursor-pointer">
                               <img src={Review} style={{ width: "30px", height: "30px" }} alt="" />
@@ -520,58 +571,187 @@ const Detail = () => {
                           </div>
                         </div>
                       </div>
-                      {api?.profile_bio === "undefined" || api?.profile_bio === "" ? "" : <div className="px-sm-2 py-4 px-1 border-bottom">
-                        <h6 className="fw-semi-bold mb-2">{t("Bio")} : <span className="fs-15 font-[400]">{api?.profile_bio}</span></h6>
-                      </div>}
-                      <div className="border-bottom px-sm-2 py-4 px-1 user-interests">
-                        <h6 className="fw-semi-bold mb-2">{t('Interests')}:</h6>
-                        <div className="d-flex flex-wrap list-group-items round-style">
-                          {api?.interest_list?.map((item, index) => {
-                            return <div key={index} className="list-item d-flex align-items-center justify-content-center py-2 px-3 fw-medium">
-                              <span>{item?.title}</span>
-                              <img
-                                src={imageBaseURL + item?.img}
-                                alt="english"
-                                className="rounded-circle lang-tag-icon"
-                              />
-                            </div>
-                          })}
+                      
+                      {/* Bio Section */}
+                      {api?.profile_bio && api.profile_bio !== "undefined" && api.profile_bio.trim() !== "" && (
+                        <div className="px-sm-2 py-4 px-1 border-bottom">
+                          <h6 className="fw-semi-bold mb-2">{t("Bio")}:</h6>
+                          <p className="fs-15 font-[400]">{api.profile_bio}</p>
                         </div>
-                      </div>
-                      <div className="border-bottom px-sm-2 py-4 px-1">
-                        <h6 className="fw-semi-bold mb-2">{t("Languages")}:</h6>
-                        <div className="d-flex flex-wrap list-group-items round-style">
-                          {
-                            api?.language_list?.map((item, index) => {
-                              return <div key={index} className="list-item d-flex align-items-center justify-content-center py-2 px-3 fw-medium">
-                                <img
-                                  src={imageBaseURL + item?.img}
-                                  alt="english"
-                                  className="rounded-circle lang-tag-icon"
-                                />
-                                <span>{item?.title}</span>
-                              </div>
-                            })
-                          }
+                      )}
 
-                        </div>
-                      </div>
-                      <div className="border-bottom px-sm-2 py-4 px-1">
-                        <h6 className="fw-semi-bold mb-2">{t("Relationship Goals")}:</h6>
-                        <div className="d-flex flex-wrap list-group-items round-style">
-                          <div className="list-item d-flex align-items-center justify-content-center py-2 px-3 fw-medium">
-                            {api?.relation_title}
+                      {/* Personal Information Section */}
+                      {(api?.gender || api?.country || api?.state || api?.city) && (
+                        <div className="border-bottom px-sm-2 py-4 px-1">
+                          <h6 className="fw-semi-bold mb-2">{t('Personal Information')}:</h6>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {/* Gender */}
+                            {api?.gender && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Gender')}:</span>
+                                <span className="font-medium">{api.gender}</span>
+                              </div>
+                            )}
+                            
+                            {/* Country */}
+                            {api?.country && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Country')}:</span>
+                                <span className="font-medium">{api.country}</span>
+                              </div>
+                            )}
+                            
+                            {/* State */}
+                            {api?.state && api.state.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('State')}:</span>
+                                <span className="font-medium">{api.state}</span>
+                              </div>
+                            )}
+                            
+                            {/* City */}
+                            {api?.city && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('City')}:</span>
+                                <span className="font-medium">{api.city}</span>
+                              </div>
+                            )}
+                            
+                            {/* Birth Date */}
+                            {api?.birth_date && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Birth Date')}:</span>
+                                <span className="font-medium">{new Date(api.birth_date).toLocaleDateString()}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
-                      </div>
-                      <div className=" px-sm-2 py-4 px-1">
-                        <h6 className="fw-semi-bold mb-2">{t('Religion')}:</h6>
-                        <div className="d-flex flex-wrap list-group-items round-style">
-                          <div className="list-item d-flex align-items-center justify-content-center py-2 px-3 fw-medium">
-                            {api?.religion_title}
+                      )}
+
+                      {(api?.education || api?.profession) && (
+                        <div className="border-bottom px-sm-2 py-4 px-1">
+                          <h6 className="fw-semi-bold mb-2">{t('Religious background')}:</h6>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {/* Education */}
+                            {api?.education && api.education.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Religion')}:</span>
+                                <span className="font-medium">{api.religious_background}</span>
+                              </div>
+                            )}
+                            
+                            {/* Profession */}
+                            {api?.profession && api.profession.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Partner Faith')}:</span>
+                                <span className="font-medium">{api.partner_faith_preference}</span>
+                              </div>
+                            )}
+
+
+                            {api?.profession && api.profession.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Church Attendence')}:</span>
+                                <span className="font-medium">{api.church_attendance}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
-                      </div>
+                      )}
+
+                      {/* Education & Profession Section */}
+                      {(api?.education || api?.profession) && (
+                        <div className="border-bottom px-sm-2 py-4 px-1">
+                          <h6 className="fw-semi-bold mb-2">{t('Education & Profession')}:</h6>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {/* Education */}
+                            {api?.education && api.education.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Education')}:</span>
+                                <span className="font-medium">{api.education}</span>
+                              </div>
+                            )}
+                            
+                            {/* Profession */}
+                            {api?.profession && api.profession.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Profession')}:</span>
+                                <span className="font-medium">{api.profession}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Lifestyle Section */}
+                      {(api?.smoking || api?.drinking) && (
+                        <div className="border-bottom px-sm-2 py-4 px-1">
+                          <h6 className="fw-semi-bold mb-2">{t('Lifestyle')}:</h6>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {/* Smoking */}
+                            {api?.smoking && api.smoking.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Smoking')}:</span>
+                                <span className="font-medium">{api.smoking}</span>
+                              </div>
+                            )}
+                            
+                            {/* Drinking */}
+                            {api?.drinking && api.drinking.trim() !== "" && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-600 font-medium">{t('Drinking')}:</span>
+                                <span className="font-medium">{api.drinking}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Greek Connection */}
+                      {api?.greek_root_connection && api.greek_root_connection.trim() !== "" && (
+                        <div className="border-bottom px-sm-2 py-4 px-1">
+                          <h6 className="fw-semi-bold mb-2">{t('Greek Connection')}:</h6>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-600 font-medium">{t('Greek Roots')}:</span>
+                              <span className="font-medium">{api.greek_root_connection}</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Account Status */}
+                      {/* <div className="px-sm-2 py-4 px-1">
+                        <h6 className="fw-semi-bold mb-2">{t('Account Status')}:</h6>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">{t('Subscription')}:</span>
+                            <span className={`font-medium ${api?.is_subscribe === "1" ? 'text-green-600' : 'text-gray-600'}`}>
+                              {api?.is_subscribe === "1" ? t('Premium') : t('Free')}
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">{t('Verification')}:</span>
+                            <span className={`font-medium ${
+                              api?.is_verify === "2" ? 'text-green-600' : 
+                              api?.is_verify === "1" ? 'text-yellow-600' : 'text-gray-600'
+                            }`}>
+                              {api?.is_verify === "2" ? t('Verified') : 
+                              api?.is_verify === "1" ? t('Under Review') : t('Not Verified')}
+                            </span>
+                          </div>
+                          
+                          {api?.user_type && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-600 font-medium">{t('User Type')}:</span>
+                              <span className={`font-medium ${api.user_type === 'REAL_USER' ? 'text-green-600' : 'text-yellow-600'}`}>
+                                {api.user_type === 'REAL_USER' ? t('Real User') : t('Other')}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -619,8 +799,7 @@ const Detail = () => {
                   <button onClick={toggleBottomSheet} id="BlockSection" className="text-[16px] text-[#0066CC] h-[40px] max-h-[40px] border-[2px] border-[#0066CC] rounded-full px-[25px]">
                     {t('Cancel')}
                   </button>
-                  <button onClick={BlockHandler} className="text-[16px
-                     ] text-[#333333] border-[2px] bg-[#0066CC] rounded-full px-[25px] py-[8px]">
+                  <button onClick={BlockHandler} className="text-[16px] text-[#333333] border-[2px] bg-[#0066CC] rounded-full px-[25px] py-[8px]">
                     {t('Yes, Block')}
                   </button>
                 </div>
@@ -680,7 +859,7 @@ const Detail = () => {
             <div className="flex flex-wrap items-center gap-[20px] mx-auto mt-3 max-_430_:gap-[10px]">
               {giftList.map((el, i) => (
                 <button
-                  key={el.Id}
+                  key={el.id}
                   onClick={() => GiftHandler(el.id, el.price, el.img)}
                   style={{
                     borderColor: giftid.includes(el.id) ? "#0066CC" : "#D1D5DB",
@@ -719,7 +898,6 @@ const Detail = () => {
             </button>
           </div>
         </div>
-
       )}
 
       {/* <<------------ Chat Show ---------->> */}
@@ -730,7 +908,6 @@ const Detail = () => {
       </div>
       }
     </div>
-
   );
 };
 
