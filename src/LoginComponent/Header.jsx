@@ -658,13 +658,17 @@ const Header = () => {
                 onClick={() => ColorHandler("Upgrade")}
                 to="/upgrade"
                 style={{
-        background: "#1F5799",       
-        borderRadius: "999px",        
-        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
-        padding: "10px 18px"
-      }}
-      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
-      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}
+                  background: "#1F5799",
+                  borderRadius: "999px",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                  padding: "10px 18px",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background = "#174173")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.background = "#1F5799")
+                }
                 className="btn text-[#ffffff] gap-1 df-center"
               >
                 <svg
@@ -806,7 +810,8 @@ const Header = () => {
                 onClick={ProfileHandler}
                 className="text-end text-[#ffffff] flex items-center  hover:text-[#ffffff]"
               >
-                {t("Edit")} <BiEditAlt className="ms-1 text-[#ffffff] hover:text-[#ffffff]" />
+                {t("Edit")}{" "}
+                <BiEditAlt className="ms-1 text-[#ffffff] hover:text-[#ffffff]" />
               </button>
             </div>
           </div>
@@ -822,58 +827,69 @@ const Header = () => {
               </div>
             )}
             <div className="relative w-[114px] h-[114px]">
-  <svg
-    className="w-full h-full -rotate-90"
-    viewBox="0 0 36 36"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Background Circle */}
-    <circle
-      cx="18"
-      cy="18"
-      r="16"
-      fill="none"
-      className="stroke-current text-transparent"
-      strokeWidth="2"
-    />
+              <svg
+                className="w-full h-full -rotate-90"
+                viewBox="0 0 36 36"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Background Circle */}
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="16"
+                  fill="none"
+                  className="stroke-current text-transparent"
+                  strokeWidth="2"
+                />
 
-    {/* Progress Circle */}
-    <circle
-      cx="18"
-      cy="18"
-      r="16"
-      fill="none"
-      className="stroke-current text-[#0066CC]"
-      strokeWidth="2"
-      strokeDasharray="100"
-      strokeDashoffset={100 - Number(localStorage.getItem("Profile_ratio"))}
-      strokeLinecap="round"
-    />
-  </svg>
+                {/* Progress Circle */}
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="16"
+                  fill="none"
+                  className="stroke-current text-[#0066CC]"
+                  strokeWidth="2"
+                  strokeDasharray="100"
+                  strokeDashoffset={
+                    100 - Number(localStorage.getItem("Profile_ratio"))
+                  }
+                  strokeLinecap="round"
+                />
+              </svg>
 
-  <div
-    onClick={ProfileHandler}
-    className="absolute inset-0 flex items-center justify-center cursor-pointer"
-  >
-    {newProfile ? (
-      <img
-        src={`${imageBaseURL}${newProfile}`}
-        alt="User Avatar"
-        className="w-[96px] h-[96px] rounded-full object-cover"
-      />
-    ) : (
-      <div className="w-[96px] h-[96px] bg-gray-300 rounded-full flex justify-center items-center text-[32px] font-bold">
-        {user?.name?.charAt(0).toUpperCase()}
-      </div>
-    )}
-  </div>
-</div>
+              <div
+                onClick={ProfileHandler}
+                className="absolute inset-0 flex items-center justify-center cursor-pointer"
+              >
+                {newProfile ? (
+                  <img
+                    src={`${imageBaseURL}${newProfile}`}
+                    alt="User Avatar"
+                    className="w-[96px] h-[96px] rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-[96px] h-[96px] bg-gray-300 rounded-full flex justify-center items-center text-[32px] font-bold">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+            </div>
 
-            <div className="bg-white py-[2px] px-[4px] rounded-full -mt-[20px] z-[777]">
+            {/* 
+
+<div className="bg-white py-[2px] px-[4px] rounded-full -mt-[20px] z-[777]">
               <span className="bg-[#0066CC] text-[#333333] rounded-full px-[5px]">
                 {localStorage.getItem("Profile_ratio") + "%"}
               </span>
             </div>
+            */}
+            <div className="bg-white py-[2px] px-[4px] rounded-full -mt-[20px] z-[777]">
+              <span className="bg-[#0066CC] text-white rounded-full px-[5px]">
+                100%
+              </span>
+            </div>
+
             <h3 className="fw-semi-bold flex items-center gap-[5px] m-0">
               {user?.name}
               <button onClick={toggleBottomSheet}>
@@ -1357,14 +1373,21 @@ const Header = () => {
                   <h6 className="text-[#333333] Demo">
                     {t("Join Our Membership Today!")}
                   </h6>
-                  <button className="bg-white px-[10px] py-[3px] rounded-[10px] font-[500]"  style={{
-        background: "#1F5799",       
-        borderRadius: "999px",        
-        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
-        padding: "10px 18px"
-      }}
-      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
-      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}>
+                  <button
+                    className="bg-white px-[10px] py-[3px] rounded-[10px] font-[500]"
+                    style={{
+                      background: "#1F5799",
+                      borderRadius: "999px",
+                      boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                      padding: "10px 18px",
+                    }}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.background = "#174173")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.background = "#1F5799")
+                    }
+                  >
                     {t("Go")}
                   </button>
                 </div>
@@ -1481,14 +1504,19 @@ const Header = () => {
               <button
                 onClick={PhotoHandler}
                 className="font-[500] text-[18px] bg-[#0066CC] text-[#ffffff] w-[60%] max-_430_:w-[75%] py-[8px] my-[15px] "
-               style={{
-        background: "#1F5799",       
-        borderRadius: "999px",        
-        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", 
-        padding: "10px 18px"
-      }}
-      onMouseOver={(e) => e.currentTarget.style.background = "#174173"} 
-      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}>
+                style={{
+                  background: "#1F5799",
+                  borderRadius: "999px",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                  padding: "10px 18px",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background = "#174173")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.background = "#1F5799")
+                }
+              >
                 {t("Add")}
               </button>
             </div>
@@ -1531,9 +1559,13 @@ const Header = () => {
               <div className="mb-[15px] text-center">
                 <h2 className="text-[#333333] m-0">{notification.name}</h2>
                 {callType === "Audio_Call" ? (
-                  <h6 className="text-[#333333] mb-2">In Coming Audio Call ...</h6>
+                  <h6 className="text-[#333333] mb-2">
+                    In Coming Audio Call ...
+                  </h6>
                 ) : (
-                  <h6 className="text-[#333333] mb-2">In Coming Video Call ...</h6>
+                  <h6 className="text-[#333333] mb-2">
+                    In Coming Video Call ...
+                  </h6>
                 )}
                 <div className=" flex gap-[20px] justify-center">
                   <button onClick={CallAnsuserHandler}>

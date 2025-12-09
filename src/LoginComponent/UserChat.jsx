@@ -757,8 +757,8 @@ const UserChat = () => {
                             <h6 className='m-0 overflow-ellipsis overflow-hidden whitespace-nowrap w-[60%]'>{chatUserName}</h6>
                         </div>
                         <div className="flex items-center gap-[15px] relative">
-                            <button onClick={AudioCallHandler}><IoCallOutline className='text-[25px]' /></button>
-                            <button onClick={VideoCallHandler}><IoVideocamOutline className='text-[25px]' /></button>
+                            {/* <button onClick={AudioCallHandler}><IoCallOutline className='text-[25px]' /></button> */}
+                            {/* <button onClick={VideoCallHandler}><IoVideocamOutline className='text-[25px]' /></button> */}
                             <button onClick={ModalShow}><TbDotsCircleHorizontal className='text-[25px] ' /></button>
                             {options && (
                                 <div className="bg-gray-200 m-0 px-[5px] top-[38px] rounded-[5px] absolute z-[888]  ">
@@ -892,7 +892,7 @@ const UserChat = () => {
                                             </div>
                                         </div>
                                         {receiverId && <div className="d-flex flex-wrap rightIcons d-sm-flex">
-                                            {audio_video === "1" && <button onClick={AudioCallHandler} aria-label="button" type="button"
+                                            {/* {audio_video === "1" && <button onClick={AudioCallHandler} aria-label="button" type="button"
                                                 className="call btn btn-outline-light rounded-circle m-1" data-bs-toggle="modal"
                                                 data-bs-target="#phoneCall">
                                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
@@ -901,8 +901,8 @@ const UserChat = () => {
                                                         d="M14.591 11.3034C14.5503 11.2711 11.5938 9.14003 10.7823 9.293C10.3949 9.36154 10.1734 9.62575 9.72891 10.1547C9.65739 10.2401 9.48555 10.4447 9.35196 10.5902C9.07105 10.4986 8.79704 10.3871 8.532 10.2565C7.16401 9.59049 6.05872 8.4852 5.39272 7.11721C5.26204 6.85221 5.1505 6.57819 5.05898 6.29725C5.20499 6.16316 5.40961 5.99132 5.49702 5.91782C6.02346 5.4758 6.28817 5.2543 6.35671 4.86593C6.49726 4.06137 4.36765 1.08449 4.3453 1.05767C4.24868 0.91964 4.12258 0.804812 3.97613 0.721495C3.82969 0.638179 3.66655 0.588457 3.49853 0.575928C2.63536 0.575928 0.171021 3.77282 0.171021 4.31118C0.171021 4.34247 0.216215 7.52297 4.1382 11.5125C8.12376 15.43 11.3038 15.4752 11.3351 15.4752C11.8739 15.4752 15.0703 13.0109 15.0703 12.1477C15.0579 11.9803 15.0085 11.8177 14.9256 11.6717C14.8427 11.5257 14.7285 11.3999 14.591 11.3034Z"
                                                         fill="#F41781" />
                                                 </svg>
-                                            </button>}
-                                            {audio_video === "1" && <button onClick={VideoCallHandler} aria-label="button" type="button"
+                                            </button>} */}
+                                            {/* {audio_video === "1" && <button onClick={VideoCallHandler} aria-label="button" type="button"
                                                 className="videocall btn btn-outline-light rounded-circle m-1" data-bs-toggle="modal"
                                                 data-bs-target="#videoCall">
                                                 <svg width="18" height="13" viewBox="0 0 18 13" fill="none"
@@ -911,7 +911,7 @@ const UserChat = () => {
                                                         d="M17.3537 2.3579V9.95702C17.3536 10.0784 17.3193 10.1973 17.2546 10.3C17.1898 10.4028 17.0974 10.4851 16.988 10.5376C16.8785 10.5901 16.7564 10.6106 16.6358 10.5968C16.5152 10.5829 16.401 10.5353 16.3063 10.4594L14.4544 8.9729C14.4245 8.94882 14.4003 8.91833 14.3837 8.88367C14.3671 8.84902 14.3585 8.81108 14.3586 8.77266V3.54227C14.3585 3.50385 14.3671 3.46591 14.3837 3.43125C14.4003 3.39659 14.4245 3.3661 14.4544 3.34202L16.3063 1.85557C16.401 1.77964 16.5152 1.732 16.6358 1.71816C16.7564 1.70431 16.8785 1.72482 16.988 1.77731C17.0974 1.82981 17.1898 1.91216 17.2546 2.01488C17.3193 2.11759 17.3536 2.2365 17.3537 2.3579ZM13.0749 9.58049V2.73443C13.1247 2.38571 13.0926 2.03019 12.9812 1.69602C12.8697 1.36185 12.6821 1.0582 12.433 0.809121C12.1839 0.560038 11.8802 0.372357 11.5461 0.260934C11.2119 0.149512 10.8564 0.117407 10.5077 0.167162H2.80584C2.45712 0.117407 2.1016 0.149512 1.76743 0.260934C1.43326 0.372357 1.12962 0.560038 0.880532 0.809121C0.631449 1.0582 0.443768 1.36185 0.332345 1.69602C0.220923 2.03019 0.188818 2.38571 0.238574 2.73443V9.58049C0.188818 9.92921 0.220923 10.2847 0.332345 10.6189C0.443768 10.9531 0.631449 11.2567 0.880532 11.5058C1.12962 11.7549 1.43326 11.9426 1.76743 12.054C2.1016 12.1654 2.45712 12.1975 2.80584 12.1478H10.5077C10.8564 12.1975 11.2119 12.1654 11.5461 12.054C11.8802 11.9426 12.1839 11.7549 12.433 11.5058C12.6821 11.2567 12.8697 10.9531 12.9812 10.6189C13.0926 10.2847 13.1247 9.92921 13.0749 9.58049Z"
                                                         fill="#0CC94C" />
                                                 </svg>
-                                            </button>}
+                                            </button>} */}
                                             <div className="">
                                                 <button className="bg-blue-100 rounded-circle m-1" onClick={ModalShow}><HiDotsVertical className='text-[15px] text-[blue]' /></button>
                                             </div>

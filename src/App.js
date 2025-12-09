@@ -50,6 +50,7 @@ import PaymentRespons from "./PaymentMethod/PaymentRespons";
 import { CallListener } from "./utils/CallListener";
 import GreekConnection from "./MobilComponent/GreekConnection";
 import { OnboardingRoute } from "./ProtectedRoute";
+import PageContent from "./LoginComponent/PageContent"
 
 const App = () => {
   const [demo, setDemo] = useState();
@@ -300,7 +301,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/home" element={<Home />} />
               <Route path="/wallet" element={<Wallet />} />
-              {/* <Route path="/detail/:name" element={<Detail />} /> */}
+              <Route path="/page/:pageName" element={<PageContent />} />
               <Route path="/detail/:slug/:id" element={<Detail />} />
               <Route path="/explore" element={<Favorites />} />
               <Route path="/profile" element={<Profile />} />
