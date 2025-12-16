@@ -19,11 +19,12 @@ import { showTost } from "../showTost";
 import { uid } from "uid";
 import { initOneSignal } from "../utils/OneSignalInit";
 // import { saveUserToFirestore } from "../utils/saveUserToFirestore";
+import logo from "../images/logos/meet-greek.png";
+
 
 const Login = () => {
-
   const Data = useContext(TodoContext);
-  const { basUrl,  userId, setUserId } = useContext(MyContext);
+  const { basUrl, userId, setUserId } = useContext(MyContext);
 
   const [Email, setemail] = useState("");
   const [Password, setpassword] = useState("");
@@ -37,7 +38,6 @@ const Login = () => {
   const [otpShow, setOtpShow] = useState(false);
   const [fcmToken, setFcmToken] = useState();
 
-  
   const navigate = useNavigate();
 
   const Show = useRef();
@@ -92,310 +92,316 @@ const Login = () => {
   //     showTost({ title: "Please Enter Password" });
   //   }
   // };
-//   const SigninHandler = async () => {
-//   console.log("SigninHandler clicked");
+  //   const SigninHandler = async () => {
+  //   console.log("SigninHandler clicked");
 
-//   try {
-//     const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-//     if (!Email) return showTost({ title: "Please Enter Email" });
-//     if (!Password) return showTost({ title: "Please Enter Password" });
+  //   try {
+  //     const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  //     if (!Email) return showTost({ title: "Please Enter Email" });
+  //     if (!Password) return showTost({ title: "Please Enter Password" });
 
-//     const res = await axios.post(`${basUrl}user_login.php`, {
-//       mobile: Email,
-//       ccode: "+91",
-//       password: Password,
-//     });
+  //     const res = await axios.post(`${basUrl}user_login.php`, {
+  //       mobile: Email,
+  //       ccode: "+91",
+  //       password: Password,
+  //     });
 
-//     if (res.data.Result === "true") {
-//       const user = res.data.UserLogin;
-      
-//       // Store backend token in localStorage
-//       const backendToken = res.data.token || uid(32);
-//       localStorage.setItem("token", backendToken);
-//       localStorage.setItem("UserId", user.id);
-//       localStorage.setItem("Register_User", JSON.stringify(user));
+  //     if (res.data.Result === "true") {
+  //       const user = res.data.UserLogin;
 
-//       showTost({ title: res.data.ResponseMsg });
-//       Data.setDemo(Data.demo + "123");
+  //       // Store backend token in localStorage
+  //       const backendToken = res.data.token || uid(32);
+  //       localStorage.setItem("token", backendToken);
+  //       localStorage.setItem("UserId", user.id);
+  //       localStorage.setItem("Register_User", JSON.stringify(user));
 
-//       // --- CHECK ONBOARDING STATUS FROM LOCALSTORAGE ---
-//       const onboardingStatus = user.onboarding_status;
-//       let redirectPath = "/";
-      
-//       console.log("📊 Onboarding status from login response:", onboardingStatus);
-      
-//       if (onboardingStatus === "completed" || onboardingStatus === "Completed") {
-//         redirectPath = "/dashboard"; // or your main dashboard page
-//       } else {
-//         redirectPath = "/image"; // onboarding image upload page
-//       }
-      
-//       console.log(" Redirecting to:", redirectPath);
+  //       showTost({ title: res.data.ResponseMsg });
+  //       Data.setDemo(Data.demo + "123");
 
-//       // --- SAVE USER TO FIRESTORE WITH FCM TOKEN (in background) ---
-//       const saveUserToFirestore = async () => {
-//         try {
-//           const { id, name, email, mobile, profile_pic, token } = user;
-//           const userRef = doc(db, "datingUser", id);
+  //       // --- CHECK ONBOARDING STATUS FROM LOCALSTORAGE ---
+  //       const onboardingStatus = user.onboarding_status;
+  //       let redirectPath = "/";
 
-//           let fcmToken = "";
+  //       console.log("📊 Onboarding status from login response:", onboardingStatus);
 
-//           console.log("🔄 Starting Firestore save for user:", id);
+  //       if (onboardingStatus === "completed" || onboardingStatus === "Completed") {
+  //         redirectPath = "/dashboard"; // or your main dashboard page
+  //       } else {
+  //         redirectPath = "/image"; // onboarding image upload page
+  //       }
 
-//           // Initialize OneSignal and get FCM token
-//           if (window.OneSignal) {
-//             try {
-//               console.log("🔄 Initializing OneSignal...");
-              
-//               await window.OneSignal.init({
-//                 appId: "720a0530-a6f1-42b6-8725-f1a47dc284f3",
-//                 allowLocalhostAsSecureOrigin: true,
-//               });
+  //       console.log(" Redirecting to:", redirectPath);
 
-//               console.log(" OneSignal initialized");
+  //       // --- SAVE USER TO FIRESTORE WITH FCM TOKEN (in background) ---
+  //       const saveUserToFirestore = async () => {
+  //         try {
+  //           const { id, name, email, mobile, profile_pic, token } = user;
+  //           const userRef = doc(db, "datingUser", id);
 
-//               await new Promise((resolve) => {
-//                 window.OneSignal.push(() => {
-//                   console.log(" OneSignal is ready");
-//                   resolve();
-//                 });
-//               });
+  //           let fcmToken = "";
 
-//               await window.OneSignal.setExternalUserId(user.id);
-//               console.log(" External user ID set:", user.id);
+  //           console.log("🔄 Starting Firestore save for user:", id);
 
-//               try {
-//                 await new Promise(resolve => setTimeout(resolve, 1000));
-//                 fcmToken = await window.OneSignal.getUserId();
-//                 console.log(" FCM Token from OneSignal:", fcmToken);
+  //           // Initialize OneSignal and get FCM token
+  //           if (window.OneSignal) {
+  //             try {
+  //               console.log("🔄 Initializing OneSignal...");
 
-//                 if (!fcmToken) {
-//                   console.log("⚠️ No FCM token available, trying alternative method...");
-//                   await new Promise(resolve => setTimeout(resolve, 2000));
-//                   fcmToken = await window.OneSignal.getUserId();
-//                   console.log(" FCM Token (retry):", fcmToken);
-//                 }
+  //               await window.OneSignal.init({
+  //                 appId: "720a0530-a6f1-42b6-8725-f1a47dc284f3",
+  //                 allowLocalhostAsSecureOrigin: true,
+  //               });
 
-//               } catch (tokenError) {
-//                 console.warn(" Error getting FCM token:", tokenError);
-//               }
+  //               console.log(" OneSignal initialized");
 
-//             } catch (oneSignalError) {
-//               console.warn(" OneSignal initialization error:", oneSignalError);
-//             }
-//           } else {
-//             console.log("⚠️ OneSignal not available in window");
-//           }
+  //               await new Promise((resolve) => {
+  //                 window.OneSignal.push(() => {
+  //                   console.log(" OneSignal is ready");
+  //                   resolve();
+  //                 });
+  //               });
 
-//           // Prepare user data
-//           const userData = {
-//             uid: id,
-//             name: name || "",
-//             email: email || "",
-//             number: mobile || "",
-//             token: fcmToken || "",
-//             pro_pic: profile_pic || "null",
-//             isOnline: true,
-//             last_seen: new Date().toISOString(),
-//             updated_at: new Date().toISOString(),
-//           };
+  //               await window.OneSignal.setExternalUserId(user.id);
+  //               console.log(" External user ID set:", user.id);
 
-//           console.log("📦 Data to save to Firestore:", userData);
+  //               try {
+  //                 await new Promise(resolve => setTimeout(resolve, 1000));
+  //                 fcmToken = await window.OneSignal.getUserId();
+  //                 console.log(" FCM Token from OneSignal:", fcmToken);
 
-//           await setDoc(userRef, userData, { merge: true });
-//           console.log(" Firestore save completed");
+  //                 if (!fcmToken) {
+  //                   console.log("⚠️ No FCM token available, trying alternative method...");
+  //                   await new Promise(resolve => setTimeout(resolve, 2000));
+  //                   fcmToken = await window.OneSignal.getUserId();
+  //                   console.log(" FCM Token (retry):", fcmToken);
+  //                 }
 
-//           // Verify the save
-//           const savedDoc = await getDoc(userRef);
-//           if (savedDoc.exists()) {
-//             const savedData = savedDoc.data();
-//             console.log("🔍 VERIFICATION - Firestore document saved successfully");
-//           } else {
-//             console.error(" Document doesn't exist after save!");
-//           }
+  //               } catch (tokenError) {
+  //                 console.warn(" Error getting FCM token:", tokenError);
+  //               }
 
-//         } catch (error) {
-//           console.error("🔥 Firestore save error:", error);
-          
-//           // Fallback: Save without token
-//           try {
-//             const { id, name, email, mobile, profile_pic } = user;
-//             const userRef = doc(db, "datingUser", id);
-            
-//             const fallbackData = {
-//               uid: id,
-//               name: name || "",
-//               email: email || "",
-//               number: mobile || "",
-//               token: "",
-//               pro_pic: profile_pic || "null",
-//               isOnline: true,
-//               last_seen: new Date().toISOString(),
-//             };
-            
-//             await setDoc(userRef, fallbackData, { merge: true });
-//             console.log(" Fallback Firestore save completed");
-//           } catch (fallbackError) {
-//             console.error("🔥 Fallback Firestore save failed:", fallbackError);
-//           }
-//         }
-//       };
+  //             } catch (oneSignalError) {
+  //               console.warn(" OneSignal initialization error:", oneSignalError);
+  //             }
+  //           } else {
+  //             console.log("⚠️ OneSignal not available in window");
+  //           }
 
-//       // Start Firestore save in background (don't await it)
-//       saveUserToFirestore();
+  //           // Prepare user data
+  //           const userData = {
+  //             uid: id,
+  //             name: name || "",
+  //             email: email || "",
+  //             number: mobile || "",
+  //             token: fcmToken || "",
+  //             pro_pic: profile_pic || "null",
+  //             isOnline: true,
+  //             last_seen: new Date().toISOString(),
+  //             updated_at: new Date().toISOString(),
+  //           };
 
-//       // Navigate after short delay
-//       setTimeout(() => navigate(redirectPath), 500);
+  //           console.log("📦 Data to save to Firestore:", userData);
 
-//     } else {
-//       showTost({ title: res.data.ResponseMsg });
-//     }
-//   } catch (err) {
-//     console.error("🔥 SigninHandler crashed:", err);
-//     showTost({ title: "Login failed" });
-//   }
-// };
+  //           await setDoc(userRef, userData, { merge: true });
+  //           console.log(" Firestore save completed");
 
+  //           // Verify the save
+  //           const savedDoc = await getDoc(userRef);
+  //           if (savedDoc.exists()) {
+  //             const savedData = savedDoc.data();
+  //             console.log("🔍 VERIFICATION - Firestore document saved successfully");
+  //           } else {
+  //             console.error(" Document doesn't exist after save!");
+  //           }
 
-const SigninHandler = async () => {
-  console.log("SigninHandler clicked");
+  //         } catch (error) {
+  //           console.error("🔥 Firestore save error:", error);
 
-  try {
-    // Check if input is empty
-    if (!Email) return showTost({ title: "Please Enter Email or Mobile Number" });
-    if (!Password) return showTost({ title: "Please Enter Password" });
+  //           // Fallback: Save without token
+  //           try {
+  //             const { id, name, email, mobile, profile_pic } = user;
+  //             const userRef = doc(db, "datingUser", id);
 
-    // Determine if input is email or mobile
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    const isEmail = emailRegex.test(Email);
-    
-    // Prepare request data based on input type
-    let requestData;
-    
-    if (isEmail) {
-  requestData = {
-    mobile: Email,        // backend expects mobile
-    password: Password,
-  };
-}  else {
-      // For mobile login (extract country code if present)
-      let mobileNumber = Email;
-      let countryCode = "+91"; // Default to India
-      
-      // Check if number includes country code
-      if (Email.startsWith('+')) {
-        // Extract country code (assume it's + followed by 1-4 digits)
-        const match = Email.match(/^(\+\d{1,4})(\d+)$/);
-        if (match) {
-          countryCode = match[1];
-          mobileNumber = match[2];
-        }
-      }
-      
-      requestData = {
-      mobile: Email,
-      ccode: "+91",
-      password: Password,
-      };
-    }
+  //             const fallbackData = {
+  //               uid: id,
+  //               name: name || "",
+  //               email: email || "",
+  //               number: mobile || "",
+  //               token: "",
+  //               pro_pic: profile_pic || "null",
+  //               isOnline: true,
+  //               last_seen: new Date().toISOString(),
+  //             };
 
-    console.log("Sending login request:", requestData);
+  //             await setDoc(userRef, fallbackData, { merge: true });
+  //             console.log(" Fallback Firestore save completed");
+  //           } catch (fallbackError) {
+  //             console.error("🔥 Fallback Firestore save failed:", fallbackError);
+  //           }
+  //         }
+  //       };
 
-    // API call for login - use different endpoint or parameters based on your backend
-    const res = await axios.post(`${basUrl}user_login.php`, requestData);
+  //       // Start Firestore save in background (don't await it)
+  //       saveUserToFirestore();
 
-    if (res.data.Result === "true") {
-      const user = res.data.UserLogin;
-      
-      // Store backend token in localStorage
-      const backendToken = res.data.token || uid(32);
-      localStorage.setItem("token", backendToken);
-      localStorage.setItem("UserId", user.id);
-      localStorage.setItem("Register_User", JSON.stringify(user));
+  //       // Navigate after short delay
+  //       setTimeout(() => navigate(redirectPath), 500);
 
-      showTost({ title: res.data.ResponseMsg });
-      Data.setDemo(Data.demo + "123");
+  //     } else {
+  //       showTost({ title: res.data.ResponseMsg });
+  //     }
+  //   } catch (err) {
+  //     console.error("🔥 SigninHandler crashed:", err);
+  //     showTost({ title: "Login failed" });
+  //   }
+  // };
 
-      // --- ONBOARDING STATUS CHECK ---
-      const onboardingStatus = (user.onboarding_status || "").toLowerCase();
-      const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
-      
-      // --- SAVE USER TO FIRESTORE (background process) ---
-      const saveUserToFirestore = async () => {
-        try {
-          const { id, name, email, mobile, profile_pic } = user;
-          const userRef = doc(db, "datingUser", id);
+  const SigninHandler = async () => {
+    console.log("SigninHandler clicked");
 
-          let fcmToken = "";
-          console.log("🔄 Starting Firestore save for user:", id);
+    try {
+      // Check if input is empty
+      if (!Email)
+        return showTost({ title: "Please Enter Email or Mobile Number" });
+      if (!Password) return showTost({ title: "Please Enter Password" });
 
-          // Get FCM token from OneSignal if available
-          if (window.OneSignal) {
-            try {
-              await new Promise((resolve) => {
-                window.OneSignal.push(() => {
-                  console.log(" OneSignal is ready");
-                  resolve();
-                });
-              });
+      // Determine if input is email or mobile
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+      const isEmail = emailRegex.test(Email);
 
-              await window.OneSignal.setExternalUserId(id);
-              console.log(" External user ID set:", id);
+      // Prepare request data based on input type
+      let requestData;
 
-              for (let attempt = 0; attempt < 3; attempt++) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                fcmToken = await window.OneSignal.getUserId();
-                if (fcmToken) {
-                  console.log(" FCM Token received on attempt", attempt + 1, ":", fcmToken);
-                  break;
-                }
-              }
-              
-              if (!fcmToken) {
-                console.warn("⚠️ No FCM token available after 3 attempts");
-              }
-            } catch (oneSignalError) {
-              console.warn(" OneSignal error:", oneSignalError);
-            }
+      if (isEmail) {
+        requestData = {
+          mobile: Email, // backend expects mobile
+          password: Password,
+        };
+      } else {
+        // For mobile login (extract country code if present)
+        let mobileNumber = Email;
+        let countryCode = "+91"; // Default to India
+
+        // Check if number includes country code
+        if (Email.startsWith("+")) {
+          // Extract country code (assume it's + followed by 1-4 digits)
+          const match = Email.match(/^(\+\d{1,4})(\d+)$/);
+          if (match) {
+            countryCode = match[1];
+            mobileNumber = match[2];
           }
-
-          // Prepare user data
-          const userData = {
-            uid: id,
-            name: name || "",
-            email: email || "",
-            number: mobile || "",
-            token: fcmToken || "",
-            pro_pic: profile_pic || "null",
-            isOnline: true,
-            last_seen: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            onboarding_status: onboardingStatus || "pending",
-          };
-
-          console.log("📦 Saving data to Firestore...");
-          await setDoc(userRef, userData, { merge: true });
-          console.log(" Firestore save completed");
-
-        } catch (error) {
-          console.error("🔥 Firestore save error:", error);
         }
-      };
 
-      // Start Firestore save in background
-      saveUserToFirestore();
+        requestData = {
+          mobile: Email,
+          ccode: "+91",
+          password: Password,
+        };
+      }
 
-      // Navigate
-      setTimeout(() => navigate(redirectPath), 500);
+      console.log("Sending login request:", requestData);
 
-    } else {
-      showTost({ title: res.data.ResponseMsg || "Invalid email or password" });
+      // API call for login - use different endpoint or parameters based on your backend
+      const res = await axios.post(`${basUrl}user_login.php`, requestData);
+
+      if (res.data.Result === "true") {
+        const user = res.data.UserLogin;
+
+        // Store backend token in localStorage
+        const backendToken = res.data.token || uid(32);
+        localStorage.setItem("token", backendToken);
+        localStorage.setItem("UserId", user.id);
+        localStorage.setItem("Register_User", JSON.stringify(user));
+
+        showTost({ title: res.data.ResponseMsg });
+        Data.setDemo(Data.demo + "123");
+
+        // --- ONBOARDING STATUS CHECK ---
+        const onboardingStatus = (user.onboarding_status || "").toLowerCase();
+        const redirectPath =
+          onboardingStatus === "completed" ? "/dashboard" : "/image";
+
+        // --- SAVE USER TO FIRESTORE (background process) ---
+        const saveUserToFirestore = async () => {
+          try {
+            const { id, name, email, mobile, profile_pic } = user;
+            const userRef = doc(db, "datingUser", id);
+
+            let fcmToken = "";
+            console.log("🔄 Starting Firestore save for user:", id);
+
+            // Get FCM token from OneSignal if available
+            if (window.OneSignal) {
+              try {
+                await new Promise((resolve) => {
+                  window.OneSignal.push(() => {
+                    console.log(" OneSignal is ready");
+                    resolve();
+                  });
+                });
+
+                await window.OneSignal.setExternalUserId(id);
+                console.log(" External user ID set:", id);
+
+                for (let attempt = 0; attempt < 3; attempt++) {
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                  fcmToken = await window.OneSignal.getUserId();
+                  if (fcmToken) {
+                    console.log(
+                      " FCM Token received on attempt",
+                      attempt + 1,
+                      ":",
+                      fcmToken
+                    );
+                    break;
+                  }
+                }
+
+                if (!fcmToken) {
+                  console.warn("⚠️ No FCM token available after 3 attempts");
+                }
+              } catch (oneSignalError) {
+                console.warn(" OneSignal error:", oneSignalError);
+              }
+            }
+
+            // Prepare user data
+            const userData = {
+              uid: id,
+              name: name || "",
+              email: email || "",
+              number: mobile || "",
+              token: fcmToken || "",
+              pro_pic: profile_pic || "null",
+              isOnline: true,
+              last_seen: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              onboarding_status: onboardingStatus || "pending",
+            };
+
+            console.log("📦 Saving data to Firestore...");
+            await setDoc(userRef, userData, { merge: true });
+            console.log(" Firestore save completed");
+          } catch (error) {
+            console.error("🔥 Firestore save error:", error);
+          }
+        };
+
+        // Start Firestore save in background
+        saveUserToFirestore();
+
+        // Navigate
+        setTimeout(() => navigate(redirectPath), 500);
+      } else {
+        showTost({
+          title: res.data.ResponseMsg || "Invalid email or password",
+        });
+      }
+    } catch (err) {
+      console.error("🔥 SigninHandler error:", err);
+      showTost({ title: "Login failed. Please try again." });
     }
-  } catch (err) {
-    console.error("🔥 SigninHandler error:", err);
-    showTost({ title: "Login failed. Please try again." });
-  }
-};
+  };
 
   const toggleBottomSheet = () => {
     setIsVisible(!isVisible);
@@ -409,33 +415,32 @@ const SigninHandler = async () => {
         const Num = value.slice(3);
         const Code = value.slice(0, 3);
 
-        axios.post(`${basUrl}mobile_check.php`,
-          {
+        axios
+          .post(`${basUrl}mobile_check.php`, {
             mobile: Num,
-            ccode: Code
-          }
-        )
+            ccode: Code,
+          })
           .then((res) => {
             if (res.data.Result === "true") {
               showTost({ title: res.data.ResponseMsg });
             } else {
-              axios.post(`${basUrl}sms_type.php`)
-                .then((res) => {
-                  if (res.data.Result === "true") {
-                    if (res.data.otp_auth === "Yes") {
-                      if (res.data.SMS_TYPE === "Msg91") {
-                        axios.post(`${basUrl}msg_otp.php`, { mobile: Num })
-                          .then((res) => {
-                            showTost({ title: res.data.ResponseMsg });
-                            setChechOtp(res.data.otp);
-                          });
-                      }
-                      setOtpShow(true);
-                    } else {
-                      setPasswordShow(true);
+              axios.post(`${basUrl}sms_type.php`).then((res) => {
+                if (res.data.Result === "true") {
+                  if (res.data.otp_auth === "Yes") {
+                    if (res.data.SMS_TYPE === "Msg91") {
+                      axios
+                        .post(`${basUrl}msg_otp.php`, { mobile: Num })
+                        .then((res) => {
+                          showTost({ title: res.data.ResponseMsg });
+                          setChechOtp(res.data.otp);
+                        });
                     }
+                    setOtpShow(true);
+                  } else {
+                    setPasswordShow(true);
                   }
-                });
+                }
+              });
             }
           });
       } else {
@@ -447,7 +452,7 @@ const SigninHandler = async () => {
   };
 
   const OtpCheckHandler = () => {
-    if (checkOtp === otpValue.join('')) {
+    if (checkOtp === otpValue.join("")) {
       showTost({ title: "Otp Match Successfully" });
       setOtpShow(false);
       setPasswordShow(true);
@@ -460,20 +465,19 @@ const SigninHandler = async () => {
     if (Password2) {
       if (Confirm) {
         if (Password2 === Confirm) {
-          axios.post(`${basUrl}forget_password.php`,
-            {
+          axios
+            .post(`${basUrl}forget_password.php`, {
               mobile: value.slice(3),
               password: Confirm,
-              ccode: value.slice(0, 3)
-            }
-          )
+              ccode: value.slice(0, 3),
+            })
             .then((res) => {
               if (res.data.Result === "true") {
                 showTost({ title: res.data.ResponseMsg });
 
                 toggleBottomSheet();
-                setValue('');
-                setOtpValue('');
+                setValue("");
+                setOtpValue("");
                 setpassword2("");
                 setconfirm("");
                 setPasswordShow(false);
@@ -507,218 +511,260 @@ const SigninHandler = async () => {
   };
   const UserAddHandler = (data) => {
     const userRef = doc(db, "datingUser", data.id);
-    getDoc(userRef)
-      .then((docSnapshot) => {
-        if (docSnapshot.exists()) {
-          updateDoc(userRef, {
-            isOnline: true,
-          });
-        } else {
+    getDoc(userRef).then((docSnapshot) => {
+      if (docSnapshot.exists()) {
+        updateDoc(userRef, {
+          isOnline: true,
+        });
+      } else {
+        const Pro_Pic = data.profile_pic;
 
-          const Pro_Pic = data.profile_pic;
-
-          setDoc(userRef, {
-            email: data.email,
-            isOnline: true,
-            name: data.name,
-            number: data.mobile,
-            uid: data.id,
-            pro_pic: Pro_Pic ? Pro_Pic : "null",
-          })
-        }
-      });
+        setDoc(userRef, {
+          email: data.email,
+          isOnline: true,
+          name: data.name,
+          number: data.mobile,
+          uid: data.id,
+          pro_pic: Pro_Pic ? Pro_Pic : "null",
+        });
+      }
+    });
   };
-
 
   return (
     <div>
       <div>
         <div className="w-[100%] max-_430_:bg-white multisteup-wrapper max-_430_:h-[100vh] relative Test">
-  <div className="container mx-auto">
-    <section className="steps step-1 active rounded-[40px] relative ">
-      <div className="text-start mt-[10px] ">
-        <h1 className="text-[28px] max-_430_:text-[26px] font-[600]">
-          Sign in
-        </h1>
-        <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
-          Welcome back! Please enter your details.
-        </p>
-      </div>
-      <div className="mt-[20px] w-[100%] space-y-5">
-        {/* Email/Phone Input */}
-        <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
-          <img src={EmailIcon} alt="" className="w-[20px] h-[20px]" />
-          <input
-            className="text-black w-[100%] outline-none bg-transparent"
-            type="Email"
-            placeholder="Email or Mobile Number (Without Country Code..)"
-            onChange={(e) => setemail(e.target.value)}
-            value={Email}
-          />
-        </div>
-
-        {/* Password Input */}
-        <div className="relative">
-          <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
-            <img
-              src={UblockIcon}
-              alt=""
-              className="w-[20px] h-[20px]"
-            />
-            <input
-              id="input"
-              type="text"
-              className="text-black w-[100%] outline-none bg-transparent"
-              placeholder="Password"
-              onChange={(e) => setpassword(e.target.value)}
-              value={Password}
-            />
-          </div>
-          <button onClick={() => myFunction()}>
-            <img
-              ref={Show}
-              src={ShowPassword}
-              alt="Show"
-              className="w-[25px] h-[25px] absolute top-[18px] right-5"
-            />
-            <img
-              ref={Hide}
-              src={HidePassword}
-              alt="Hide"
-              className="w-[25px] h-[25px] hidden absolute top-[18px] right-5"
-            />
-          </button>
-        </div>
-
-        {/* Forgot Password */}
-        <button
-          onClick={toggleBottomSheet}
-          className="font-[500] text-[16px] no-underline text-black block w-full text-left"
-        >
-          Forgot password?{" "}
-          <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">Reset it</span>
-        </button>
-
-        {/* Sign In Button */}
-        <button
-          onClick={SigninHandler}
-          className="font-bold text-[18px] rounded-full mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
-        >
-          Sign In
-        </button>
-      </div>
-
-      {/* Sign Up Link */}
-      <Link
-        to="/register"
-        className="pt-[20px] font-[500] text-[16px] no-underline text-black block w-full text-center"
-      >
-        Don't have an Account?{" "}
-        <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">Sign Up</span>
-      </Link>
-
-      {/* Bottom Sheet */}
-      {isVisible && (
-        <div onClick={toggleBottomSheet} className="bottom-sheet">
-          <div onClick={(e) => e.stopPropagation()} className="bottom-sheet-content">
-            <div className="bg-white rounded-2xl shadow-lg p-5">
-              <div className="flex items-center justify-between mb-[15px]">
-                <h1 className="text-[18px] m-0 text-black font-[500]">
-                  Enter Number
+          <div className="container mx-auto">
+            <section className="steps step-1 active rounded-[40px] relative ">
+              <div>
+                <div className="flex justify-center items-center">
+                  <img src={logo} alt="" width={40} height={60} />
+                </div>
+                <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222] text-center">
+                  Welcome Back
                 </h1>
-                <img
-                  onClick={toggleBottomSheet}
-                  src={CloseIcon}
-                  alt=""
-                  className="cursor-pointer"
-                />
+                <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333] font-normal text-center mb-3">
+                  Sign in to continue your journey toward meaningful Greek connections.
+                </p>
+               
               </div>
-              
-              {/* Phone Input */}
-              <div className="bg-white border-2 border-gray-300 relative rounded-xl focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all duration-200">
-                {!value && (
-                  <label onClick={() => inputFocus.current.focus()} className="text-[16px] absolute top-[10px] left-[60px] text-gray-400 font-[500] pointer-events-none">
-                    Mobile Number
+              <div className="mt-[20px] w-[100%] space-y-5">
+                {/* Email/Phone Input */}
+                <div>
+                <label htmlFor="" className="font-semibold">
+                    Email or Mobile Number
                   </label>
-                )}
-                <PhoneInput ref={inputFocus}
-                  className="text-black w-[100%] px-[15px] py-[10px] font-[500] bg-transparent"
-                  international
-                  defaultCountry="IN"
-                  value={value}
-                  onChange={setValue}
-                  inputStyle={{ outline: "none", backgroundColor: "transparent" }}
-                />
+                <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
+                  <img src={EmailIcon} alt="" className="w-[20px] h-[20px]" />
+                  <input
+                    className="text-black w-[100%] outline-none bg-transparent"
+                    type="Email"
+                    placeholder="Enter your email or mobile number"
+                    onChange={(e) => setemail(e.target.value)}
+                    value={Email}
+                  />
+                </div>
+                </div>
+
+                {/* Password Input */}
+                <div className="relative">
+                  <div>
+                     <label htmlFor="" className="font-semibold">
+                    Password
+                  </label>
+<div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
+                    <img
+                      src={UblockIcon}
+                      alt=""
+                      className="w-[20px] h-[20px]"
+                    />
+                    <input
+                      id="input"
+                      type="text"
+                      className="text-black w-[100%] outline-none bg-transparent"
+                      placeholder="Enter your password"
+                      onChange={(e) => setpassword(e.target.value)}
+                      value={Password}
+                    />
+                  </div>
+                  </div>
+                  
+                  <button onClick={() => myFunction()}>
+                    <img
+                      ref={Show}
+                      src={ShowPassword}
+                      alt="Show"
+                      className="w-[25px] h-[25px] absolute top-1/2 transform -translate-y-1/2 right-5"
+                    />
+                    <img
+                      ref={Hide}
+                      src={HidePassword}
+                      alt="Hide"
+                      className="w-[25px] h-[25px] hidden absolute top-1/2 transform -translate-y-1/2 right-5"
+                    />
+                  </button>
+                </div>
+
+                {/* Forgot Password */}
+                <button
+                  onClick={toggleBottomSheet}
+                  className="font-[500] text-[16px] no-underline text-black block w-full text-left"
+                >
+                  Forgot password?{" "}
+                  <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">
+                    Reset it
+                  </span>
+                </button>
+
+                {/* Sign In Button */}
+                <button
+                  onClick={SigninHandler}
+                  className="font-bold text-[18px] rounded-full mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
+                >
+                  Sign In
+                </button>
               </div>
 
-              {/* OTP Section */}
-              {otpShow && <div className="mt-[15px]">
-                <h1 className="text-[18px] m-0 text-black font-[500]">
-                  Enter Otp
-                </h1>
-                <div className="flex items-center mt-[20px] justify-center gap-[10px]">
-                  {
-                    Inputref.current.map((ref, index) => {
-                      return <input
-                        ref={(e) => (Inputref.current[index] = e)}
-                        onChange={(e) => HandleChange(index, e.target.value)}
-                        onKeyDown={(e) => InputHandler(index, e)}
-                        type="text"
-                        className="form-control font-[600] input-otpnumber outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] bg-white border-2 border-gray-300 rounded-xl w-12 h-12 text-center"
-                        name="otp1"
-                        id="otp1"
-                        maxLength="1"
-                      />
-                    })
-                  }
-                </div>
-              </div>}
-
-              {/* Password Section */}
-              {passwordShow && <div className="space-y-4">
-                <div>
-                  <h1 className="text-[18px] mt-[15px] mb-0 text-black font-[500]">
-                    Password
-                  </h1>
-                  <input
-                    onChange={(e) => setpassword2(e.target.value)}
-                    value={Password2}
-                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
-                    type="text"
-                    placeholder="Password"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-[18px] m-0 text-black font-[500]">
-                    Confirm Password
-                  </h1>
-                  <input
-                    value={Confirm}
-                    onChange={(e) => setconfirm(e.target.value)}
-                    className="text-black w-[100%] border-2 mt-[10px] outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
-                    type="text"
-                    placeholder="Confirm"
-                  />
-                </div>
-              </div>}
-
-              {/* Action Button */}
-              <button
-                onClick={otpShow ? OtpCheckHandler : passwordShow ? SubmitHandler : PhoneHandler}
-                className="font-bold text-[18px] rounded-full mt-[20px] text-white py-[10px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
+              {/* Sign Up Link */}
+              <Link
+                to="/register"
+                className="pt-[20px] font-[500] text-[16px] no-underline text-black block w-full text-center"
               >
-                {otpShow ? "Check" : passwordShow ? "Change" : "Continue"}
-              </button>
-            </div>
+                Don't have an Account?{" "}
+                <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">
+                  Sign Up
+                </span>
+              </Link>
+
+              {/* Bottom Sheet */}
+              {isVisible && (
+                <div onClick={toggleBottomSheet} className="bottom-sheet">
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="bottom-sheet-content"
+                  >
+                    <div className="bg-white rounded-2xl shadow-lg p-5">
+                      <div className="flex items-center justify-between mb-[15px]">
+                        <h1 className="text-[18px] m-0 text-black font-[500]">
+                          Reset Your Password
+                        </h1>
+                        <img
+                          onClick={toggleBottomSheet}
+                          src={CloseIcon}
+                          alt=""
+                          className="cursor-pointer"
+                        />
+                      </div>
+
+                      {/* Phone Input */}
+                      <div className="bg-white border-2 border-gray-300 relative rounded-xl focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all duration-200">
+                        {!value && (
+                          
+                          <label
+                            onClick={() => inputFocus.current.focus()}
+                            className="text-[16px] absolute top-[10px] left-[60px] text-gray-400 font-[500] pointer-events-none"
+                          >
+                            Mobile Number
+                          </label>
+                        )}
+                        <PhoneInput
+                          ref={inputFocus}
+                          className="text-black w-[100%] px-[15px] py-[10px] font-[500] bg-transparent"
+                          international
+                          defaultCountry="IN"
+                          value={value}
+                          onChange={setValue}
+                          inputStyle={{
+                            outline: "none",
+                            backgroundColor: "transparent",
+                          }}
+                        />
+                      </div>
+
+                      {/* OTP Section */}
+                      {otpShow && (
+                        <div className="mt-[15px]">
+                          <h1 className="text-[18px] m-0 text-black font-[500]">
+                            Enter Otp
+                          </h1>
+                          <div className="flex items-center mt-[20px] justify-center gap-[10px]">
+                            {Inputref.current.map((ref, index) => {
+                              return (
+                                <input
+                                  ref={(e) => (Inputref.current[index] = e)}
+                                  onChange={(e) =>
+                                    HandleChange(index, e.target.value)
+                                  }
+                                  onKeyDown={(e) => InputHandler(index, e)}
+                                  type="text"
+                                  className="form-control font-[600] input-otpnumber outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] bg-white border-2 border-gray-300 rounded-xl w-12 h-12 text-center"
+                                  name="otp1"
+                                  id="otp1"
+                                  maxLength="1"
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Password Section */}
+                      {passwordShow && (
+                        <div className="space-y-4">
+                          <div>
+                            <h1 className="text-[18px] mt-[15px] mb-0 text-black font-[500]">
+                              Password
+                            </h1>
+                            <input
+                              onChange={(e) => setpassword2(e.target.value)}
+                              value={Password2}
+                              className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
+                              type="text"
+                              placeholder="Password"
+                            />
+                          </div>
+                          <div>
+                            <h1 className="text-[18px] m-0 text-black font-[500]">
+                              Confirm Password
+                            </h1>
+                            <input
+                              value={Confirm}
+                              onChange={(e) => setconfirm(e.target.value)}
+                              className="text-black w-[100%] border-2 mt-[10px] outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
+                              type="text"
+                              placeholder="Confirm"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Button */}
+                      <button
+                        onClick={
+                          otpShow
+                            ? OtpCheckHandler
+                            : passwordShow
+                            ? SubmitHandler
+                            : PhoneHandler
+                        }
+                        className="font-bold text-[18px] rounded-full mt-[20px] text-white py-[10px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
+                      >
+                        {otpShow
+                          ? "Check"
+                          : passwordShow
+                          ? "Change"
+                          : "Continue"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </section>
           </div>
         </div>
-      )}
-    </section>
-  </div>
-</div>
-      </div >
-
-    </div >
+      </div>
+    </div>
   );
 };
 

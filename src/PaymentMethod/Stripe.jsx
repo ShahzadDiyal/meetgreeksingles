@@ -104,82 +104,106 @@ const SplitForm = ({ fontSize, amount }) => {
     };
 
     return (
-       <form onSubmit={handleSubmit} className="DemoWrapper d-flex flex-column w-[100%]">
-    {/* Currency Dropdown */}
-    <label className="mt-[15px]">
-        <span className="text-[18px] font-[500] text-[#222222]">Currency</span> <br />
-        <select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            className="border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[6px] px-[5px] rounded-[5px] mt-[5px]"
-        >
-            {['EUR', 'USD', 'GBP', 'CAD', 'AUD'].map((code) => (
-                <option key={code} value={code}>
-                    {code}
-                </option>
-            ))}
-        </select>
-    </label>
+        <form onSubmit={handleSubmit} className="w-full">
+            {/* Form Header */}
+            <div className="mb-6">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">Card Payment</h2>
+                <p className="text-gray-600 text-sm">Enter your card details securely</p>
+            </div>
 
-    <label className='mt-[10px]'>
-        <span className='text-[18px] font-[500] text-[#222222]'>Converted Amount</span> <br />
-        <input
-            type="text"
-            disabled
-            value={convertedAmount ? `${convertedAmount} ${currency}` : ''}
-            className='border-[2px] border-[#C89A3D] bg-[#F7F5F2] text-[#333333] w-[100%] outline-none py-[6px] px-[5px] rounded-[5px] mt-[5px]'
-        />
-    </label>
+            {/* Main Form Content */}
+            <div className="space-y-4">
+                {/* Currency Selection */}
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Currency
+                    </label>
+                    <select
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C89A3D] focus:border-transparent"
+                    >
+                        {['EUR', 'USD', 'GBP', 'CAD', 'AUD'].map((code) => (
+                            <option key={code} value={code}>
+                                {code}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-    <label>
-        <span className='text-[18px] font-[500] text-[#222222]'>Card number</span> <br />
-        <input
-            type="text"
-            placeholder="1234 1234 1234 1234"
-            value={cardNumber}
-            onChange={handleCardNumberChange}
-            maxLength="19"
-            className='border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]'
-        />
-    </label>
+                {/* Converted Amount Display */}
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Amount
+                    </label>
+                    <input
+                        type="text"
+                        disabled
+                        value={convertedAmount ? `${convertedAmount} ${currency}` : ''}
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-medium"
+                    />
+                </div>
 
-    <div className="flex justify-between items-center mt-[10px]">
-        <label className='w-[40%]'>
-            <span className='text-[18px] font-[500] text-[#222222]'>Expiration date</span>
-            <input
-                type="text"
-                placeholder="MM/YY"
-                value={expiry}
-                onChange={handleExpiryChange} 
-                maxLength="5"  
-                className='border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]'
-            />
-        </label>
+                {/* Card Number */}
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Card Number
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="1234 1234 1234 1234"
+                        value={cardNumber}
+                        onChange={handleCardNumberChange}
+                        maxLength="19"
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C89A3D] focus:border-transparent"
+                    />
+                </div>
 
-        <label className='w-[40%]'>
-            <span className='text-[18px] font-[500] text-[#222222]'>CVC</span>
-            <input 
-                type='number' 
-                onChange={(e) => setCvc(e.target.value)} 
-                placeholder='CVC' 
-                className='border-[2px] border-[#C89A3D] text-[#333333] w-[100%] bg-white outline-none py-[3px] px-[5px] rounded-[5px] mt-[5px]' 
-            />
-        </label>
-    </div>
+                {/* Card Details Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Expiration Date */}
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Expiry Date (MM/YY)
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="MM/YY"
+                            value={expiry}
+                            onChange={handleExpiryChange}
+                            maxLength="5"
+                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C89A3D] focus:border-transparent"
+                        />
+                    </div>
 
-    <button
-        type="submit"
-        disabled={isButtonDisabled}
-        className={`mt-[20px] text-white text-[18px] py-[5px] rounded-[5px] ${
-            isButtonDisabled 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-[#1F5799]'
-        }`}
-    >
-        Pay {convertedAmount ? `${convertedAmount} ${currency}` : amount ? `${amount} EUR` : ""}
-    </button>
-</form>
+                    {/* CVC */}
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">
+                            CVC
+                        </label>
+                        <input
+                            type="number"
+                            onChange={(e) => setCvc(e.target.value)}
+                            placeholder="123"
+                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C89A3D] focus:border-transparent"
+                        />
+                    </div>
+                </div>
+            </div>
 
+            {/* Submit Button */}
+            <button
+                type="submit"
+                disabled={isButtonDisabled}
+                className={`w-full mt-6 py-3 rounded-lg font-medium text-base transition-colors ${
+                    isButtonDisabled 
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                        : 'bg-[#1F5799] text-white hover:bg-[#174173]'
+                }`}
+            >
+                Pay {convertedAmount ? `${convertedAmount} ${currency}` : amount ? `${amount} EUR` : ""}
+            </button>
+        </form>
     );
 };
 
@@ -189,12 +213,12 @@ const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh");
 
 export const StripePayment = ({ Amount }) => {
     const [elementFontSize, setElementFontSize] = useState(() =>
-        window.innerWidth < 450 ? "14px" : "18px"
+        window.innerWidth < 450 ? "14px" : "16px"
     );
 
     useEffect(() => {
         const handleResize = () => {
-            setElementFontSize(window.innerWidth < 450 ? "14px" : "18px");
+            setElementFontSize(window.innerWidth < 450 ? "14px" : "16px");
         };
 
         window.addEventListener("resize", handleResize);
@@ -205,10 +229,24 @@ export const StripePayment = ({ Amount }) => {
     }, []);
 
     return (
-        <div className="Checkout w-[100%] text-start">
-            <Elements stripe={stripePromise}>
-                <SplitForm fontSize={elementFontSize} amount={Amount} />
-            </Elements>
+        <div className="w-full h-full">
+            {/* Mobile: Scrollable container */}
+            <div className="md:hidden h-full overflow-y-auto">
+                <div className="min-h-full bg-white p-4">
+                    <Elements stripe={stripePromise}>
+                        <SplitForm fontSize={elementFontSize} amount={Amount} />
+                    </Elements>
+                </div>
+            </div>
+
+            {/* Desktop: Fixed container */}
+            <div className="hidden md:block">
+                <div className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
+                    <Elements stripe={stripePromise}>
+                        <SplitForm fontSize={elementFontSize} amount={Amount} />
+                    </Elements>
+                </div>
+            </div>
         </div>
     );
 };

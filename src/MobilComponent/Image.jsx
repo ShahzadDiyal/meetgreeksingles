@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
+import logo from "../images/logos/meet-greek.png";
 
 const Imagecom = () => {
   const {
@@ -123,18 +124,24 @@ const Imagecom = () => {
                 <div className="bg-[#0066CC] rounded-full w-[9%] h-[5px]"></div>
               </div>
             </div>
-            <div className="mt-[10px]">
-              <h1 className="text-[28px] max-_430_:text-[27px] font-[600] max-_430_:w-[260px]">
-                Show your best self 📸
-              </h1>
-              <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
-                Upload a clear photo to help others get to know you
-                <br /> video to make a fantastic first impression. <br />
-                Let your personality shine.
-              </p>
-              <p className="text-[16px] mt-[5px] text-gray-600 font-medium">
-                Minimum 3 images required ({selectedCount} selected)
-              </p>
+            <div className="mt-[10px] flex items-start gap-3">
+              <img
+                src={logo}
+                alt=""
+                width={60}
+                height={60}
+                className="mt-1 flex-shrink-0"
+              />
+              <div className="flex-1">
+                <h1 className="text-[28px] max-_430_:text-[27px] font-[600] max-_430_:w-[260px]">
+                  Show your best self 📸
+                </h1>
+                <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
+                  Upload a clear photo to help others get to know you video to
+                  make a fantastic first impression. Let your personality shine.
+                  Minimum 3 images required.
+                </p>
+              </div>
             </div>
 
             <div className="mt-[20px] w-[100%]">

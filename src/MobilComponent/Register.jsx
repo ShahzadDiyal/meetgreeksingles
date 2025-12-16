@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import axios from "axios";
 import { showTost } from "../showTost";
+import logo from "../images/logos/meet-greek.png";
 
 const Register = () => {
   const [Email, setemail] = useState("");
@@ -28,9 +29,11 @@ const Register = () => {
   const [City, setCity] = useState("");
   const [Cities, setCities] = useState([]);
   const [Agreed, setAgreed] = useState(false);
+  const [EligibilityConfirmation, setEligibilityConfirmation] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
+  const [Zodiac, setZodiac] = useState("");
 
   // Registration loading state
   const [isRegistering, setIsRegistering] = useState(false);
@@ -59,6 +62,21 @@ const Register = () => {
   ];
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+
+  const zodiacSigns = [
+    { name: "Aries" },
+    { name: "Taurus" },
+    { name: "Gemini" },
+    { name: "Cancer" },
+    { name: "Leo" },
+    { name: "Virgo" },
+    { name: "Libra" },
+    { name: "Scorpio" },
+    { name: "Sagittarius" },
+    { name: "Capricorn" },
+    { name: "Aquarius" },
+    { name: "Pisces" },
+  ];
 
   useEffect(() => {
     if (accepted) {
@@ -146,11 +164,14 @@ const Register = () => {
       return showTost({ title: "Please select your Greek status" });
     if (!BirthDay || !BirthMonth || !BirthYear)
       return showTost({ title: "Please select your birthdate" });
+    if (!Zodiac) return showTost({ title: "Please select your Zodiac Sign" });
     if (!Country) return showTost({ title: "Please select your country" });
     if (!State) return showTost({ title: "Please select your state" });
     if (!City) return showTost({ title: "Please select your city" });
     if (!Agreed)
       return showTost({ title: "Please agree to Terms & Conditions" });
+    if (!EligibilityConfirmation)
+      return showTost({ title: "Please agree to Eligibility Confirmation" });
 
     // Email validation
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
@@ -196,6 +217,7 @@ const Register = () => {
       formData.append("state_id", State);
       formData.append("city_id", City);
       formData.append("bday", formattedBirthdate);
+      formData.append("zodiac_sign", Zodiac);
       formData.append("mobile", Phone);
       formData.append("email", Email);
       formData.append("password", Password);
@@ -324,111 +346,48 @@ const Register = () => {
 
           {accepted && (
             <>
-              <div className="mt-[10px]">
-                <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
-                  Can You elaborate on your identity? 😎
+              <div>
+                <div className="flex justify-center items-center">
+                  <img src={logo} alt="" width={100} height={100} />
+                </div>
+                <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222] text-center">
+                  Your Story Begins Here😎
                 </h1>
-                <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
-                  It will Display on your Profile and you will not able to
-                  change it later
+                <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333] font-normal text-center mb-3">
+                  Create your free account and begin your journey toward
+                  meaningful Greek connections
                 </p>
+                <h2 className="text-start text-gray-600 mt-2">
+                  Your information is always confidential.
+                </h2>
               </div>
 
               <div className="mt-[20px] w-[100%] space-y-6">
-                {/* Phone Number */}
-                <div className="relative">
-                  <input
-                    onChange={(e) => setPhone(e.target.value)}
-                    value={Phone}
-                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-                    type="number"
-                    placeholder="Phone Number *"
-                  />
-                  {Phone && (
-                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
-                  )}
-                </div>
-
-                {/* Email */}
-                <div className="relative">
-                  <input
-                    onChange={(e) => setemail(e.target.value)}
-                    value={Email}
-                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-                    type="email"
-                    placeholder="Email *"
-                  />
-                  {Email && (
-                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
-                  )}
-                </div>
-
-                {/* Password */}
-                <div className="relative">
-                  <input
-                    onChange={(e) => setpassword(e.target.value)}
-                    value={Password}
-                    id="input"
-                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-                    type="password"
-                    placeholder="Password (min. 8 characters) *"
-                  />
-                  <button
-                    onClick={myFunction}
-                    type="button"
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2"
-                  >
-                    <img
-                      ref={Show}
-                      alt="Show"
-                      src={ShowPassword}
-                      className="w-[25px] h-[25px] hidden"
-                    />
-                    <img
-                      ref={Hide}
-                      alt="Hide"
-                      src={HidePassword}
-                      className="w-[25px] h-[25px]"
-                    />
-                  </button>
-                </div>
-                {Password && (
-                  <div
-                    className={`ml-2 text-sm ${
-                      Password.length >= 8 ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {Password.length >= 8
-                      ? "✓ Password is valid"
-                      : "Password must be at least 8 characters"}
-                  </div>
-                )}
-
                 {/* Gender */}
                 <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
                   <label className="block font-medium text-gray-700">
                     I am a: *
                   </label>
-                  <div className="flex flex-wrap gap-4">
-                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg  px-3 py-2 transition-colors duration-150">
+                  <div className="flex flex-col">
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
                       <input
                         type="radio"
                         name="gender"
                         value="Male"
                         checked={Gender === "Male"}
                         onChange={(e) => setGender(e.target.value)}
-                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                        className="w-5 h-5 "
                       />
                       <span className="text-gray-700 font-medium">Man</span>
                     </label>
-                    <label className="flex items-center cursor-pointer px-3 py-2 rounded-lg transition-colors duration-150">
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
                       <input
                         type="radio"
                         name="gender"
                         value="Female"
                         checked={Gender === "Female"}
                         onChange={(e) => setGender(e.target.value)}
-                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                        className="w-5 h-5 "
                       />
                       <span className="text-gray-700 font-medium">Woman</span>
                     </label>
@@ -448,7 +407,7 @@ const Register = () => {
                         value="Greek"
                         checked={GreekStatus === "Greek"}
                         onChange={(e) => setGreekStatus(e.target.value)}
-                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                        className="w-5 h-5 "
                       />
                       <span className="text-gray-700 font-medium">Greek</span>
                     </label>
@@ -459,7 +418,7 @@ const Register = () => {
                         value="Of Greek origin"
                         checked={GreekStatus === "Of Greek origin"}
                         onChange={(e) => setGreekStatus(e.target.value)}
-                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                        className="w-5 h-5 "
                       />
                       <span className="text-gray-700 font-medium">
                         Of Greek origin
@@ -472,13 +431,98 @@ const Register = () => {
                         value="Philhellene"
                         checked={GreekStatus === "Philhellene"}
                         onChange={(e) => setGreekStatus(e.target.value)}
-                        className="w-5 h-5 text-amber-500 focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                        className="w-5 h-5 "
                       />
                       <span className="text-gray-700 font-medium">
                         Philhellene
                       </span>
                     </label>
                   </div>
+                </div>
+
+                {/* Email */}
+                <div className="relative">
+                  <label htmlFor="" className="font-semibold">
+                    Email
+                  </label>
+                  <p>We will never share your email with anyone.</p>
+                  <input
+                    onChange={(e) => setemail(e.target.value)}
+                    value={Email}
+                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                    type="email"
+                    placeholder="Email *"
+                  />
+                  {Email && (
+                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
+                  )}
+                </div>
+
+                {/* Phone Number */}
+                <div className="relative">
+                  <label htmlFor="" className="font-semibold">
+                    Phone Number
+                  </label>
+                  <p>Used only for verification — never shared or displayed.</p>
+                  <input
+                    onChange={(e) => setPhone(e.target.value)}
+                    value={Phone}
+                    className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                    type="number"
+                    placeholder="Phone Number *"
+                  />
+                  {Phone && (
+                    <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
+                  )}
+                </div>
+
+                {/* Password */}
+                <div className="relative">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Password *
+                  </label>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Minimum 8 characters.
+                  </p>
+                  <div className="relative">
+                    <input
+                      onChange={(e) => setpassword(e.target.value)}
+                      value={Password}
+                      id="input"
+                      className="text-black w-[100%] border-2 items-center outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                      type="password"
+                      placeholder="Create a password"
+                    />
+                    <button
+                      onClick={myFunction}
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    >
+                      <img
+                        ref={Show}
+                        alt="Show"
+                        src={ShowPassword}
+                        className="w-5 h-5 hidden"
+                      />
+                      <img
+                        ref={Hide}
+                        alt="Hide"
+                        src={HidePassword}
+                        className="w-5 h-5"
+                      />
+                    </button>
+                  </div>
+                  {Password && (
+                    <p
+                      className={`text-xs mt-1 ${
+                        Password.length >= 8 ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {Password.length >= 8
+                        ? "✓ Password is valid"
+                        : "Password must be at least 8 characters"}
+                    </p>
+                  )}
                 </div>
 
                 {/* Birthdate */}
@@ -532,21 +576,49 @@ const Register = () => {
                   </div>
                 </div>
 
+                {/* Zodiac */}
+                <div>
+                  <label htmlFor="" className="font-semibold">
+                    Zodiac Sign
+                  </label>
+                  <p>
+                    Many members enjoy this part of getting to know each other.
+                  </p>
+                  <select
+                    value={Zodiac}
+                    onChange={(e) => setZodiac(e.target.value)}
+                    className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                  >
+                    <option value="">Select your zodiac sign</option>
+                    {zodiacSigns.map((sign) => (
+                      <option key={sign.name} value={sign.name}>
+                        {sign.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Country */}
-                <select
-                  value={Country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-                >
-                  <option value="" className="text-gray-400">
-                    Select Country *
-                  </option>
-                  {Countries.map((country) => (
-                    <option key={country.id} value={country.id}>
-                      {country.name}
+                <div>
+                  <label htmlFor="" className="font-semibold">
+                    I live in:
+                  </label>
+                  <p>Country / State / Region</p>
+                  <select
+                    value={Country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
+                  >
+                    <option value="" className="text-gray-400">
+                      Select Country *
                     </option>
-                  ))}
-                </select>
+                    {Countries.map((country) => (
+                      <option key={country.id} value={country.id}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 {/* State */}
                 <select
@@ -583,13 +655,33 @@ const Register = () => {
                 </select>
 
                 {/* Terms Agreement */}
-                <div className="bg-white rounded-xl p-3 ">
+                <div className="bg-white rounded-xl p-1 ">
+                  <label className="flex items-start space-x-4 cursor-pointer  rounded-lg transition-colors duration-150">
+                    <input
+                      type="checkbox"
+                      checked={EligibilityConfirmation}
+                      onChange={(e) =>
+                        setEligibilityConfirmation(e.target.checked)
+                      }
+                      className="mt-1 w-5 h-5 "
+                      id="agreement"
+                    />
+                    <span className="text-gray-700 leading-relaxed">
+                      I confirm that I am at least 18 years old and that I am
+                      single, separated, divorced, or widowed. I understand that
+                      married individuals are not allowed to join. *
+                    </span>
+                  </label>
+                </div>
+
+                {/* Terms Agreement */}
+                <div className="bg-white rounded-xl p-1 ">
                   <label className="flex items-start space-x-4 cursor-pointer  rounded-lg transition-colors duration-150">
                     <input
                       type="checkbox"
                       checked={Agreed}
                       onChange={(e) => setAgreed(e.target.checked)}
-                      className="mt-1 w-5 h-5 text-amber-500 rounded focus:ring-2 focus:ring-amber-200 focus:ring-offset-2"
+                      className="mt-1 w-5 h-5 "
                       id="agreement"
                     />
                     <span className="text-gray-700 leading-relaxed">
@@ -615,7 +707,10 @@ const Register = () => {
 
               {/* Create Account Button */}
               <button
-                style={{ background: isRegistering ? "#70859cff" : "#1F5799", borderRadius: "999px" }}
+                style={{
+                  background: isRegistering ? "#70859cff" : "#1F5799",
+                  borderRadius: "999px",
+                }}
                 onClick={SubmitHandler}
                 disabled={isRegistering}
                 className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full transition-all duration-300"
