@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 /* jshint ignore:start */
 
-import { useContext, useState,useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +11,7 @@ import axios from "axios";
 import Check from "../Icon/check.svg";
 
 const InfoForm = () => {
-
-  const navigation = useNavigate()
+  const navigation = useNavigate();
   const {
     setFirstName,
     setLastName,
@@ -25,7 +24,7 @@ const InfoForm = () => {
     setHobbies,
     setBio,
     basUrl,
-    imageBaseURL
+    imageBaseURL,
   } = useContext(MyContext);
 
   const [localFirstName, setLocalFirstName] = useState("");
@@ -37,60 +36,52 @@ const InfoForm = () => {
   const [localDrinking, setLocalDrinking] = useState("");
   const [localLanguages, setLocalLanguages] = useState([]);
   const [localInterests, setLocalInterests] = useState([]);
+  const [interests, setInterests] = useState("");
   const [localBio, setLocalBio] = useState("");
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
-const [selectedInterests, setSelectedInterests] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState("");
+const [otherLanguage, setOtherLanguage] = useState("");
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  
   const [Error, setError] = useState([]);
 
-
-
-  
+  useEffect(() => {
+    axios.post(`${basUrl}languagelist.php`).then((res) => {
+      setLocalLanguages(res.data.languagelist);
+    });
+  }, []);
 
   useEffect(() => {
-      axios.post(`${basUrl}languagelist.php`)
-        .then((res) => {
-          setLocalLanguages(res.data.languagelist);
-        });
-    }, []);
+    axios.post(`${basUrl}interest.php`).then((res) => {
+      setLocalInterests(res.data.interestlist);
+    });
+  }, []);
 
-    useEffect(() => {
-       axios.post(`${basUrl}interest.php`)
-         .then((res) => {
-  
-           setLocalInterests(res.data.interestlist);
-         });
-     }, []);
-
-
- const selectLanguageHandler = (id) => {
-  if (selectedLanguages.includes(id)) {
-    setSelectedLanguages(selectedLanguages.filter((el) => el !== id));
-  } else {
-    setSelectedLanguages([...selectedLanguages, id]);
-  }
-};
-
-const selectInterestHandler = (id) => {
-  if (selectedInterests.includes(id)) {
-    setSelectedInterests(selectedInterests.filter((item) => item !== id));
-    setError(0);
-  } else {
-    if (selectedInterests.length < 5) {
-      setSelectedInterests([...selectedInterests, id]);
-      setError(1);
+  const selectLanguageHandler = (id) => {
+    if (selectedLanguages.includes(id)) {
+      setSelectedLanguages(selectedLanguages.filter((el) => el !== id));
+    } else {
+      setSelectedLanguages([...selectedLanguages, id]);
     }
-  }
-};
+  };
+
+  const selectInterestHandler = (id) => {
+    if (selectedInterests.includes(id)) {
+      setSelectedInterests(selectedInterests.filter((item) => item !== id));
+      setError(0);
+    } else {
+      if (selectedInterests.length < 5) {
+        setSelectedInterests([...selectedInterests, id]);
+        setError(1);
+      }
+    }
+  };
 
   useEffect(() => {
-  const allSelections = [...selectedLanguages, ...selectedInterests];
-}, [selectedLanguages, selectedInterests]);
-
+    const allSelections = [...selectedLanguages, ...selectedInterests];
+  }, [selectedLanguages, selectedInterests]);
 
   const [bioCharCount, setBioCharCount] = useState(0);
   const maxBioLength = 500;
-
-  
 
   const handleBioChange = (e) => {
     const value = e.target.value;
@@ -108,32 +99,42 @@ const selectInterestHandler = (id) => {
     setProfession(localProfession);
     setSmoking(localSmoking);
     setDrinking(localDrinking);
-    
+
     setLanguages(localLanguages.join(", "));
-    
-     setHobbies(localInterests.join(","));
-    
+
+    setHobbies(interests);
+
     setBio(localBio);
   };
 
   const SubmitHandler = () => {
-    if (!localFirstName?.trim()) return showTost({ title: "Please enter your first name" });
-    if (!localLastName?.trim()) return showTost({ title: "Please enter your last name" });
-    if (!localRelationshipStatus) return showTost({ title: "Please select your relationship status" });
-    if (!localEducation) return showTost({ title: "Please select your education level" });
-    if (!localProfession?.trim()) return showTost({ title: "Please enter your profession" });
-    if (!localSmoking) return showTost({ title: "Please select your smoking preference" });
-    if (!localDrinking) return showTost({ title: "Please select your drinking preference" });
-    if (localLanguages.length === 0) return showTost({ title: "Please select at least one language" });
-    if (!localBio?.trim()) return showTost({ title: "Please write a short bio about yourself" });
-    if (localBio.length < 5) return showTost({ title: "Bio should be at least 5 characters" });
+    if (!localFirstName?.trim())
+      return showTost({ title: "Please enter your first name" });
+    if (!localLastName?.trim())
+      return showTost({ title: "Please enter your last name" });
+    if (!localRelationshipStatus)
+      return showTost({ title: "Please select your relationship status" });
+    if (!localEducation)
+      return showTost({ title: "Please select your education level" });
+    if (!localProfession?.trim())
+      return showTost({ title: "Please enter your profession" });
+    if (!localSmoking)
+      return showTost({ title: "Please select your smoking preference" });
+    if (!localDrinking)
+      return showTost({ title: "Please select your drinking preference" });
+    if (localLanguages.length === 0)
+      return showTost({ title: "Please select at least one language" });
+    if (!localBio?.trim())
+      return showTost({ title: "Please write a short bio about yourself" });
+    if (localBio.length < 5)
+      return showTost({ title: "Bio should be at least 5 characters" });
 
     saveDataToContext();
-    
+
     navigation("/greek-connection");
   };
 
- return (
+  return (
     <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
         <section className="steps step-1 active rounded-[40px] relative bg-white">
@@ -146,13 +147,13 @@ const selectInterestHandler = (id) => {
 
           {/* ----- Registration Form ----- */}
           <>
-            <div className="mt-[10px]">
+            <div className="mt-[10px] text-center">
               <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
-                Can You elaborate on your identity? 😎
+                Share Your Details with Confidence
               </h1>
               <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
-                It will Display on your Profile and you will not able to
-                change it later
+                Honesty is the heart of every meaningful connection. Share
+                openly, so others can truly meet the real you.
               </p>
             </div>
 
@@ -187,21 +188,30 @@ const selectInterestHandler = (id) => {
 
               {/* Relationship Status */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
-                <label className="block font-medium mb-3 text-[#333333]">Relationship Status: *</label>
+                <label className="block font-medium mb-3 text-[#333333]">
+                  Relationship Status: *
+                </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {["Single", "Separated", "Divorced", "Widowed"].map((status) => (
-                    <label key={status} className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="relationshipStatus"
-                        value={status}
-                        checked={localRelationshipStatus === status}
-                        onChange={(e) => setLocalRelationshipStatus(e.target.value)}
-                        className="w-5 h-5 text-[#C89A3D]"
-                      />
-                      <span className="text-[#333333]">{status}</span>
-                    </label>
-                  ))}
+                  {["Single", "Separated", "Divorced", "Widowed"].map(
+                    (status) => (
+                      <label
+                        key={status}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <input
+                          type="radio"
+                          name="relationshipStatus"
+                          value={status}
+                          checked={localRelationshipStatus === status}
+                          onChange={(e) =>
+                            setLocalRelationshipStatus(e.target.value)
+                          }
+                          className="w-5 h-5 text-[#C89A3D]"
+                        />
+                        <span className="text-[#333333]">{status}</span>
+                      </label>
+                    )
+                  )}
                 </div>
               </div>
 
@@ -239,10 +249,20 @@ const selectInterestHandler = (id) => {
 
               {/* Smoking */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
-                <label className="block font-medium mb-3 text-[#333333]">Smoking: *</label>
+                <label className="block font-medium mb-3 text-[#333333]">
+                  Smoking: *
+                </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {["Non-smoker", "Social smoker", "Smoker", "Trying to quit"].map((option) => (
-                    <label key={option} className="flex items-center space-x-2 cursor-pointer">
+                  {[
+                    "Non-smoker",
+                    "Social smoker",
+                    "Smoker",
+                    "Trying to quit",
+                  ].map((option) => (
+                    <label
+                      key={option}
+                      className="flex items-center space-x-2 cursor-pointer"
+                    >
                       <input
                         type="radio"
                         name="smoking"
@@ -259,10 +279,20 @@ const selectInterestHandler = (id) => {
 
               {/* Drinking */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
-                <label className="block font-medium mb-3 text-[#333333]">Drinking: *</label>
+                <label className="block font-medium mb-3 text-[#333333]">
+                  Drinking: *
+                </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {["Non-drinker", "Social drinker", "Drinker", "Occasionally"].map((option) => (
-                    <label key={option} className="flex items-center space-x-2 cursor-pointer">
+                  {[
+                    "Non-drinker",
+                    "Social drinker",
+                    "Drinker",
+                    "Occasionally",
+                  ].map((option) => (
+                    <label
+                      key={option}
+                      className="flex items-center space-x-2 cursor-pointer"
+                    >
                       <input
                         type="radio"
                         name="drinking"
@@ -279,90 +309,95 @@ const selectInterestHandler = (id) => {
 
               {/* Languages */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
-                <label className="block font-medium mb-3 text-[#333333]">Languages:</label>
-                {localLanguages.map((el) => {
-                  return (
-                    <button
-                      key={el.id}
-                      onClick={() => selectLanguageHandler(el.id)}
-                      style={{
-                        borderColor: selectedLanguages.includes(el.id)
-                          ? "#C89A3D"
-                          : "",
-                      }}
-                      className="w-[100%] flex items-center justify-between text-[18px] max-_430_:text-[14px] px-[13px] py-[8px] border-[2px] border-gray-300 bg-white rounded-[10px] mt-[15px] shadow-sm"
-                    >
-                      <div className="flex items-center gap-[10px]">
-                        <img
-                          src={imageBaseURL + el.img}
-                          alt={el.title}
-                          className="w-[45px] h-[45px]"
-                        />
-                        <span className="text-[#333333]">{el.title}</span>
-                      </div>
-                      <img
-                        src={Check}
-                        style={{
-                          display: selectedLanguages.includes(el.id) ? "block" : "none",
-                        }}
-                        alt="check"
-                        className="w-[20px] h-[20px] me-[20px]"
-                      />
-                    </button>
-                  );
-                })}
-              </div>
+  <label className="block font-medium mb-3 text-[#333333]">
+    Languages:
+  </label>
+
+  {["English", "Greek", "Other"].map((lang) => (
+    <label
+      key={lang}
+      className="w-full flex flex-row items-center justify-between text-[18px] max-_430_:text-[14px] py-[10px] cursor-pointer"
+      style={{
+        borderColor: selectedLanguages === lang ? "#C89A3D" : "",
+      }}
+    >
+      <div className="flex items-center gap-[10px]">
+        <input
+          type="radio"
+          name="language"
+          value={lang}
+          checked={selectedLanguages === lang}
+          onChange={() => setSelectedLanguages(lang)}
+          className="w-[18px] h-[18px]"
+        />
+        <span className="text-[#333333]">{lang}</span>
+      </div>
+    </label>
+  ))}
+
+  {/* Other Language Input */}
+  {selectedLanguages === "Other" && (
+    <input
+      type="text"
+      placeholder="Enter your language"
+      value={otherLanguage}
+      onChange={(e) => setOtherLanguage(e.target.value)}
+      className="w-full mt-[15px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] text-[16px]"
+    />
+  )}
+</div>
+
 
               {/* Interests & Hobbies */}
-              <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
-                <label className="block font-medium mb-3 text-[#333333]">Interests & Hobbies:</label>
-                {localInterests.map((el) => {
-                  return (
-                    <button
-                      key={el.id}
-                      onClick={() => selectInterestHandler(el.id)}
-                      style={{
-                        borderColor: selectedInterests.includes(el.id)
-                          ? "#C89A3D"
-                          : "",
-                      }}
-                      className="w-[100%] flex items-center justify-between text-[18px] max-_430_:text-[14px] px-[13px] py-[8px] border-[2px] border-gray-300 bg-white rounded-[10px] mt-[15px] shadow-sm"
-                    >
-                      <div className="flex items-center gap-[10px]">
-                        <img
-                          src={imageBaseURL + el.img}
-                          alt={el.title}
-                          className="w-[45px] h-[45px]"
-                        />
-                        <span className="text-[#333333]">{el.title}</span>
-                      </div>
-                      <img
-                        src={Check}
-                        style={{
-                          display: selectedInterests.includes(el.id) ? "block" : "none",
-                        }}
-                        alt="check"
-                        className="w-[20px] h-[20px] me-[20px]"
-                      />
-                    </button>
-                  );
-                })}
-              </div>
+              <div className="">
+  <label className="block font-semibold text-[#333333]">
+    Interests & Hobbies:
+  </label>
+
+  <textarea
+    value={interests}
+    onChange={(e) => setInterests(e.target.value)}
+    placeholder="Share the things you enjoy — your interests help others connect with your personality."
+    rows={4}
+    className="w-full text-[16px] max-_430_:text-[14px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] resize-none focus:outline-none focus:border-[#C89A3D]"
+  />
+</div>
+
 
               {/* Bio */}
               <div>
+                 <label className="block font-semibold text-[#333333]">
+   Tell us about yourself
+  </label>
+  <p>
+    This is your moment to shine.
+Share your story, what you value, what brings you joy, and what you're hoping to find.
+Your words help others see the real heart behind your profile.
+  </p>
                 <textarea
                   value={localBio}
                   onChange={handleBioChange}
                   className="w-full border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[120px] resize-none shadow-sm text-[#333333]"
-                  placeholder="Tell us about yourself, your interests, what you're looking for... (minimum 5 characters)"
+                  placeholder="Write a few lines about yourself, your personality, and what you're looking for… (minimum 5 characters)"
                   maxLength={maxBioLength}
                 />
                 <div className="flex justify-between mt-2">
-                  <span className={`text-sm ${bioCharCount >= 5 ? "text-green-600" : "text-[#C95B5B]"}`}>
-                    {bioCharCount >= 5 ? "✓ Bio is long enough" : `Minimum 5 characters required`}
+                  <span
+                    className={`text-sm ${
+                      bioCharCount >= 5 ? "text-green-600" : "text-[#C95B5B]"
+                    }`}
+                  >
+                    {bioCharCount >= 5
+                      ? "✓ Bio is long enough"
+                      : `Minimum 5 characters required`}
                   </span>
-                  <span className={`text-sm ${bioCharCount > maxBioLength - 50 ? "text-orange-500" : "text-gray-500"}`}>
+                  <span
+                    className={`text-sm ${
+                      bioCharCount > maxBioLength - 50
+                        ? "text-orange-500"
+                        : "text-gray-500"
+                    }`}
+                  >
                     {bioCharCount}/{maxBioLength}
                   </span>
                 </div>
@@ -371,7 +406,7 @@ const selectInterestHandler = (id) => {
 
             {/* Next Button */}
             <button
-              style={{ background: "#1F5799" , borderRadius:"999px"}}
+              style={{ background: "#1F5799", borderRadius: "999px" }}
               onClick={SubmitHandler}
               className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full shadow-md hover:bg-[#1A4A87]"
             >
