@@ -12,6 +12,19 @@ import { MyContext } from "../Context/MyProvider";
 import axios from "axios";
 import { showTost } from "../showTost";
 import logo from "../images/logos/meet-greek.png";
+import Aries from "../images/zodiac/aries.png";
+import Taurus from "../images/zodiac/taurus.png";
+import Gemini from "../images/zodiac/gemini.png";
+import Cancer from "../images/zodiac/cancer.png";
+import Leo from "../images/zodiac/leo.png";
+import Virgo from "../images/zodiac/virgo.png";
+import Libra from "../images/zodiac/libra.png";
+import Scorpio from "../images/zodiac/scorpion.png";
+import Sagittarius from "../images/zodiac/sagittarius.png";
+// import Capricorn from "../images/zodiac/capricorn.png";
+// import Aquarius from "../images/zodiac/aquarius.png";
+// import Pisces from "../images/zodiac/pisces.png";
+
 
 const Register = () => {
   const [Email, setemail] = useState("");
@@ -34,6 +47,7 @@ const Register = () => {
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
   const [Zodiac, setZodiac] = useState("");
+const [open, setOpen] = useState(false);
 
   // Registration loading state
   const [isRegistering, setIsRegistering] = useState(false);
@@ -63,20 +77,22 @@ const Register = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
 
-  const zodiacSigns = [
-    { name: "Aries" },
-    { name: "Taurus" },
-    { name: "Gemini" },
-    { name: "Cancer" },
-    { name: "Leo" },
-    { name: "Virgo" },
-    { name: "Libra" },
-    { name: "Scorpio" },
-    { name: "Sagittarius" },
-    { name: "Capricorn" },
-    { name: "Aquarius" },
-    { name: "Pisces" },
-  ];
+ const zodiacSigns = [
+  { name: "Aries", icon: Aries, range: "March 21 - April 20" },
+  { name: "Taurus", icon: Taurus, range: "April 21 - May 20" },
+  { name: "Gemini", icon: Gemini, range: "May 21 - June 20" },
+  { name: "Cancer", icon: Cancer, range: "June 21 - July 22" },
+  { name: "Leo", icon: Leo, range: "July 23 - August 22" },
+  { name: "Virgo", icon: Virgo, range: "August 23 - September 22" },
+  { name: "Libra", icon: Libra, range: "September 23 - October 22" },
+  { name: "Scorpio", icon: Scorpio, range: "October 23 - November 21" },
+  { name: "Sagittarius", icon: Sagittarius, range: "November 22 - December 21" },
+  // { name: "Capricorn", icon: Capricorn, range: "December 22 - January 19" },
+  // { name: "Aquarius", icon: Aquarius, range: "January 20 - February 18" },
+  // { name: "Pisces", icon: Pisces, range: "February 19 - March 20" },
+];
+
+
 
   useEffect(() => {
     if (accepted) {
@@ -577,26 +593,61 @@ const Register = () => {
                 </div>
 
                 {/* Zodiac */}
-                <div>
-                  <label htmlFor="" className="font-semibold">
-                    Zodiac Sign
-                  </label>
-                  <p>
-                    Many members enjoy this part of getting to know each other.
-                  </p>
-                  <select
-                    value={Zodiac}
-                    onChange={(e) => setZodiac(e.target.value)}
-                    className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
-                  >
-                    <option value="">Select your zodiac sign</option>
-                    {zodiacSigns.map((sign) => (
-                      <option key={sign.name} value={sign.name}>
-                        {sign.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+               <div className="relative">
+  <label className="font-semibold">Zodiac Sign</label>
+  <p className="text-gray-600">
+    Many members enjoy this part of getting to know each other.
+  </p>
+
+  {/* Selected */}
+  <button
+    type="button"
+    onClick={() => setOpen(!open)}
+    className="w-full mt-2 px-4 py-3 border-2 border-gray-300 rounded-xl
+    bg-white flex items-center justify-between
+    focus:border-amber-500 transition"
+  >
+    {Zodiac ? (
+      <div className="flex items-center gap-3">
+        <img
+          src={zodiacSigns.find(z => z.name === Zodiac)?.icon}
+          className="w-6 h-6"
+          alt=""
+        />
+        <span className="text-gray-800">{Zodiac}</span>
+      </div>
+    ) : (
+      <span className="text-gray-400">Select your zodiac sign</span>
+    )}
+    <span className="text-gray-400">▼</span>
+  </button>
+
+  {/* Dropdown */}
+  {open && (
+    <ul className="absolute z-50 mt-2 w-full bg-white border rounded-xl
+      shadow-lg max-h-64 overflow-y-auto">
+      {zodiacSigns.map((sign) => (
+        <li
+          key={sign.name}
+          onClick={() => {
+            setZodiac(sign.name); 
+            setOpen(false);
+          }}
+          className="flex items-center gap-3 px-2 py-3
+          hover:bg-amber-50 cursor-pointer transition"
+        >
+          <img src={sign.icon} className="w-6 h-6" alt="" />
+          <div>
+            <p className="font-medium">{sign.name} ({sign.range})</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+
+
 
                 {/* Country */}
                 <div>

@@ -32,6 +32,8 @@ const FaithCultureTradition = () => {
     "Easter (Pascha)",
     "Sacraments (weddings, baptisms)",
     "Name Days",
+    "Christmas",
+    "New year",
     "Summer festivals",
     "Lighting candles",
     "Visiting monasteries / churches",
@@ -250,37 +252,69 @@ const FaithCultureTradition = () => {
             </div>
 
             {/* Favorite Greek Traditions */}
-            <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
-              <label className="block font-medium mb-3 text-lg text-[#333333]">
-                Favorite Greek traditions:
-              </label>
-              <p className="text-[#333333] mb-4 text-sm">
-                Select all that apply
-              </p>
-              <div className="gap-3">
-                {availableTraditions.map((tradition) => (
-                  <div key={tradition} className="w-full">
-                    <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-50 rounded-lg w-full">
-                      <input
-                        type="checkbox"
-                        checked={localFavoriteTraditions.includes(tradition)}
-                        onChange={() => handleTraditionToggle(tradition)}
-                        className="w-5 h-5 text-[#C89A3D] rounded flex-shrink-0"
-                      />
-                      <span className="text-[#333333] w-full">{tradition}</span>
-                    </label>
-                  </div>
-                ))}
-              </div>
-              {/* Show selected traditions count */}
-              {localFavoriteTraditions.length > 0 && (
-                <div className="mt-3">
-                  <p className="text-sm text-[#333333]">
-                    Selected: <span className="font-medium">{localFavoriteTraditions.length}</span> tradition(s)
-                  </p>
-                </div>
-              )}
-            </div>
+        <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
+  <label className="block font-medium mb-3 text-lg text-[#333333]">
+    Favorite Greek traditions:
+  </label>
+  <p className="text-[#333333] mb-4 text-sm">Select all that apply</p>
+
+  <div className="gap-3">
+    {availableTraditions.map((tradition) => (
+      <div key={tradition} className="w-full">
+        <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-50 rounded-lg w-full">
+          <input
+            type="checkbox"
+            checked={
+              tradition !== "Other"
+                ? localFavoriteTraditions.includes(tradition)
+                : localFavoriteTraditions.some((t) => !availableTraditions.includes(t))
+            }
+            onChange={() => {
+              if (tradition === "Other") {
+                // Add placeholder empty string to start typing
+                if (!localFavoriteTraditions.some((t) => !availableTraditions.includes(t))) {
+                  setLocalFavoriteTraditions([...localFavoriteTraditions, ""]);
+                }
+              } else {
+                handleTraditionToggle(tradition);
+              }
+            }}
+            className="w-5 h-5 text-[#C89A3D] rounded flex-shrink-0"
+          />
+          <span className="text-[#333333] w-full">{tradition}</span>
+        </label>
+
+        {/* Show Other input if selected */}
+        {tradition === "Other" &&
+          localFavoriteTraditions.some((t) => !availableTraditions.includes(t)) && (
+            <input
+              type="text"
+              placeholder="Enter your own tradition"
+              value={localFavoriteTraditions.find((t) => !availableTraditions.includes(t)) || ""}
+              onChange={(e) => {
+                const otherValue = e.target.value;
+                const filtered = localFavoriteTraditions.filter((t) => availableTraditions.includes(t));
+                if (otherValue) filtered.push(otherValue);
+                setLocalFavoriteTraditions(filtered);
+              }}
+              className="w-full mt-2 px-3 py-2 border-[2px] border-gray-300 rounded-[10px] text-[16px]"
+            />
+          )}
+      </div>
+    ))}
+  </div>
+
+  {/* Show selected traditions count */}
+  {localFavoriteTraditions.length > 0 && (
+    <div className="mt-3">
+      <p className="text-sm text-[#333333]">
+        Selected: <span className="font-medium">{localFavoriteTraditions.length}</span> tradition(s)
+      </p>
+    </div>
+  )}
+</div>
+
+
 
             {/* Additional Information (Optional) */}
             <div>

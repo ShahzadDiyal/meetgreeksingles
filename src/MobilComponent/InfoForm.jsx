@@ -39,9 +39,9 @@ const InfoForm = () => {
   const [interests, setInterests] = useState("");
   const [localBio, setLocalBio] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState("");
-const [otherLanguage, setOtherLanguage] = useState("");
+  const [otherLanguage, setOtherLanguage] = useState("");
   const [selectedInterests, setSelectedInterests] = useState([]);
-  
+
   const [Error, setError] = useState([]);
 
   useEffect(() => {
@@ -191,7 +191,7 @@ const [otherLanguage, setOtherLanguage] = useState("");
                 <label className="block font-medium mb-3 text-[#333333]">
                   Relationship Status: *
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {["Single", "Separated", "Divorced", "Widowed"].map(
                     (status) => (
                       <label
@@ -252,7 +252,7 @@ const [otherLanguage, setOtherLanguage] = useState("");
                 <label className="block font-medium mb-3 text-[#333333]">
                   Smoking: *
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2  gap-3">
                   {[
                     "Non-smoker",
                     "Social smoker",
@@ -282,7 +282,7 @@ const [otherLanguage, setOtherLanguage] = useState("");
                 <label className="block font-medium mb-3 text-[#333333]">
                   Drinking: *
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {[
                     "Non-drinker",
                     "Social drinker",
@@ -318,7 +318,10 @@ const [otherLanguage, setOtherLanguage] = useState("");
       key={lang}
       className="w-full flex flex-row items-center justify-between text-[18px] max-_430_:text-[14px] py-[10px] cursor-pointer"
       style={{
-        borderColor: selectedLanguages === lang ? "#C89A3D" : "",
+        borderColor:
+          selectedLanguages === lang || (lang === "Other" && selectedLanguages !== "English" && selectedLanguages !== "Greek")
+            ? "#C89A3D"
+            : "",
       }}
     >
       <div className="flex items-center gap-[10px]">
@@ -326,8 +329,19 @@ const [otherLanguage, setOtherLanguage] = useState("");
           type="radio"
           name="language"
           value={lang}
-          checked={selectedLanguages === lang}
-          onChange={() => setSelectedLanguages(lang)}
+          checked={
+            selectedLanguages === lang ||
+            (lang === "Other" && selectedLanguages !== "English" && selectedLanguages !== "Greek")
+          }
+          onChange={() => {
+            if (lang === "Other" && !["English", "Greek"].includes(selectedLanguages)) {
+              // keep existing other value
+            } else if (lang === "Other") {
+              setSelectedLanguages(""); // clear for typing
+            } else {
+              setSelectedLanguages(lang);
+            }
+          }}
           className="w-[18px] h-[18px]"
         />
         <span className="text-[#333333]">{lang}</span>
@@ -336,12 +350,12 @@ const [otherLanguage, setOtherLanguage] = useState("");
   ))}
 
   {/* Other Language Input */}
-  {selectedLanguages === "Other" && (
+  {selectedLanguages !== "English" && selectedLanguages !== "Greek" && (
     <input
       type="text"
       placeholder="Enter your language"
-      value={otherLanguage}
-      onChange={(e) => setOtherLanguage(e.target.value)}
+      value={selectedLanguages}
+      onChange={(e) => setSelectedLanguages(e.target.value)}
       className="w-full mt-[15px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] text-[16px]"
     />
   )}
@@ -350,30 +364,29 @@ const [otherLanguage, setOtherLanguage] = useState("");
 
               {/* Interests & Hobbies */}
               <div className="">
-  <label className="block font-semibold text-[#333333]">
-    Interests & Hobbies:
-  </label>
+                <label className="block font-semibold text-[#333333]">
+                  Interests & Hobbies:
+                </label>
 
-  <textarea
-    value={interests}
-    onChange={(e) => setInterests(e.target.value)}
-    placeholder="Share the things you enjoy — your interests help others connect with your personality."
-    rows={4}
-    className="w-full text-[16px] max-_430_:text-[14px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] resize-none focus:outline-none focus:border-[#C89A3D]"
-  />
-</div>
-
+                <textarea
+                  value={interests}
+                  onChange={(e) => setInterests(e.target.value)}
+                  placeholder="Share the things you enjoy — your interests help others connect with your personality."
+                  rows={4}
+                  className="w-full text-[16px] max-_430_:text-[14px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] resize-none focus:outline-none focus:border-[#C89A3D]"
+                />
+              </div>
 
               {/* Bio */}
               <div>
-                 <label className="block font-semibold text-[#333333]">
-   Tell us about yourself
-  </label>
-  <p>
-    This is your moment to shine.
-Share your story, what you value, what brings you joy, and what you're hoping to find.
-Your words help others see the real heart behind your profile.
-  </p>
+                <label className="block font-semibold text-[#333333]">
+                  Tell us about yourself
+                </label>
+                <p>
+                  This is your moment to shine. Share your story, what you
+                  value, what brings you joy, and what you're hoping to find.
+                  Your words help others see the real heart behind your profile.
+                </p>
                 <textarea
                   value={localBio}
                   onChange={handleBioChange}

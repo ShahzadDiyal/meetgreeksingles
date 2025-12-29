@@ -27,7 +27,17 @@ import Slider from "react-slick";
 const Dashboard = () => {
   const { t } = useTranslation();
 
-  const { basUrl, setProfileId, imageBaseURL, setDetails, setBlockId, setChatId, chatId, setChatUserName, setCurrency } = useContext(MyContext);
+  const {
+    basUrl,
+    setProfileId,
+    imageBaseURL,
+    setDetails,
+    setBlockId,
+    setChatId,
+    chatId,
+    setChatUserName,
+    setCurrency,
+  } = useContext(MyContext);
 
   const [api, setApi] = useState([]);
   const navigate = useNavigate();
@@ -97,7 +107,7 @@ const Dashboard = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000
+    autoplaySpeed: 2000,
   };
 
   const FilterHandler = () => {
@@ -144,7 +154,6 @@ const Dashboard = () => {
     }
   };
 
-
   const SednHandler = () => {
     const localData = localStorage.getItem("Register_User");
 
@@ -153,16 +162,14 @@ const Dashboard = () => {
       if (!gifterror) {
         showTost({ title: "Please Select Gift" });
       } else {
-
-        const img = giftImg.join(';');
-        axios.post(`${basUrl}giftbuy.php`,
-          {
+        const img = giftImg.join(";");
+        axios
+          .post(`${basUrl}giftbuy.php`, {
             sender_id: userData.id,
             coin: totalPrice,
             receiver_id: giftReceiverId,
-            gift_img: img
-          }
-        )
+            gift_img: img,
+          })
           .then((res) => {
             if (res.data.Result == "true") {
               setGiftId("");
@@ -205,14 +212,14 @@ const Dashboard = () => {
   // };
 
   const IdHandler = (i, index, name) => {
-    const Title = name.replace(/\s+/g, '_');
+    const Title = name.replace(/\s+/g, "_");
     const FinalText = Title.toLowerCase();
     // Pass the profile_id as a URL parameter instead of just slug
     navigate(`/detail/${FinalText}/${index}`);
     setDetails(i);
     setBlockId(index);
     localStorage.setItem("DetailsId", index);
-};
+  };
 
   const CloseAnimationHandler = (Id, Name) => {
     setClose((e) => [...e, Id]);
@@ -224,11 +231,41 @@ const Dashboard = () => {
       setBg((e) => [...e, Name]);
     }, 1600);
 
-    axios.post(`${basUrl}like_dislike.php`, { uid: userData.id, profile_id: Id, action: "UNLIKE" })
+    axios
+      .post(`${basUrl}like_dislike.php`, {
+        uid: userData.id,
+        profile_id: Id,
+        action: "UNLIKE",
+      })
       .then((res) => {
         showTost({ title: res.data.ResponseMsg });
       });
+  };
 
+  const ProfileLikeHandler = (id) => {
+    const Local = localStorage.getItem("Register_User");
+    if (id && Local) {
+      const UserData = JSON.parse(Local);
+
+      axios
+        .post(`${basUrl}like_dislike.php`, {
+          uid: UserData.id,
+          profile_id: id,
+          action: "LIKE",
+        })
+        .then((res) => {
+          if (res.data.Result === "true") {
+            showTost({ title: res.data.ResponseMsg });
+            const Page = sessionStorage.getItem("Icon-Color");
+
+            if (Page === "Home") {
+              navigate("/");
+            } else {
+              navigate("/explore");
+            }
+          }
+        });
+    }
   };
 
   const LikeAnimationHandler = (Id, Name) => {
@@ -240,7 +277,12 @@ const Dashboard = () => {
       setLikeDn((e) => [...e, Name]);
     }, 1600);
 
-    axios.post(`${basUrl}like_dislike.php`, { uid: userData.id, profile_id: Id, action: "LIKE" })
+    axios
+      .post(`${basUrl}like_dislike.php`, {
+        uid: userData.id,
+        profile_id: Id,
+        action: "LIKE",
+      })
       .then((res) => {
         showTost({ title: res.data.ResponseMsg });
       });
@@ -250,7 +292,6 @@ const Dashboard = () => {
     const localData = localStorage.getItem("Register_User");
 
     if (localData) {
-
       const userData = JSON.parse(localData);
 
       if (currentIndex < 0) {
@@ -269,9 +310,12 @@ const Dashboard = () => {
         if (response.data.Result === "true") {
           if (!localStorage.getItem("FilterData")) {
             if (currentIndex > 0) {
-              setApi(prevCards => [
+              setApi((prevCards) => [
                 ...prevCards,
-                ...response.data.profilelist.slice(currentIndex, currentIndex + 12),
+                ...response.data.profilelist.slice(
+                  currentIndex,
+                  currentIndex + 12
+                ),
               ]);
             } else {
               setApi(response.data.profilelist.slice(0, currentIndex + 12));
@@ -280,14 +324,20 @@ const Dashboard = () => {
           }
 
           const profileList = response.data.profilelist;
-          const lastProfile = profileList?.length > 0 ? profileList[profileList.length - 1] : null;
+          const lastProfile =
+            profileList?.length > 0
+              ? profileList[profileList.length - 1]
+              : null;
           setProfileId(lastProfile ? lastProfile.profile_id : null);
 
           setCurrency(response.data.currency);
           await setFilterinclude(response.data.filter_include);
           await setDirectchat(response.data.direct_chat);
 
-          localStorage.setItem("Profile_ratio", response.data.profile_percentage);
+          localStorage.setItem(
+            "Profile_ratio",
+            response.data.profile_percentage
+          );
           localStorage.setItem("PurchaseId", response.data.plan_id);
         }
       } catch (error) {
@@ -308,7 +358,10 @@ const Dashboard = () => {
   }, [currentIndex, currentIndex2]);
 
   const handleScroll = () => {
-    if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.scrollHeight) {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.scrollHeight
+    ) {
       if (api.length < totalCards) {
         const newIndex = currentIndex + 12;
         if (!localStorage.getItem("FilterData")) {
@@ -323,7 +376,7 @@ const Dashboard = () => {
   // Hook to handle scrolling
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);  // Clean up
+    return () => window.removeEventListener("scroll", handleScroll); // Clean up
   }, [handleScroll]);
 
   useEffect(() => {
@@ -338,11 +391,10 @@ const Dashboard = () => {
         } else {
           setLocation(false);
         }
-
-      });
+      }
+    );
     fetchUserData();
     FilterDataGetHandler("");
-
   }, [longitude, latitude]);
 
   const CoinHandler = () => {
@@ -350,7 +402,8 @@ const Dashboard = () => {
 
     if (localData) {
       const userData = JSON.parse(localData);
-      axios.post(`${basUrl}coin_report.php`, { uid: userData.id })
+      axios
+        .post(`${basUrl}coin_report.php`, { uid: userData.id })
         .then((res) => {
           setYouCoin(res.data.coin);
         });
@@ -358,10 +411,9 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    axios.post(`${basUrl}gift_list.php`)
-      .then((res) => {
-        setIconArray(res.data.giftlist);
-      });
+    axios.post(`${basUrl}gift_list.php`).then((res) => {
+      setIconArray(res.data.giftlist);
+    });
 
     CoinHandler();
     GetHandler();
@@ -405,14 +457,13 @@ const Dashboard = () => {
       minage: String(agemin),
       maxage: String(agemax),
       relation_goal: relationship || "0",
-      interest: interestId.length > 0 ? interestId.join(',') : "0",
+      interest: interestId.length > 0 ? interestId.join(",") : "0",
       religion: religion || "0",
-      language: language.length > 0 ? language.join(',') : "0",
-      is_verify: verify || "0"
+      language: language.length > 0 ? language.join(",") : "0",
+      is_verify: verify || "0",
     };
 
     await localStorage.setItem("FilterData", JSON.stringify(FilterData));
-
 
     await setApi("");
     setCurrentIndex(0);
@@ -420,7 +471,6 @@ const Dashboard = () => {
 
     FilterDataGetHandler(1);
   };
-
 
   const FilterDataGetHandler = async (id) => {
     try {
@@ -444,7 +494,7 @@ const Dashboard = () => {
         interest: filter.interest,
         religion: filter.religion,
         language: filter.language,
-        is_verify: filter.is_verify
+        is_verify: filter.is_verify,
       };
 
       if (currentIndex2 < 0) {
@@ -456,11 +506,13 @@ const Dashboard = () => {
       const response = await axios.post(`${basUrl}filter.php`, filterParams);
 
       if (response.data.Result === "true") {
-        const newProfiles = response.data.profilelist.slice(currentIndex2, currentIndex2 + 12);
+        const newProfiles = response.data.profilelist.slice(
+          currentIndex2,
+          currentIndex2 + 12
+        );
 
-        setApi(prevCards => currentIndex2 > 0
-          ? [...prevCards, ...newProfiles]
-          : newProfiles
+        setApi((prevCards) =>
+          currentIndex2 > 0 ? [...prevCards, ...newProfiles] : newProfiles
         );
 
         if (id) {
@@ -473,7 +525,7 @@ const Dashboard = () => {
         setLazyLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching filtered data:', error);
+      console.error("Error fetching filtered data:", error);
       setLoading(false);
       setLazyLoading(false);
     }
@@ -483,37 +535,32 @@ const Dashboard = () => {
 
   const GetHandler = () => {
     // <<------------- intrest Api Call Hear -------------->>
-    axios.post(`${basUrl}interest.php`)
-      .then((res) => {
-        setInterestList(res.data.interestlist);
-      });
+    axios.post(`${basUrl}interest.php`).then((res) => {
+      setInterestList(res.data.interestlist);
+    });
 
     // <<------------- Language Api Call Hear -------------->>
-    axios.post(`${basUrl}languagelist.php`)
-      .then((res) => {
-        setLanguageList(res.data.languagelist);
-      });
+    axios.post(`${basUrl}languagelist.php`).then((res) => {
+      setLanguageList(res.data.languagelist);
+    });
 
     // <<------------- Religion Api Call Hear -------------->>
-    axios.post(`${basUrl}religionlist.php`)
-      .then((res) => {
-        setReligionList(res.data.religionlist);
-      });
+    axios.post(`${basUrl}religionlist.php`).then((res) => {
+      setReligionList(res.data.religionlist);
+    });
 
     // <<------------- RelationsipGoal Api Call Hear -------------->>
-    axios.post(`${basUrl}goal.php`)
-      .then((res) => {
-        setRelationshipList(res.data.goallist);
-      });
-
+    axios.post(`${basUrl}goal.php`).then((res) => {
+      setRelationshipList(res.data.goallist);
+    });
   };
 
-  // <<-------- Users Chat Handler ------------>> 
+  // <<-------- Users Chat Handler ------------>>
 
   const ChatHandler = (UserId, name) => {
     if (directchat === "1") {
       setChatId(UserId);
-      sessionStorage.setItem("ChatId",UserId);
+      sessionStorage.setItem("ChatId", UserId);
       setChatUserName(name);
     } else {
       showTost({ title: "No Direct Chat any User" });
@@ -523,112 +570,126 @@ const Dashboard = () => {
 
   const ChatCloseHandle = () => {
     setChatId("");
-    sessionStorage.setItem("ChatId","");
-}
+    sessionStorage.setItem("ChatId", "");
+  };
 
   return (
     <>
-      <div className="" style={{ userSelect: 'none', cursor: 'default' }}>
+      <div className="" style={{ userSelect: "none", cursor: "default" }}>
         {loading ? (
           <div className="w-[100%] h-[100vh] ms-[8rem] max-_991_:ms-0 bg-white fixed flex items-center justify-center top-0 left-0 right-0 bottom-0 z-[555]">
             <div>
-              <h2 className="">{t('Loading...')}</h2>
+              <h2 className="">{t("Loading...")}</h2>
             </div>
           </div>
-        )
-          : api.length > 0 ?
-            <div className="main-wrapper bg-[#e5e5e5] dashboard">
-              <div className="content-body ">
-                <div className="container-fluid my-4">
-                  <div className="row">
-                    <div className="col-xl-12">
-                      <div className="card card-rounded mb-4">
-                        <div className="card-body">
-                          <div className="person-header d-flex align-items-center justify-content-between">
-                            <div className="fw-medium fs-16 px-3">
-                              {t("Start Your Search for the Perfect Partner")}
-                            </div>
-                            {filterinclude == "1" && (
-  localStorage.getItem("FilterData") ? (
-
-    //  RESET BUTTON (Greek Blue + Gold Accent on Hover)
-    <button
-      onClick={() => FilterResetHandler(1)}
-      className="btn gap-2 df-center text-white font-medium transition-all duration-200"
-      id="toggleFilterBtn"
-      style={{
-        background: "#1F5799",          // Greek Blue
-        borderRadius: "999px",          // Pill Shape
-        boxShadow: "0 4px 10px rgba(0,0,0,0.15)", // Soft Shadow
-        padding: "10px 18px"
-      }}
-      onMouseOver={(e) => e.currentTarget.style.background = "#174173"}  // Darker Blue Hover
-      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}
-    >
-      <svg
-        width="15"
-        height="10"
-        viewBox="0 0 15 10"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="mx-1"
-      >
-        <path
-          d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
-          fill="white"
-        />
-      </svg>
-      {t("Reset")}
-    </button>
-
-  ) : (
-
-    <button
-      onClick={FilterHandler}
-      className="btn gap-2 df-center text-white font-medium transition-all duration-200"
-      id="toggleFilterBtn"
-      style={{
-        background: "#1F5799",          
-        borderRadius: "999px",          
-        boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-        padding: "10px 20px"
-      }}
-      onMouseOver={(e) => e.currentTarget.style.background = "#174173"}
-      onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}
-    >
-      <svg
-        width="15"
-        height="10"
-        viewBox="0 0 15 10"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="mx-1"
-      >
-        <path
-          d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
-          fill="white"
-        />
-      </svg>
-      <span className="text-white">
-        {t("Filter")}
-      </span>
-    </button>
-
-  )
-)}
-
+        ) : api.length > 0 ? (
+          <div className="main-wrapper bg-[#e5e5e5] dashboard">
+            <div className="content-body ">
+              <div className="container-fluid my-4">
+                <div className="row">
+                  <div className="col-xl-12">
+                    <div className="card card-rounded mb-4">
+                      <div className="card-body">
+                        <div className="fw-medium fs-18 px-3 text-gray-800">
+                          {t("Welcome back")},{" "}
+                          {localStorage.getItem("Register_User")
+                            ? JSON.parse(localStorage.getItem("Register_User"))
+                                .name
+                            : ""}
+                        </div>
+                        <div className="person-header d-flex align-items-center justify-content-between">
+                          <div className="fw-medium fs-16 px-3">
+                            {t("Start Your Search for the Perfect Partner")}
                           </div>
+                          {filterinclude == "1" &&
+                            (localStorage.getItem("FilterData") ? (
+                              //  RESET BUTTON (Greek Blue + Gold Accent on Hover)
+                              <button
+                                onClick={() => FilterResetHandler(1)}
+                                className="btn gap-2 df-center text-white font-medium transition-all duration-200"
+                                id="toggleFilterBtn"
+                                style={{
+                                  background: "#1F5799",
+                                  borderRadius: "999px",
+                                  boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                                  padding: "10px 18px",
+                                }}
+                                onMouseOver={(e) =>
+                                  (e.currentTarget.style.background = "#174173")
+                                } // Darker Blue Hover
+                                onMouseOut={(e) =>
+                                  (e.currentTarget.style.background = "#1F5799")
+                                }
+                              >
+                                <svg
+                                  width="15"
+                                  height="10"
+                                  viewBox="0 0 15 10"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="mx-1"
+                                >
+                                  <path
+                                    d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
+                                    fill="white"
+                                  />
+                                </svg>
+                                {t("Reset")}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={FilterHandler}
+                                className="btn gap-2 df-center text-white font-medium transition-all duration-200"
+                                id="toggleFilterBtn"
+                                style={{
+                                  background: "#1F5799",
+                                  borderRadius: "999px",
+                                  boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                                  padding: "10px 20px",
+                                }}
+                                onMouseOver={(e) =>
+                                  (e.currentTarget.style.background = "#174173")
+                                }
+                                onMouseOut={(e) =>
+                                  (e.currentTarget.style.background = "#1F5799")
+                                }
+                              >
+                                <svg
+                                  width="15"
+                                  height="10"
+                                  viewBox="0 0 15 10"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="mx-1"
+                                >
+                                  <path
+                                    d="M6.15855 9.96157H9.3457V8.368H6.15855V9.96157ZM0.581055 0.400146V1.99372H14.9232V0.400146H0.581055ZM2.97141 5.97765H12.5328V4.38407H2.97141V5.97765Z"
+                                    fill="white"
+                                  />
+                                </svg>
+                                <span className="text-white">
+                                  {t("Filter")}
+                                </span>
+                              </button>
+                            ))}
                         </div>
                       </div>
                     </div>
-                    <div className="col-xl-12 py-[20px]">
-                      <div className="grid grid-cols-4 card p-[16px] card-rounded grid-transition grid-responsive ">
-                        {api.map((el, i) => {
-                          return <div
+                  </div>
+
+                  <div className="py-[20px]">
+                    <div className="grid grid-cols-1 min-[425px]:grid-cols-2 min-[768px]:grid-cols-3 min-[1024px]:grid-cols-4 min-[1260px]:grid-cols-5 min-[1360px]:grid-cols-6 gap-x-2 gap-y-6">
+                      {api.map((el, i) => {
+                        return (
+                          <div
                             key={i}
-                            className={`${bg.includes(el.profile_name) ? "hidden" : "block"
-                              } ${likeDn.includes(el.profile_name) ? "hidden" : "block"
-                              } custom-card cursor-pointer card-rounded-1 relative z-[444] overflow-hidden`}
+                            className={`${
+                              bg.includes(el.profile_name) ? "hidden" : "block"
+                            } ${
+                              likeDn.includes(el.profile_name)
+                                ? "hidden"
+                                : "block"
+                            } custom-card cursor-pointer bg-gray-100 card-rounded-1 relative z-[444] overflow-hidden`}
                           >
                             {close.includes(el.profile_id) && (
                               <Lottie
@@ -647,169 +708,248 @@ const Dashboard = () => {
                               />
                             )}
                             <div
-                              className={`${close?.includes(el?.profile_id) ||
+                              className={`${
+                                close?.includes(el?.profile_id) ||
                                 like?.includes(el?.profile_id)
-                                ? "opacity-0"
-                                : "opacity-[1]"
-                                } duration-[0.7s] ease-in`}
+                                  ? "opacity-0"
+                                  : "opacity-[1]"
+                              } duration-[0.7s] ease-in`}
                             >
-                              <div className="position-relative rounded-[3rem] overflow-hidden">
+                              <div className="position-relative rounded-[1rem] overflow-hidden">
                                 <div
                                   className="card-title"
-                                  onClick={() => IdHandler(i, el.profile_id, el.profile_name)}
+                                  onClick={() =>
+                                    IdHandler(i, el.profile_id, el.profile_name)
+                                  }
                                 >
+                                  {/* Image Container - Clean, No Heavy Overlay */}
                                   <div className="Coloreffect">
-                                    {el?.profile_images.length > 1
-                                      ? <Slider {...settings2} className="w-[100%]">
-                                        {
-                                          el?.profile_images.map((el, index) => {
-                                            return <div key={index}>
-                                              <img className="img-fluid HEIGHT w-[100%] object-cover" src={`${imageBaseURL}${el}`} alt="" />
-                                            </div>
-                                          })
-                                        }
+                                    {el?.profile_images.length > 1 ? (
+                                      <Slider
+                                        {...settings2}
+                                        className="w-[100%]"
+                                      >
+                                        {el?.profile_images.map(
+                                          (img, index) => {
+                                            return (
+                                              <div key={index}>
+                                                <img
+                                                  className="img-fluid HEIGHT w-[100%] object-cover"
+                                                  src={`${imageBaseURL}${img}`}
+                                                  alt=""
+                                                />
+                                              </div>
+                                            );
+                                          }
+                                        )}
                                       </Slider>
-                                      : <img
+                                    ) : (
+                                      <img
                                         src={`${imageBaseURL}${el?.profile_images[0]}`}
                                         alt="img"
                                         className="img-fluid rounded-[3rem] BEFORE HEIGHT w-[100%] object-cover"
                                       />
-                                    }
-
+                                    )}
                                   </div>
+
                                   <div className="card-content absolute bottom-[2rem] px-[15px] w-[100%] z-[2]">
                                     <div className="flex items-end justify-between gap-2">
-                                      <h6 className="fw-semi-bold text-[18px] overflow-ellipsis overflow-hidden whitespace-nowrap mb-1 text-[#333333]">
-                                        {el.profile_name}, {el.profile_age}
-                                      </h6>
-                                      <div className="">
-                                        {el.is_subscribe === "0" ? "" : <div className="flex items-center gap-[10px]">
-                                          <div className="bg-white p-[2px] rounded-full z-[555]">
-                                            <img
-                                              src={Crown}
-                                              style={{ width: "20px", height: "20px" }}
-                                              alt="user-avatar"
-                                              className="bg-[#0066CC] rounded-full p-[2px]"
-                                            />
-                                          </div>
-                                          <h1 className="text-[15px] text-[#333333] font-[500] m-0">{t('Premium')}</h1>
-                                        </div>}
-                                        <div className="relative flex items-center justify-center mt-[8px] mb-[8px]">
-                                          <svg
-                                            className="size-full w-[50px] -rotate-90"
-                                            viewBox="0 0 36 36"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                          >
-                                            <circle
-                                              cx="18"
-                                              cy="18"
-                                              r="16"
-                                              fill="none"
-                                              className="stroke-current text-[#fffdfd3f]"
-                                              strokeWidth="3"
-                                            ></circle>
-                                            <circle
-                                              cx="18"
-                                              cy="18"
-                                              r="16"
-                                              fill="none"
-                                              className="stroke-current text-[#333333] dark:text-[#333333]"
-                                              strokeWidth="3"
-                                              strokeDasharray="100"
-                                              strokeDashoffset={`${100 - el.match_ratio.toFixed(0)}`}
-                                              strokeLinecap="round"
-                                            ></circle>
-                                          </svg>
-                                          <h6 className="m-0 absolute text-[#333333] text-[14px] p-[5px]">
-                                            {el.match_ratio.toFixed(0)}%
+                                      <div className="flex items-center justify-between gap-2">
+                                        <h6 className="fw-semi-bold text-white text-[18px] overflow-ellipsis overflow-hidden whitespace-nowrap mb-1">
+                                          {el.profile_name}, {el.profile_age}
+                                        </h6>
+                                        <div className="KM whitespace-nowrap text-start">
+                                          <h6 className="m-0 flex items-center gap-[2px] text-white">
+                                            <HiOutlineLocationMarker />
+                                            {el.profile_distance}
                                           </h6>
                                         </div>
-                                        <div className="KM whitespace-nowrap">
-                                          <h6 className="m-0 flex items-center justify-center gap-[5px]"><HiOutlineLocationMarker />{el.profile_distance}</h6>
-                                        </div>
                                       </div>
+
+                                      {/* <div className="">
+                      {el.is_subscribe === "0" ? (
+                        ""
+                      ) : (
+                        <div className="flex items-center gap-[10px]">
+                          <div className="bg-white p-[2px] rounded-full z-[555]">
+                            <img
+                              src={Crown}
+                              style={{
+                                width: "20px",
+                                height: "20px",
+                              }}
+                              alt="user-avatar"
+                              className="rounded-full p-[2px]"
+                            />
+                          </div>
+                          <h1 className="text-[15px] text-white font-[500] m-0">
+                            {t("Premium")}
+                          </h1>
+                        </div>
+                      )}
+
+                      <div className="relative flex items-center justify-center mt-[8px] mb-[8px]">
+                        <svg
+                          className="size-full w-[50px] -rotate-90"
+                          viewBox="0 0 36 36"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            className="stroke-current text-[#fffdfd3f]"
+                            strokeWidth="3"
+                          ></circle>
+                          <circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            className="stroke-current text-white"
+                            strokeWidth="3"
+                            strokeDasharray="100"
+                            strokeDashoffset={`${
+                              100 - el.match_ratio.toFixed(0)
+                            }`}
+                            strokeLinecap="round"
+                          ></circle>
+                        </svg>
+                        <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
+                          {el.match_ratio.toFixed(0)}%
+                        </h6>
+                      </div>
+                    </div> */}
                                     </div>
-                                    <p className="mb-1 text-[19px] text-start mt-[5px] text-[#333333] overflow-ellipsis overflow-hidden whitespace-nowrap">
-                                      {el.profile_bio === "undefined" ? "" : el.profile_bio}
-                                    </p>
                                   </div>
                                 </div>
                               </div>
+
                               <div className="-mt-[25px] max-_430_:-mt-[20px]">
-                                <div className="image-action-icon items-center cursor-default">
-                                  <button
-                                    style={{ width: "3rem", height: "3rem" }}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      CloseAnimationHandler(el.profile_id, el.profile_name);
-                                    }}
-                                    className="action-btn avatar avatar-lg rounded-full z-1 bg-black"
-                                  >
-                                    <RxCross2 className="w-[50px] text-yellow-400" />
-                                  </button>
-                                  <button
-                                    style={{
-                                      height: "3.40rem",
-                                      width: "3.40rem",
-                                      background: "black",
-                                    }}
-                                    className="action-btn avatar avatar-lg rounded-full z-1"
-                                  >
-                                    <img src={HeartIcon} alt="Heart icon" className="w-[30px]" />
-                                  </button>
-                                  <button onClick={(e) => { e.stopPropagation(); ChatHandler(el.profile_id, el.profile_name); }}
-                                    style={{
-                                      height: "3.40rem",
-                                      width: "3.40rem",
-                                      background: "black",
-                                    }}
-                                    className="action-btn avatar avatar-lg rounded-full z-1"
-                                  >
-                                    <img src={ChatIcon} alt="Chat icon" className="w-[30px]" />
-                                  </button>
-                                  <button
-                                    style={{ width: "3rem", height: "3rem" }}
-                                    className="action-btn avatar avatar-lg rounded-full z-1 bg-black"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleBottomSheet();
-                                      setGiftreceiverId(el.profile_id);
-                                    }}
-                                  >
-                                    <img src={GiftIcon} alt="Gift icon" className="w-[30px]" />
-                                  </button>
+                                <div className="image-action-icon items-center cursor-default ">
+                                  <div className="relative group/btn">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        CloseAnimationHandler(
+                                          el.profile_id,
+                                          el.profile_name
+                                        );
+                                      }}
+                                      title="Remove"
+                                      className="action-btn avatar avatar-lg rounded-full z-1 bg-white shadow-md hover:shadow-lg transition-shadow"
+                                    >
+                                      <RxCross2 className="w-[24px] h-[24px] text-red-500" />
+                                    </button>
+                                    {/* Hover Label */}
+                                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[999]">
+                                      Pass
+                                    </span>
+                                  </div>
+
+                                  {/* Like Button */}
+                                  <div className="relative group/btn">
+                                    <button
+                                      onClick={() =>
+                                        ProfileLikeHandler(api.profile_id)
+                                      }
+                                      style={{
+                                        background: "white",
+                                      }}
+                                      title="Like"
+                                      className="action-btn avatar avatar-lg rounded-full z-1 shadow-lg hover:shadow-xl transition-shadow"
+                                    >
+                                      <img
+                                        src={HeartIcon}
+                                        alt="Heart icon"
+                                        className="w-[30px]"
+                                      />
+                                    </button>
+                                  </div>
+
+                                  {/* Chat Button */}
+                                  <div className="relative group/btn">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        ChatHandler(
+                                          el.profile_id,
+                                          el.profile_name
+                                        );
+                                      }}
+                                      title="Chat"
+                                      style={{
+                                        background: "white",
+                                      }}
+                                      className="action-btn avatar avatar-lg rounded-full z-1 shadow-md hover:shadow-lg transition-shadow"
+                                    >
+                                      <img
+                                        src={ChatIcon}
+                                        alt="Chat icon"
+                                        className="w-[30px]"
+                                      />
+                                    </button>
+
+                                    {/* Hover Label */}
+                                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[999]">
+                                      Chat
+                                    </span>
+                                  </div>
+
+                                  {/* Gift Button */}
+                                  <div className="relative group/btn">
+                                    <button
+                                      className="action-btn avatar avatar-lg rounded-full z-1 bg-white shadow-md hover:shadow-lg transition-shadow"
+                                      title="Gift"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleBottomSheet();
+                                        setGiftreceiverId(el.profile_id);
+                                      }}
+                                    >
+                                      <img
+                                        src={GiftIcon}
+                                        alt="Gift icon"
+                                        className="w-[30px]"
+                                      />
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        })}
-                        {lazyLoading && <div>Loading...</div>}
-                      </div>
+                        );
+                      })}
+                      {lazyLoading && <div>Loading...</div>}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            : localStorage.getItem("FilterData")
-              ? <div className="h-[100vh] ms-[16rem] max-_991_:ms-0 flex justify-center items-center">
-                <div className="text-center">
-                  <h3>{t('No Any Match Profile...')}</h3>
-                  <button onClick={() => FilterResetHandler(1)} className="text-[18px] font-[600] mt-[20px] bg-[#0066CC] text-[#333333] w-[50%] py-[10px] rounded-[10px]">
-                    {t('Reset')}
-                  </button>
-                </div>
-              </div>
-              :
-              <div className="h-[100vh] ms-[16rem] max-_991_:ms-0 flex justify-center items-center">
-                <h3>{t('No Any New Profile...')}</h3>
-              </div>
-        }
-
+          </div>
+        ) : localStorage.getItem("FilterData") ? (
+          <div className="h-[100vh] ms-[16rem] max-_991_:ms-0 flex justify-center items-center">
+            <div className="text-center">
+              <h3>{t("No Any Match Profile...")}</h3>
+              <button
+                onClick={() => FilterResetHandler(1)}
+                className="text-[18px] font-[600] mt-[20px] bg-[#0066CC] text-[#333333] w-[50%] py-[10px] rounded-[10px]"
+              >
+                {t("Reset")}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="h-[100vh] ms-[16rem] max-_991_:ms-0 flex justify-center items-center">
+            <h3>{t("No Any New Profile...")}</h3>
+          </div>
+        )}
 
         <div ref={Classadd} className="filter-area overflow-y-scroll w-[100%]">
           <div className="filter-content">
             <div className="filter-heading">
-              <h3 className="fw-semi-bold mb-0">{t('Filter & Show')}</h3>
+              <h3 className="fw-semi-bold mb-0">{t("Filter & Show")}</h3>
               <button onClick={FilterHandler}>
                 <svg
                   width="17"
@@ -828,15 +968,14 @@ const Dashboard = () => {
               </button>
             </div>
 
-
             <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
               <div className="">
                 <div className="flex justify-between items-center">
                   <h1 className="text-[16px] font-[400] text-black">
-                    {t('Distance Range')}
+                    {t("Distance Range")}
                   </h1>
                   <h1 className="text-[16px] font-[400] text-black">
-                    {kilometers}.{centimeters} {t('km')}
+                    {kilometers}.{centimeters} {t("km")}
                   </h1>
                 </div>
                 <input
@@ -857,7 +996,7 @@ const Dashboard = () => {
                 data-role="rangeslider"
               >
                 <div className="range-label mb-3">
-                  <label className="form-label">{t('Age')}</label>
+                  <label className="form-label">{t("Age")}</label>
                   <span id="range-value" className="form-label">
                     {AGEMIN}-{AGEMAX}
                   </span>
@@ -901,30 +1040,33 @@ const Dashboard = () => {
 
             <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
               <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t('Serach Preference')}
+                {t("Serach Preference")}
               </h6>
               <div className="">
                 <ul className="flex flex-wrap items-center gap-[10px]  m-0 p-0">
                   <li
                     onClick={() => setPreference("MALE")}
-                    className={`${preference === "MALE" && "Active"
-                      } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
+                    className={`${
+                      preference === "MALE" && "Active"
+                    } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
                   >
-                    {t('MALE')}
+                    {t("MALE")}
                   </li>
                   <li
                     onClick={() => setPreference("FEMALE")}
-                    className={`${preference === "FEMALE" ? "Active" : "hover:bg-[#ddd]"
-                      } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
+                    className={`${
+                      preference === "FEMALE" ? "Active" : "hover:bg-[#ddd]"
+                    } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
                   >
-                    {t('FEMALE')}
+                    {t("FEMALE")}
                   </li>
                   <li
                     onClick={() => setPreference("Both")}
-                    className={`${preference === "Both" ? "Active" : "hover:bg-[#ddd]"
-                      } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
+                    className={`${
+                      preference === "Both" ? "Active" : "hover:bg-[#ddd]"
+                    } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
                   >
-                    {t('Both')}
+                    {t("Both")}
                   </li>
                 </ul>
               </div>
@@ -934,18 +1076,20 @@ const Dashboard = () => {
             {/* <!-- Interests Start --> */}
             <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
               <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t('Interests')}
+                {t("Interests")}
               </h6>
               <div className="">
                 {interestList.map((el, index) => {
                   return (
-                    <button key={index}
+                    <button
+                      key={index}
                       onClick={() => InterestMapHandler(el.id)}
                       className="inline-block"
                     >
                       <div
-                        className={`button text-[16px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-center gap-[10px] ${interestId.includes(el.id) && "selected"
-                          }`}
+                        className={`button text-[16px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-center gap-[10px] ${
+                          interestId.includes(el.id) && "selected"
+                        }`}
                       >
                         {t(el.title)}{" "}
                         <img
@@ -964,17 +1108,19 @@ const Dashboard = () => {
             {/* <!-- Languages Start --> */}
             <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
               <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t('Langusges I Know')}
+                {t("Langusges I Know")}
               </h6>
               {languageList.map((el, index) => {
                 return (
-                  <button key={index}
+                  <button
+                    key={index}
                     onClick={() => LanguageMapHandler(el.id)}
                     className="inline-block"
                   >
                     <div
-                      className={`button text-[16px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-cente ${language.includes(el.id) && "selected"
-                        }`}
+                      className={`button text-[16px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-cente ${
+                        language.includes(el.id) && "selected"
+                      }`}
                     >
                       {t(el.title)}{" "}
                     </div>
@@ -987,14 +1133,16 @@ const Dashboard = () => {
             {/* <!-- Religion Start --> */}
             <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
               <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t('Religion')}
+                {t("Religion")}
               </h6>
               {religionList.map((el, index) => {
                 return (
-                  <h6 key={index}
+                  <h6
+                    key={index}
                     onClick={() => setReligion(index)}
-                    className={`font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[8px] px-[15px] ${religion === index ? "Active" : "hover:bg-[#ddd]"
-                      }`}
+                    className={`font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[8px] px-[15px] ${
+                      religion === index ? "Active" : "hover:bg-[#ddd]"
+                    }`}
                   >
                     {t(el.title)}
                   </h6>
@@ -1006,17 +1154,19 @@ const Dashboard = () => {
             {/* <!-- Relationship Goals Start --> */}
             <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
               <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t('Relationship Goals')}
+                {t("Relationship Goals")}
               </h6>
               {relationshipList.map((el, index) => {
                 return (
-                  <button key={index}
+                  <button
+                    key={index}
                     onClick={() => setRelationship(index)}
                     className="inline-block"
                   >
                     <div
-                      className={`text-[16px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-cente ${relationship === index ? "Active" : "hover:bg-[#ddd]"
-                        }`}
+                      className={`text-[16px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-cente ${
+                        relationship === index ? "Active" : "hover:bg-[#ddd]"
+                      }`}
                     >
                       {t(el.title)}{" "}
                     </div>
@@ -1029,56 +1179,57 @@ const Dashboard = () => {
             {/* <!-- Verify Profile Goals Start --> */}
             <div className="filter-element">
               <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t('Verify Profile')}
+                {t("Verify Profile")}
               </h6>
               <div className="">
                 <button
                   onClick={() => setVerify("0")}
-                  className={` font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${verify === "0" ? "Active" : "hover:bg-[#ddd]"
-                    }`}
+                  className={` font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${
+                    verify === "0" ? "Active" : "hover:bg-[#ddd]"
+                  }`}
                 >
-                  {t('Unverify')}
+                  {t("Unverify")}
                 </button>
                 <button
                   onClick={() => setVerify("2")}
-                  className={` font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${verify === "2" ? "Active" : "hover:bg-[#ddd]"
-                    }`}
+                  className={` font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${
+                    verify === "2" ? "Active" : "hover:bg-[#ddd]"
+                  }`}
                 >
-                  {t('Verify')}
+                  {t("Verify")}
                 </button>
               </div>
             </div>
             {/* <!-- Verify Profile Goals End --> */}
 
-
             {/* <!-- Apply Btn Start --> */}
             <div className="flex justify-center gap-[15px] mt-[20px]">
-  <button
-    onClick={FilterResetHandler}
-    className="text-[18px] font-[600] text-white bg-[#1F5799] hover:bg-[#17477C] w-[40%] py-[10px] rounded-full transition duration-300"
-  >
-    {t('Reset')}
-  </button>
+              <button
+                onClick={FilterResetHandler}
+                className="text-[18px] font-[600] text-white bg-[#1F5799] hover:bg-[#17477C] w-[40%] py-[10px] rounded-full transition duration-300"
+              >
+                {t("Reset")}
+              </button>
 
-  <button
-    onClick={FilterApplyHandler}
-    className="text-[18px] font-[600] text-white bg-[#1F5799] hover:bg-[#17477C] w-[40%] py-[10px] rounded-full transition duration-300"
-  >
-    {t('Apply')}
-  </button>
-</div>
+              <button
+                onClick={FilterApplyHandler}
+                className="text-[18px] font-[600] text-white bg-[#1F5799] hover:bg-[#17477C] w-[40%] py-[10px] rounded-full transition duration-300"
+              >
+                {t("Apply")}
+              </button>
+            </div>
 
             {/* <!-- Apply Btn End --> */}
           </div>
         </div>
 
         {/* <!-- Overlay Start --> */}
-          <div
-            ref={BgDisplay}
-            onClick={FilterHandler}
-            id="overlay"
-            className="overlay z-[888]"
-          ></div>
+        <div
+          ref={BgDisplay}
+          onClick={FilterHandler}
+          id="overlay"
+          className="overlay z-[888]"
+        ></div>
         {/* <!-- Overlay End -->
  
          {/* <!-- Scroll To Top Start --> */}
@@ -1100,15 +1251,21 @@ const Dashboard = () => {
         {/* <!-- Scroll To Top End --> */}
 
         {isVisible && (
-          <div onClick={() => toggleBottomSheet('GidtSend')} className="bottom-sheet z-[999]">
-            <div onClick={(e) => e.stopPropagation()} className="bottom-sheet-content">
+          <div
+            onClick={() => toggleBottomSheet("GidtSend")}
+            className="bottom-sheet z-[999]"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bottom-sheet-content"
+            >
               <div className="flex items-center justify-between">
                 <h1 className="text-[18px] m-0 font-[600]">Send Gifts</h1>
                 <div className="flex items-center gap-[10px]">
                   <img src={CoinIcon} alt="" className="w-[25px]" />
                   <span className="text-[18px]">{youCoin ? youCoin : "0"}</span>
                   <img
-                    onClick={() => toggleBottomSheet('GidtSend')}
+                    onClick={() => toggleBottomSheet("GidtSend")}
                     src={CloseIcon}
                     alt=""
                     className="w-[15px] ms-[15px] cursor-pointer"
@@ -1138,7 +1295,9 @@ const Dashboard = () => {
                           <img
                             src={CoinIcon}
                             alt=""
-                            className={`w-[15px] ${el.price === "0" && "hidden text-center"}`}
+                            className={`w-[15px] ${
+                              el.price === "0" && "hidden text-center"
+                            }`}
                           />
                           <span className="text-[14px] font-[500]">
                             {el.price === "0" ? "Free" : el.price}
@@ -1159,18 +1318,24 @@ const Dashboard = () => {
                 onClick={() => SednHandler()}
                 className="font-bold text-[18px] rounded-[10px] mt-[20px] text-[#333333] py-[10px] w-[100%] bg-[#0066CC]"
               >
-                {t('Send')}
+                {t("Send")}
               </button>
             </div>
           </div>
         )}
 
         {/* <<------------ Chat Sheet Show ---------->> */}
-        {chatId && <div onClick={ChatCloseHandle} className="bottom-sheet z-[999]">
-          <div onClick={(e) => e.stopPropagation()} style={{ width: "400px" }} className="bottom-sheet-content">
-            <UserChat />
+        {chatId && (
+          <div onClick={ChatCloseHandle} className="bottom-sheet z-[999]">
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ width: "400px" }}
+              className="bottom-sheet-content"
+            >
+              <UserChat />
+            </div>
           </div>
-        </div>}
+        )}
       </div>
     </>
   );
@@ -1178,4 +1343,3 @@ const Dashboard = () => {
 
 export default Dashboard;
 /* jshint ignore:end */
-
