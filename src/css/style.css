@@ -1954,6 +1954,14 @@ hr {
   bottom: 6.5rem;
 }
 
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .image-action-icon {
+    gap: 0.1rem; 
+  }
+}
+
+
 .image-action-icon .action-btn {
   position: relative;
 }
@@ -2576,10 +2584,10 @@ input:checked+.slider:before {
   display: inline-block;
 }
 
-.HEIGHT {
+/* .HEIGHT {
   height: 500px;
   max-height: 500px;
-}
+} */
 
 .HEIGHT::before {
   content: "";

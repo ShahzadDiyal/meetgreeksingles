@@ -87,7 +87,7 @@ const Faqs = () => {
                           </p>
                         </div>
 
-                        <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                        <div className="bg-blue-50 p-6 rounded-lg mx-4">
                           <p className="text-gray-700 text-lg leading-relaxed font-semibold">
                             💙 We're delighted to welcome you here.
                           </p>
@@ -133,7 +133,7 @@ const Faqs = () => {
                           </p>
                         </div>
 
-                        <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                        <div className="bg-blue-50 p-6 rounded-lg ">
                           <p className="text-gray-700 text-lg leading-relaxed font-semibold">
                             💙 Χαιρόμαστε που σας καλοσορίζουμε εδώ.
                           </p>

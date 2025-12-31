@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 /* jshint ignore:start */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./LoginComponent/Login";
 import { ToastContainer } from "react-toastify";
@@ -52,14 +52,17 @@ import GreekConnection from "./MobilComponent/GreekConnection";
 import { OnboardingRoute } from "./ProtectedRoute";
 import PageContent from "./LoginComponent/PageContent"
 
+
 const App = () => {
   const [demo, setDemo] = useState();
+
   const [Index, setindex] = useState();
   const [oneSignalInitialized, setOneSignalInitialized] = useState(false); // Move state here
   const isAuthenticated = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("Register_User"));
   const isOnboardingCompleted =
     user?.onboarding_status?.toLowerCase() === "completed";
+
 
   useEffect(() => {
     const setOneSignalUser = async () => {
@@ -215,7 +218,12 @@ const App = () => {
     setindex(localStorage.getItem("UserId"));
   }, [demo]);
 
-  return (
+
+
+  
+
+
+  return ( 
     <div>
       <MyProvider>
         <TodoContext.Provider value={{ demo, setDemo, oneSignalInitialized }}> {/* Pass to context */}
@@ -330,7 +338,7 @@ const App = () => {
 
         </TodoContext.Provider>
       </MyProvider>
-
+                
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -343,6 +351,7 @@ const App = () => {
         pauseOnHover
         theme="light"
       />
+
     </div>
   );
 };

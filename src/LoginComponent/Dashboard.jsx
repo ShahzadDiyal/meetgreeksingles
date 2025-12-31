@@ -23,6 +23,9 @@ import GiftIcon from "../Icon/gift.svg";
 import { showTost } from "../showTost";
 import CoinIcon from "../images/icons/buycoin-package.png";
 import Slider from "react-slick";
+import imag from "../images/logos/meet-greek.png";
+import CookiePopup from "./CookiePopup";
+
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -590,23 +593,36 @@ const Dashboard = () => {
                   <div className="col-xl-12">
                     <div className="card card-rounded mb-4">
                       <div className="card-body">
-                        <div className="fw-medium fs-18 px-3 text-gray-800">
-                          {t("Welcome back")},{" "}
-                          {localStorage.getItem("Register_User")
-                            ? JSON.parse(localStorage.getItem("Register_User"))
-                                .name
-                            : ""}
+                        <div className="fw-medium fs-18 px-3 text-gray-800 d-flex align-items-center gap-2 mb-3">
+                          <img
+                            src={imag}
+                            alt="Logo"
+                            style={{ width: "50px", height: "50px" }}
+                          />
+                          <h2>
+                            {t("Welcome back")},{" "}
+                            <strong>
+                              {" "}
+                              {localStorage.getItem("Register_User")
+                                ? JSON.parse(
+                                    localStorage.getItem("Register_User")
+                                  ).name
+                                : ""}
+                            </strong>
+                          </h2>
                         </div>
-                        <div className="person-header d-flex align-items-center justify-content-between">
+
+                        {/* Header + Filter */}
+                        <div className="person-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
                           <div className="fw-medium fs-16 px-3">
                             {t("Start Your Search for the Perfect Partner")}
                           </div>
+
                           {filterinclude == "1" &&
                             (localStorage.getItem("FilterData") ? (
-                              //  RESET BUTTON (Greek Blue + Gold Accent on Hover)
                               <button
                                 onClick={() => FilterResetHandler(1)}
-                                className="btn gap-2 df-center text-white font-medium transition-all duration-200"
+                                className="btn gap-2 df-center text-white font-medium transition-all duration-200 align-self-end align-self-md-auto"
                                 id="toggleFilterBtn"
                                 style={{
                                   background: "#1F5799",
@@ -616,7 +632,7 @@ const Dashboard = () => {
                                 }}
                                 onMouseOver={(e) =>
                                   (e.currentTarget.style.background = "#174173")
-                                } // Darker Blue Hover
+                                }
                                 onMouseOut={(e) =>
                                   (e.currentTarget.style.background = "#1F5799")
                                 }
@@ -639,7 +655,7 @@ const Dashboard = () => {
                             ) : (
                               <button
                                 onClick={FilterHandler}
-                                className="btn gap-2 df-center text-white font-medium transition-all duration-200"
+                                className="btn gap-2 df-center text-white font-medium transition-all duration-200 align-self-start md:align-self-end align-self-md-auto ml-4 mt-2"
                                 id="toggleFilterBtn"
                                 style={{
                                   background: "#1F5799",
@@ -678,7 +694,7 @@ const Dashboard = () => {
                   </div>
 
                   <div className="py-[20px]">
-                    <div className="grid grid-cols-1 min-[425px]:grid-cols-2 min-[768px]:grid-cols-3 min-[1024px]:grid-cols-4 min-[1260px]:grid-cols-5 min-[1360px]:grid-cols-6 gap-x-2 gap-y-6">
+                    <div className="grid grid-cols-1 min-[425px]:grid-cols-3 min-[768px]:grid-cols-6 min-[1024px]:grid-cols-4 min-[1260px]:grid-cols-5 min-[1360px]:grid-cols-6 gap-x-1 md:gap-x-2 gap-y-6">
                       {api.map((el, i) => {
                         return (
                           <div
@@ -689,7 +705,7 @@ const Dashboard = () => {
                               likeDn.includes(el.profile_name)
                                 ? "hidden"
                                 : "block"
-                            } custom-card cursor-pointer bg-gray-100 card-rounded-1 relative z-[444] overflow-hidden`}
+                            } custom-card cursor-pointer bg-amber-200 md:bg-gray-100 card-rounded-1 relative z-[444] overflow-hidden`}
                           >
                             {close.includes(el.profile_id) && (
                               <Lottie
@@ -753,12 +769,13 @@ const Dashboard = () => {
                                   </div>
 
                                   <div className="card-content absolute bottom-[2rem] px-[15px] w-[100%] z-[2]">
-                                    <div className="flex items-end justify-between gap-2">
-                                      <div className="flex items-center justify-between gap-2">
-                                        <h6 className="fw-semi-bold text-white text-[18px] overflow-ellipsis overflow-hidden whitespace-nowrap mb-1">
+                                    <div className="flex items-end wrap justify-between gap-2">
+                                      <div className="flex items-center gap-2">
+                                        <h6 className="fw-semi-bold text-white text-[18px] overflow-hidden text-ellipsis whitespace-nowrap mb-1 flex-1">
                                           {el.profile_name}, {el.profile_age}
                                         </h6>
-                                        <div className="KM whitespace-nowrap text-start">
+
+                                        <div className="KM text-start hidden sm:block">
                                           <h6 className="m-0 flex items-center gap-[2px] text-white">
                                             <HiOutlineLocationMarker />
                                             {el.profile_distance}
@@ -898,7 +915,7 @@ const Dashboard = () => {
                                   </div>
 
                                   {/* Gift Button */}
-                                  <div className="relative group/btn">
+                                  {/* <div className="relative group/btn">
                                     <button
                                       className="action-btn avatar avatar-lg rounded-full z-1 bg-white shadow-md hover:shadow-lg transition-shadow"
                                       title="Gift"
@@ -914,7 +931,7 @@ const Dashboard = () => {
                                         className="w-[30px]"
                                       />
                                     </button>
-                                  </div>
+                                  </div> */}
                                 </div>
                               </div>
                             </div>
@@ -1337,6 +1354,8 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+      <CookiePopup />
+
     </>
   );
 };

@@ -93,7 +93,7 @@
 
 
   .HEIGHT {
-    height: 280px;
+    height: 250px;
   }
 
   .Validate {
@@ -329,6 +329,10 @@
     width: 80%;
   }
 
+   .HEIGHT {
+    height: 240px !important;
+  }
+
 }
 
 @media (min-width: 992px) {
@@ -456,6 +460,10 @@
   .Shimmer {
     width: 70px;
     height: 60px;
+  }
+
+  .HEIGHT {
+    height: 220px;
   }
 
 }
@@ -714,9 +722,9 @@
     border-radius: 50px;
   }
 
-  .slick-slider {
+  /* .slick-slider {
     height: 28rem !important;
-  }
+  } */
 
   .Toastify__toast-container {
     display: flex;
@@ -728,7 +736,7 @@
   }
 
   .HEIGHT {
-    height: 280px;
+    height: 300px;
   }
 
   .Validate {

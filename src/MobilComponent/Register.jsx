@@ -11,24 +11,24 @@ import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import axios from "axios";
 import { showTost } from "../showTost";
+import { Link } from "react-router-dom";
 import logo from "../images/logos/meet-greek.png";
-import Aries from "../images/zodiac/aries.png";
-import Taurus from "../images/zodiac/taurus.png";
-import Gemini from "../images/zodiac/gemini.png";
-import Cancer from "../images/zodiac/cancer.png";
-import Leo from "../images/zodiac/leo.png";
-import Virgo from "../images/zodiac/virgo.png";
-import Libra from "../images/zodiac/libra.png";
-import Scorpio from "../images/zodiac/scorpion.png";
-import Sagittarius from "../images/zodiac/sagittarius.png";
+// import Aries from "../images/zodiac/aries.png";
+// import Taurus from "../images/zodiac/taurus.png";
+// import Gemini from "../images/zodiac/gemini.png";
+// import Cancer from "../images/zodiac/cancer.png";
+// import Leo from "../images/zodiac/leo.png";
+// import Virgo from "../images/zodiac/virgo.png";
+// import Libra from "../images/zodiac/libra.png";
+// import Scorpio from "../images/zodiac/scorpion.png";
+// import Sagittarius from "../images/zodiac/sagittarius.png";
 // import Capricorn from "../images/zodiac/capricorn.png";
 // import Aquarius from "../images/zodiac/aquarius.png";
 // import Pisces from "../images/zodiac/pisces.png";
 
-
 const Register = () => {
   const [Email, setemail] = useState("");
-  const [Phone, setPhone] = useState("");
+  const [Phone, setPhone] = useState("0123456789");
   const [Password, setpassword] = useState("");
   const [Gender, setGender] = useState("");
   const [GreekStatus, setGreekStatus] = useState("");
@@ -39,15 +39,16 @@ const Register = () => {
   const [Countries, setCountries] = useState([]);
   const [State, setState] = useState("");
   const [States, setStates] = useState([]);
-  const [City, setCity] = useState("");
+  // const [City, setCity] = useState("");
   const [Cities, setCities] = useState([]);
   const [Agreed, setAgreed] = useState(false);
   const [EligibilityConfirmation, setEligibilityConfirmation] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
-  const [Zodiac, setZodiac] = useState("");
-const [open, setOpen] = useState(false);
+  // const [Zodiac, setZodiac] = useState("");
+  const [open, setOpen] = useState(false);
+  const [isGreece, setIsGreece] = useState(false);
 
   // Registration loading state
   const [isRegistering, setIsRegistering] = useState(false);
@@ -77,22 +78,38 @@ const [open, setOpen] = useState(false);
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
 
- const zodiacSigns = [
-  { name: "Aries", icon: Aries, range: "March 21 - April 20" },
-  { name: "Taurus", icon: Taurus, range: "April 21 - May 20" },
-  { name: "Gemini", icon: Gemini, range: "May 21 - June 20" },
-  { name: "Cancer", icon: Cancer, range: "June 21 - July 22" },
-  { name: "Leo", icon: Leo, range: "July 23 - August 22" },
-  { name: "Virgo", icon: Virgo, range: "August 23 - September 22" },
-  { name: "Libra", icon: Libra, range: "September 23 - October 22" },
-  { name: "Scorpio", icon: Scorpio, range: "October 23 - November 21" },
-  { name: "Sagittarius", icon: Sagittarius, range: "November 22 - December 21" },
-  // { name: "Capricorn", icon: Capricorn, range: "December 22 - January 19" },
-  // { name: "Aquarius", icon: Aquarius, range: "January 20 - February 18" },
-  // { name: "Pisces", icon: Pisces, range: "February 19 - March 20" },
-];
+  // const zodiacSigns = [
+  //   { name: "Aries", icon: Aries, range: "March 21 - April 20" },
+  //   { name: "Taurus", icon: Taurus, range: "April 21 - May 20" },
+  //   { name: "Gemini", icon: Gemini, range: "May 21 - June 20" },
+  //   { name: "Cancer", icon: Cancer, range: "June 21 - July 22" },
+  //   { name: "Leo", icon: Leo, range: "July 23 - August 22" },
+  //   { name: "Virgo", icon: Virgo, range: "August 23 - September 22" },
+  //   { name: "Libra", icon: Libra, range: "September 23 - October 22" },
+  //   { name: "Scorpio", icon: Scorpio, range: "October 23 - November 21" },
+  //   {
+  //     name: "Sagittarius",
+  //     icon: Sagittarius,
+  //     range: "November 22 - December 21",
+  //   },
+  //   // { name: "Capricorn", icon: Capricorn, range: "December 22 - January 19" },
+  //   // { name: "Aquarius", icon: Aquarius, range: "January 20 - February 18" },
+  //   // { name: "Pisces", icon: Pisces, range: "February 19 - March 20" },
+  // ];
 
-
+  const GREECE_REGIONS = [
+    { id: "54455", name: "Attica (Athens area)" },
+    { id: "54456", name: "Northern Greece (Thessaloniki & North)" },
+    { id: "54457", name: "Central Greece" },
+    { id: "54458", name: "Peloponnese" },
+    { id: "54459", name: "Crete" },
+    { id: "544510", name: "Cyclades (Mykonos, Naxos, Paros, Santorini)" },
+    { id: "544511", name: "Dodecanese (Rhodes, Kos, Patmos)" },
+    { id: "544512", name: "Ionian Islands (Corfu, Zakynthos, Kefalonia)" },
+    { id: "544513", name: "North Aegean Islands (Lesvos, Chios, Samos)" },
+    { id: "544514", name: "Saronic Islands (Aegina, Hydra, Poros, Spetses)" },
+    { id: "544515", name: "Other area in Greece" },
+  ];
 
   useEffect(() => {
     if (accepted) {
@@ -113,7 +130,7 @@ const [open, setOpen] = useState(false);
       setStates([]);
       setCities([]);
       setState("");
-      setCity("");
+      // setCity("");
       return;
     }
     setLoadingStates(true);
@@ -123,7 +140,7 @@ const [open, setOpen] = useState(false);
         setStates(res.data.states || []);
         setState("");
         setCities([]);
-        setCity("");
+        // setCity("");
       })
       .catch((err) => {
         console.error("Error fetching states:", err);
@@ -135,7 +152,7 @@ const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!State) {
       setCities([]);
-      setCity("");
+      // setCity("");
       return;
     }
     setLoadingCities(true);
@@ -143,7 +160,7 @@ const [open, setOpen] = useState(false);
       .get(`https://meetgreek.dhsol.net/location_api.php?state_id=${State}`)
       .then((res) => {
         setCities(res.data.cities || []);
-        setCity("");
+        // setCity("");
       })
       .catch((err) => {
         console.error("Error fetching cities:", err);
@@ -165,25 +182,34 @@ const [open, setOpen] = useState(false);
     }
   };
 
+  useEffect(() => {
+    if (Country && Countries.length > 0) {
+      const selectedCountry = Countries.find((c) => c.id == Country);
+      setIsGreece(selectedCountry?.name === "Greece");
+    } else {
+      setIsGreece(false);
+    }
+  }, [Country, Countries]);
+
   const SubmitHandler = async () => {
     // Prevent multiple clicks
     if (isRegistering) return;
 
     // Basic validations
-    if (!Phone?.trim()) return showTost({ title: "Please Enter Phone Number" });
+    // if (!Phone?.trim()) return showTost({ title: "Please Enter Phone Number" });
     if (!Email?.trim()) return showTost({ title: "Please Enter Email" });
     if (!Password?.trim()) return showTost({ title: "Please Enter Password" });
     if (Password.length < 8)
       return showTost({ title: "Password must be at least 8 characters" });
     if (!Gender) return showTost({ title: "Please select your gender" });
-    if (!GreekStatus)
-      return showTost({ title: "Please select your Greek status" });
+    // if (!GreekStatus)
+    //   return showTost({ title: "Please select your Greek status" });
     if (!BirthDay || !BirthMonth || !BirthYear)
       return showTost({ title: "Please select your birthdate" });
-    if (!Zodiac) return showTost({ title: "Please select your Zodiac Sign" });
+    // if (!Zodiac) return showTost({ title: "Please select your Zodiac Sign" });
     if (!Country) return showTost({ title: "Please select your country" });
     if (!State) return showTost({ title: "Please select your state" });
-    if (!City) return showTost({ title: "Please select your city" });
+    // if (!City) return showTost({ title: "Please select your city" });
     if (!Agreed)
       return showTost({ title: "Please agree to Terms & Conditions" });
     if (!EligibilityConfirmation)
@@ -217,23 +243,39 @@ const [open, setOpen] = useState(false);
 
       // Get country name from selected country ID
       const selectedCountry = Countries.find((c) => c.id == Country);
-      const selectedState = States.find((s) => s.id == State);
-      const selectedCity = Cities.find((c) => c.id == City);
+
+      let selectedState;
+      let stateIdToSend;
+      let stateNameToSend;
+
+      if (isGreece) {
+        const selectedRegion = GREECE_REGIONS.find(
+          (region) => region.id === State
+        );
+        selectedState = selectedRegion;
+        stateIdToSend = State;
+        stateNameToSend = selectedRegion ? selectedRegion.name : "";
+      } else {
+        const selectedState = States.find((s) => s.id == State);
+        stateIdToSend = State;
+        stateNameToSend = selectedState ? selectedState?.name : "";
+      }
+      // const selectedCity = Cities.find((c) => c.id == City);
 
       // Prepare FormData with exact fields you need
       const formData = new FormData();
 
       // REQUIRED FIELDS as per your specification:
       formData.append("gender", Gender);
-      formData.append("origin", GreekStatus);
+      // formData.append("origin", GreekStatus);
       formData.append("country", selectedCountry ? selectedCountry.name : "");
-      formData.append("state", selectedState ? selectedState.name : "");
-      formData.append("city", selectedCity ? selectedCity.name : "");
+      formData.append("state", stateNameToSend);
+      // formData.append("city", selectedCity ? selectedCity.name : "");
       formData.append("country_id", Country);
-      formData.append("state_id", State);
-      formData.append("city_id", City);
+      formData.append("state_id", stateIdToSend);
+      // formData.append("city_id", City);
       formData.append("bday", formattedBirthdate);
-      formData.append("zodiac_sign", Zodiac);
+      // formData.append("zodiac_sign", Zodiac);
       formData.append("mobile", Phone);
       formData.append("email", Email);
       formData.append("password", Password);
@@ -291,6 +333,8 @@ const [open, setOpen] = useState(false);
     showTost({ title: "You must accept the terms to register." });
     navigation("/");
   };
+
+  
 
   return (
     <div className="w-[100%] multisteup-wrapper pt-[20px] Test">
@@ -379,39 +423,7 @@ const [open, setOpen] = useState(false);
               </div>
 
               <div className="mt-[20px] w-[100%] space-y-6">
-                {/* Gender */}
-                <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
-                  <label className="block font-medium text-gray-700">
-                    I am a: *
-                  </label>
-                  <div className="flex flex-col">
-                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="Male"
-                        checked={Gender === "Male"}
-                        onChange={(e) => setGender(e.target.value)}
-                        className="w-5 h-5 "
-                      />
-                      <span className="text-gray-700 font-medium">Man</span>
-                    </label>
-                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="Female"
-                        checked={Gender === "Female"}
-                        onChange={(e) => setGender(e.target.value)}
-                        className="w-5 h-5 "
-                      />
-                      <span className="text-gray-700 font-medium">Woman</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Greek Status (origin) */}
-                <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
+                {/* <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
                   <label className="block font-medium text-gray-700">
                     I am: *
                   </label>
@@ -454,7 +466,7 @@ const [open, setOpen] = useState(false);
                       </span>
                     </label>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Email */}
                 <div className="relative">
@@ -475,7 +487,7 @@ const [open, setOpen] = useState(false);
                 </div>
 
                 {/* Phone Number */}
-                <div className="relative">
+                {/* <div className="relative">
                   <label htmlFor="" className="font-semibold">
                     Phone Number
                   </label>
@@ -490,7 +502,7 @@ const [open, setOpen] = useState(false);
                   {Phone && (
                     <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
                   )}
-                </div>
+                </div> */}
 
                 {/* Password */}
                 <div className="relative">
@@ -592,69 +604,101 @@ const [open, setOpen] = useState(false);
                   </div>
                 </div>
 
-                {/* Zodiac */}
-               <div className="relative">
-  <label className="font-semibold">Zodiac Sign</label>
-  <p className="text-gray-600">
-    Many members enjoy this part of getting to know each other.
-  </p>
+                {/* Gender */}
+                <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <label className="block font-medium text-gray-700">
+                    I am a: *
+                  </label>
+                  <div className="flex flex-row gap-[50px]">
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Male"
+                        checked={Gender === "Male"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-5 h-5 "
+                      />
+                      <span className="text-gray-700 font-medium">Man</span>
+                    </label>
+                    <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Female"
+                        checked={Gender === "Female"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-5 h-5 "
+                      />
+                      <span className="text-gray-700 font-medium">Woman</span>
+                    </label>
+                  </div>
+                </div>
 
-  {/* Selected */}
-  <button
-    type="button"
-    onClick={() => setOpen(!open)}
-    className="w-full mt-2 px-4 py-3 border-2 border-gray-300 rounded-xl
+                {/* Zodiac */}
+                {/* <div className="relative">
+                  <label className="font-semibold">Zodiac Sign</label>
+                  <p className="text-gray-600">
+                    Many members enjoy this part of getting to know each other.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setOpen(!open)}
+                    className="w-full mt-2 px-4 py-3 border-2 border-gray-300 rounded-xl
     bg-white flex items-center justify-between
     focus:border-amber-500 transition"
-  >
-    {Zodiac ? (
-      <div className="flex items-center gap-3">
-        <img
-          src={zodiacSigns.find(z => z.name === Zodiac)?.icon}
-          className="w-6 h-6"
-          alt=""
-        />
-        <span className="text-gray-800">{Zodiac}</span>
-      </div>
-    ) : (
-      <span className="text-gray-400">Select your zodiac sign</span>
-    )}
-    <span className="text-gray-400">▼</span>
-  </button>
+                  >
+                    {Zodiac ? (
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={zodiacSigns.find((z) => z.name === Zodiac)?.icon}
+                          className="w-6 h-6"
+                          alt=""
+                        />
+                        <span className="text-gray-800">{Zodiac}</span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">
+                        Select your zodiac sign
+                      </span>
+                    )}
+                    <span className="text-gray-400">▼</span>
+                  </button>
 
-  {/* Dropdown */}
-  {open && (
-    <ul className="absolute z-50 mt-2 w-full bg-white border rounded-xl
-      shadow-lg max-h-64 overflow-y-auto">
-      {zodiacSigns.map((sign) => (
-        <li
-          key={sign.name}
-          onClick={() => {
-            setZodiac(sign.name); 
-            setOpen(false);
-          }}
-          className="flex items-center gap-3 px-2 py-3
+                  {open && (
+                    <ul
+                      className="absolute z-50 mt-2 w-full bg-white border rounded-xl
+      shadow-lg max-h-64 overflow-y-auto"
+                    >
+                      {zodiacSigns.map((sign) => (
+                        <li
+                          key={sign.name}
+                          onClick={() => {
+                            setZodiac(sign.name);
+                            setOpen(false);
+                          }}
+                          className="flex items-center gap-3 px-2 py-3
           hover:bg-amber-50 cursor-pointer transition"
-        >
-          <img src={sign.icon} className="w-6 h-6" alt="" />
-          <div>
-            <p className="font-medium">{sign.name} ({sign.range})</p>
-          </div>
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
-
-
+                        >
+                          <img src={sign.icon} className="w-6 h-6" alt="" />
+                          <div>
+                            <p className="font-medium">
+                              {sign.name} ({sign.range})
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div> */}
 
                 {/* Country */}
                 <div>
                   <label htmlFor="" className="font-semibold">
                     I live in:
                   </label>
-                  <p>Country / State / Region</p>
+                  <p>Country </p>
                   <select
                     value={Country}
                     onChange={(e) => setCountry(e.target.value)}
@@ -672,24 +716,31 @@ const [open, setOpen] = useState(false);
                 </div>
 
                 {/* State */}
-                <select
-                  value={State}
-                  onChange={(e) => setState(e.target.value)}
-                  disabled={!Country || loadingStates}
-                  className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                >
-                  <option value="" className="text-gray-400">
-                    {loadingStates ? "Loading states..." : "Select State *"}
-                  </option>
-                  {States.map((state) => (
-                    <option key={state.id} value={state.id}>
-                      {state.name}
+                <div>
+                  <label htmlFor="">State / Region</label>
+                  <p>
+                    Choose the region you live in. Not sure? Select the closest
+                    area.
+                  </p>
+                  <select
+                    value={State}
+                    onChange={(e) => setState(e.target.value)}
+                    disabled={!Country || loadingStates}
+                    className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  >
+                    <option value="" className="text-gray-400">
+                      {loadingStates ? "Loading states..." : "Select State *"}
                     </option>
-                  ))}
-                </select>
+                    {(isGreece ? GREECE_REGIONS : States).map((state) => (
+                      <option key={state.id} value={state.id}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 {/* City */}
-                <select
+                {/* <select
                   value={City}
                   onChange={(e) => setCity(e.target.value)}
                   disabled={!State || loadingCities}
@@ -703,7 +754,7 @@ const [open, setOpen] = useState(false);
                       {city.name}
                     </option>
                   ))}
-                </select>
+                </select> */}
 
                 {/* Terms Agreement */}
                 <div className="bg-white rounded-xl p-1 ">
@@ -737,19 +788,19 @@ const [open, setOpen] = useState(false);
                     />
                     <span className="text-gray-700 leading-relaxed">
                       I agree to the{" "}
-                      <a
-                        href="#"
+                      <Link
+                        to="/page/terms_&_conditions"
                         className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
                       >
                         Terms & Conditions
-                      </a>{" "}
+                      </Link>{" "}
                       and{" "}
-                      <a
-                        href="#"
+                      <Link
+                        to="/page/privacy_policy_"
                         className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
                       >
                         Privacy Policy
-                      </a>
+                      </Link>
                       . *
                     </span>
                   </label>
