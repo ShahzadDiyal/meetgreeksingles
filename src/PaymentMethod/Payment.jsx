@@ -18,8 +18,11 @@ import MercadoPagoCheckout from './MercadoPago';
 import PaytmPayment from './PaytmPayment';
 import { showTost } from "../showTost";
 import { StripePayment } from './Stripe';
+import { useTranslation } from "react-i18next";
+
 const Payment = ({ Amount }) => {
     const { basUrl, imageBaseURL, setToggleButton, setAmount, payClose, page, buyCoin, setWalletCoin, setBuyCoin, button, setButton } = useContext(MyContext);
+    const {t} = useTranslation();
 
     const [input, setInput] = useState();
     const [border, setBorder] = useState();
@@ -49,18 +52,18 @@ const Payment = ({ Amount }) => {
                     setPayId(id);
                     setButton(true);
                 } else {
-                    showTost({ title: "Please Select Payment Method" });
+                    showTost({ title: t("Please Select Payment Method") });
                 }
             } else {
                 if (Amount > coin) {
-                    showTost({ title: "Please Add Balance..!!" });
+                    showTost({ title: t("Please Add Balance..!!") });
                     setToggleButton(false);
                 } else {
                     setBuyCoin("PaymentDone");
                 }
             }
         } else {
-            showTost({ title: "Please Enter Amount" });
+            showTost({ title: t("Please Enter Amount") });
         }
     };
 
@@ -123,7 +126,7 @@ const Payment = ({ Amount }) => {
       {page !== "BuyCoin" && (
         <div>
           <h6 className="text-[#222222] font-[600] mb-[8px]">
-            Add Wallet Amount
+            {t("Add Wallet Amount")}
           </h6>
 
           <div className="flex items-center gap-[12px] border-[2px] border-[#C89A3D] px-[15px] py-[10px] rounded-[10px]">
@@ -132,7 +135,7 @@ const Payment = ({ Amount }) => {
               type="number"
               onChange={(e) => setInput(e.target.value)}
               className="outline-none w-full text-[#1F5799] font-[600] bg-transparent"
-              placeholder="Enter Amount"
+              placeholder={t("Enter Amount")}
             />
           </div>
         </div>
@@ -144,7 +147,7 @@ const Payment = ({ Amount }) => {
           <div className="flex items-center gap-[10px]">
             <img src={wallet} alt="" />
             <h6 className="m-0 text-[#222222] font-[600]">
-              My Wallet (${btnDis ? coin - Amount : coin})
+              {t("My Wallet")} (${btnDis ? coin - Amount : coin})
             </h6>
           </div>
 
@@ -158,7 +161,7 @@ const Payment = ({ Amount }) => {
       {/* PAYMENT METHOD TITLE */}
       {page === "Wallet" && (
         <h6 className="text-[#333333] text-[15px] mt-[15px] mb-[10px]">
-          Select Payment Method
+          {t("Select Payment Method")}
         </h6>
       )}
 
@@ -214,7 +217,7 @@ const Payment = ({ Amount }) => {
         onClick={() => PurchaseHandler(border)}
         className="bg-[#1F5799] hover:bg-[#17477C] text-white w-full font-[600] rounded-full py-[12px] mt-[10px]"
       >
-        {btnDis ? "Wallet Pay" : "Continue"}
+        {btnDis ? t("Wallet Pay") : t("Continue")}
       </button>
     </div>
   </div>

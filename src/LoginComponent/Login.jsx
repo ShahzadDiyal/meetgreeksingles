@@ -20,9 +20,11 @@ import { uid } from "uid";
 import { initOneSignal } from "../utils/OneSignalInit";
 // import { saveUserToFirestore } from "../utils/saveUserToFirestore";
 import logo from "../images/logos/meet-greek.png";
+import { useTranslation } from "react-i18next";
 
 
 const Login = () => {
+  const { t } = useTranslation(); // Added translation hook
   const Data = useContext(TodoContext);
   const { basUrl, userId, setUserId } = useContext(MyContext);
 
@@ -62,7 +64,7 @@ const Login = () => {
   //   const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
   //   if (Email && Password) {
   //     axios
-  //       .post(`${basUrl}user_login.php`, {
+  //       .post(`${basUrl}user_php`, {
   //         mobile: Email,
   //         ccode: "+91",
   //         password: Password,
@@ -75,7 +77,7 @@ const Login = () => {
   //           Data.setDemo(Data.demo + "123");
   //           const token = res.data.token || uid(32);
   //           localStorage.setItem("token", token);
-  //           localStorage.setItem("UserId", res.data.UserLogin.id);
+  //           localStorage.setItem("UserId", res.data.Userid);
   //           localStorage.setItem("Register_User", JSON.stringify(res.data.UserLogin));
   //           setTimeout(() => {
   //             navigate("/");
@@ -84,7 +86,7 @@ const Login = () => {
   //           showTost({ title: res.data.ResponseMsg });
   //         }
   //       });
-  //   } else if (!Validation.test(Email)) {
+  //   } else if (!test(Email)) {
   //     showTost({ title: "Please Enter Valid Email" });
   //   } else if (!Email) {
   //     showTost({ title: "Please Enter Email" });
@@ -100,7 +102,7 @@ const Login = () => {
   //     if (!Email) return showTost({ title: "Please Enter Email" });
   //     if (!Password) return showTost({ title: "Please Enter Password" });
 
-  //     const res = await axios.post(`${basUrl}user_login.php`, {
+  //     const res = await axios.post(`${basUrl}user_php`, {
   //       mobile: Email,
   //       ccode: "+91",
   //       password: Password,
@@ -262,8 +264,8 @@ const Login = () => {
     try {
       // Check if input is empty
       if (!Email)
-        return showTost({ title: "Please Enter Email or Mobile Number" });
-      if (!Password) return showTost({ title: "Please Enter Password" });
+        return showTost({ title: t("enterEmailMobile") }); // Updated
+      if (!Password) return showTost({ title: t("enterPassword") }); // Updated
 
       // Determine if input is email or mobile
       const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
@@ -394,12 +396,12 @@ const Login = () => {
         setTimeout(() => navigate(redirectPath), 500);
       } else {
         showTost({
-          title: res.data.ResponseMsg || "Invalid email or password",
+          title: res.data.ResponseMsg || t("loginFailed"), // Updated
         });
       }
     } catch (err) {
       console.error("🔥 SigninHandler error:", err);
-      showTost({ title: "Login failed. Please try again." });
+      showTost({ title: t("loginFailed") }); // Updated
     }
   };
 
@@ -444,20 +446,20 @@ const Login = () => {
             }
           });
       } else {
-        showTost({ title: "Please Enter Valid MobileNumber" });
+        showTost({ title: t("validMobile") }); // Updated
       }
     } else {
-      showTost({ title: "Please Enter MobileNumber" });
+      showTost({ title: t("enterMobile") }); // Updated
     }
   };
 
   const OtpCheckHandler = () => {
     if (checkOtp === otpValue.join("")) {
-      showTost({ title: "Otp Match Successfully" });
+      showTost({ title: t("otpMatchSuccess") }); // Updated
       setOtpShow(false);
       setPasswordShow(true);
     } else {
-      showTost({ title: "Invalid Otp" });
+      showTost({ title: t("invalidOtp") }); // Updated
     }
   };
 
@@ -484,13 +486,13 @@ const Login = () => {
               }
             });
         } else {
-          showTost({ title: "Not Match Password" });
+          showTost({ title: t("passwordsNotMatch") }); // Updated
         }
       } else {
-        showTost({ title: "Please Enter Confrim Password" });
+        showTost({ title: t("enterConfirmPassword") }); // Updated
       }
     } else {
-      showTost({ title: "Please Enter Password" });
+      showTost({ title: t("enterPasswordField") }); // Updated
     }
   };
 
@@ -542,10 +544,10 @@ const Login = () => {
                   <img src={logo} alt="" width={40} height={60} />
                 </div>
                 <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222] text-center">
-                  Welcome Back
+                  {t("welcome")} {/* Updated */}
                 </h1>
                 <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333] font-normal text-center mb-3">
-                  Sign in to continue your journey toward meaningful Greek connections.
+                  {t("subtitle")} {/* Updated */}
                 </p>
                
               </div>
@@ -553,14 +555,14 @@ const Login = () => {
                 {/* Email/Phone Input */}
                 <div>
                 <label htmlFor="" className="font-semibold">
-                    Email or Mobile Number
+                    {t("emailMobileLabel")} {/* Updated */}
                   </label>
                 <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
                   <img src={EmailIcon} alt="" className="w-[20px] h-[20px]" />
                   <input
                     className="text-black w-[100%] outline-none bg-transparent"
                     type="Email"
-                    placeholder="Enter your email or mobile number"
+                    placeholder={t("emailMobilePlaceholder")}  
                     onChange={(e) => setemail(e.target.value)}
                     value={Email}
                   />
@@ -571,7 +573,7 @@ const Login = () => {
                 <div className="relative">
                   <div>
                      <label htmlFor="" className="font-semibold">
-                    Password
+                    {t("passwordLabel")}  
                   </label>
 <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
                     <img
@@ -583,7 +585,7 @@ const Login = () => {
                       id="input"
                       type="text"
                       className="text-black w-[100%] outline-none bg-transparent"
-                      placeholder="Enter your password"
+                      placeholder={t("passwordPlaceholder")}  
                       onChange={(e) => setpassword(e.target.value)}
                       value={Password}
                     />
@@ -611,9 +613,9 @@ const Login = () => {
                   onClick={toggleBottomSheet}
                   className="font-[500] text-[16px] no-underline text-black block w-full text-left"
                 >
-                  Forgot password?{" "}
+                  {t("forgotPassword")}{" "} {/* Updated */}
                   <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">
-                    Reset it
+                    {t("resetIt")} {/* Updated */}
                   </span>
                 </button>
 
@@ -622,7 +624,7 @@ const Login = () => {
                   onClick={SigninHandler}
                   className="font-bold text-[18px] rounded-full mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
                 >
-                  Sign In
+                  {t("signIn")} {/* Updated */}
                 </button>
               </div>
 
@@ -631,9 +633,9 @@ const Login = () => {
                 to="/register"
                 className="pt-[20px] font-[500] text-[16px] no-underline text-black block w-full text-center"
               >
-                Don't have an Account?{" "}
+                {t("noAccount")}{" "} {/* Updated */}
                 <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">
-                  Sign Up
+                  {t("signUp")} {/* Updated */}
                 </span>
               </Link>
 
@@ -647,7 +649,7 @@ const Login = () => {
                     <div className="bg-white rounded-2xl shadow-lg p-5">
                       <div className="flex items-center justify-between mb-[15px]">
                         <h1 className="text-[18px] m-0 text-black font-[500]">
-                          Reset Your Password
+                          {t("resetPassword")} {/* Updated */}
                         </h1>
                         <img
                           onClick={toggleBottomSheet}
@@ -665,7 +667,7 @@ const Login = () => {
                             onClick={() => inputFocus.current.focus()}
                             className="text-[16px] absolute top-[10px] left-[60px] text-gray-400 font-[500] pointer-events-none"
                           >
-                            Mobile Number
+                            {t("mobileNumber")} {/* Updated */}
                           </label>
                         )}
                         <PhoneInput
@@ -686,7 +688,7 @@ const Login = () => {
                       {otpShow && (
                         <div className="mt-[15px]">
                           <h1 className="text-[18px] m-0 text-black font-[500]">
-                            Enter Otp
+                            {t("enterOtp")} {/* Updated */}
                           </h1>
                           <div className="flex items-center mt-[20px] justify-center gap-[10px]">
                             {Inputref.current.map((ref, index) => {
@@ -714,26 +716,26 @@ const Login = () => {
                         <div className="space-y-4">
                           <div>
                             <h1 className="text-[18px] mt-[15px] mb-0 text-black font-[500]">
-                              Password
+                              {t("password")} {/* Updated */}
                             </h1>
                             <input
                               onChange={(e) => setpassword2(e.target.value)}
                               value={Password2}
                               className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
                               type="text"
-                              placeholder="Password"
+                              placeholder={t("password")}  
                             />
                           </div>
                           <div>
                             <h1 className="text-[18px] m-0 text-black font-[500]">
-                              Confirm Password
+                              {t("confirmPassword")} {/* Updated */}
                             </h1>
                             <input
                               value={Confirm}
                               onChange={(e) => setconfirm(e.target.value)}
                               className="text-black w-[100%] border-2 mt-[10px] outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
                               type="text"
-                              placeholder="Confirm"
+                              placeholder={t("confirmPassword")}  
                             />
                           </div>
                         </div>
@@ -751,10 +753,10 @@ const Login = () => {
                         className="font-bold text-[18px] rounded-full mt-[20px] text-white py-[10px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
                       >
                         {otpShow
-                          ? "Check"
+                          ? t("check") /* Updated */
                           : passwordShow
-                          ? "Change"
-                          : "Continue"}
+                          ? t("change") /* Updated */
+                          : t("continue")} {/* Updated */}
                       </button>
                     </div>
                   </div>

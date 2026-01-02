@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const PageContent = () => {
-  const { pageName } = useParams(); // Get page name from URL
+  const { pageName } = useParams();  
   const [page, setPage] = useState(null);
-  const basUrl = "https://meetgreek.dhsol.net/api/"; // Your base URL
+  const basUrl = "https://meetgreek.dhsol.net/api/";  
 
   useEffect(() => {
     // Fetch all pages and find the matching one
@@ -27,7 +27,7 @@ const PageContent = () => {
       });
   }, [pageName]);
 
-  // Function to decode HTML entities
+ 
   const decodeHtml = (html) => {
     const txt = document.createElement('textarea');
     txt.innerHTML = html;

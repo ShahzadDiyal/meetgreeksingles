@@ -5,11 +5,11 @@ import {
 import { loadStripe } from '@stripe/stripe-js';
 import { MyContext } from '../Context/MyProvider';
 import axios from 'axios';
-
+import { useTranslation } from "react-i18next";
 
 const SplitForm = ({ fontSize, amount }) => {
-
     const { setPayClose, setPlanId, setTransactionId, page, setBuyCoin, paymentBaseURL } = useContext(MyContext);
+    const {t} = useTranslation();
 
     const [cardNumber, setCardnumber] = useState('');
     const [expiry, setExpiry] = useState('');
@@ -21,7 +21,6 @@ const SplitForm = ({ fontSize, amount }) => {
 
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-    // Fetch live exchange rates
     useEffect(() => {
         const fetchRates = async () => {
             try {
@@ -34,7 +33,6 @@ const SplitForm = ({ fontSize, amount }) => {
         fetchRates();
     }, []);
 
-    // Update converted amount when currency or base amount changes
     useEffect(() => {
         if (amount && currency && rates[currency]) {
             const converted = (parseFloat(amount) * rates[currency]).toFixed(2);
@@ -42,7 +40,6 @@ const SplitForm = ({ fontSize, amount }) => {
         }
     }, [amount, currency, rates]);
 
-    // Enable/disable button based on field validation
     useEffect(() => {
         const isCardValid = cardNumber.replace(/\s/g, '').length === 16;
         const isExpiryValid = /^(\d{2})\/(\d{2})$/.test(expiry);
@@ -105,18 +102,15 @@ const SplitForm = ({ fontSize, amount }) => {
 
     return (
         <form onSubmit={handleSubmit} className="w-full">
-            {/* Form Header */}
             <div className="mb-6">
-                <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">Card Payment</h2>
-                <p className="text-gray-600 text-sm">Enter your card details securely</p>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">{t("Card Payment")}</h2>
+                <p className="text-gray-600 text-sm">{t("Enter your card details securely")}</p>
             </div>
 
-            {/* Main Form Content */}
             <div className="space-y-4">
-                {/* Currency Selection */}
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700">
-                        Currency
+                        {t("Currency")}
                     </label>
                     <select
                         value={currency}
@@ -131,10 +125,9 @@ const SplitForm = ({ fontSize, amount }) => {
                     </select>
                 </div>
 
-                {/* Converted Amount Display */}
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700">
-                        Amount
+                        {t("Amount")}
                     </label>
                     <input
                         type="text"
@@ -144,14 +137,13 @@ const SplitForm = ({ fontSize, amount }) => {
                     />
                 </div>
 
-                {/* Card Number */}
                 <div className="space-y-1">
                     <label className="block text-sm font-medium text-gray-700">
-                        Card Number
+                        {t("Card Number")}
                     </label>
                     <input
                         type="text"
-                        placeholder="1234 1234 1234 1234"
+                        placeholder={t("1234 1234 1234 1234")}
                         value={cardNumber}
                         onChange={handleCardNumberChange}
                         maxLength="19"
@@ -159,16 +151,14 @@ const SplitForm = ({ fontSize, amount }) => {
                     />
                 </div>
 
-                {/* Card Details Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Expiration Date */}
                     <div className="space-y-1">
                         <label className="block text-sm font-medium text-gray-700">
-                            Expiry Date (MM/YY)
+                            {t("Expiry Date (MM/YY)")}
                         </label>
                         <input
                             type="text"
-                            placeholder="MM/YY"
+                            placeholder={t("MM/YY")}
                             value={expiry}
                             onChange={handleExpiryChange}
                             maxLength="5"
@@ -176,22 +166,20 @@ const SplitForm = ({ fontSize, amount }) => {
                         />
                     </div>
 
-                    {/* CVC */}
                     <div className="space-y-1">
                         <label className="block text-sm font-medium text-gray-700">
-                            CVC
+                            {t("CVC")}
                         </label>
                         <input
                             type="number"
                             onChange={(e) => setCvc(e.target.value)}
-                            placeholder="123"
+                            placeholder={t("123")}
                             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C89A3D] focus:border-transparent"
                         />
                     </div>
                 </div>
             </div>
 
-            {/* Submit Button */}
             <button
                 type="submit"
                 disabled={isButtonDisabled}
@@ -201,15 +189,13 @@ const SplitForm = ({ fontSize, amount }) => {
                         : 'bg-[#1F5799] text-white hover:bg-[#174173]'
                 }`}
             >
-                Pay {convertedAmount ? `${convertedAmount} ${currency}` : amount ? `${amount} EUR` : ""}
+                {t("Pay")} {convertedAmount ? `${convertedAmount} ${currency}` : amount ? `${amount} EUR` : ""}
             </button>
         </form>
     );
 };
 
-// Load Stripe API key
 const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh");
-
 
 export const StripePayment = ({ Amount }) => {
     const [elementFontSize, setElementFontSize] = useState(() =>
@@ -230,7 +216,6 @@ export const StripePayment = ({ Amount }) => {
 
     return (
         <div className="w-full h-full">
-            {/* Mobile: Scrollable container */}
             <div className="md:hidden h-full overflow-y-auto">
                 <div className="min-h-full bg-white p-4">
                     <Elements stripe={stripePromise}>
@@ -239,7 +224,6 @@ export const StripePayment = ({ Amount }) => {
                 </div>
             </div>
 
-            {/* Desktop: Fixed container */}
             <div className="hidden md:block">
                 <div className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
                     <Elements stripe={stripePromise}>
@@ -250,4 +234,4 @@ export const StripePayment = ({ Amount }) => {
         </div>
     );
 };
-/* jshint ignore:end */
+/* jshint ignore:end */     

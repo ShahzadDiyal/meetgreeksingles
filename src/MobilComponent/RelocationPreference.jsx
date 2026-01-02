@@ -7,8 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { showTost } from "../showTost";
 import { MyContext } from "../Context/MyProvider";
 import axios from "axios"; 
+import { useTranslation } from "react-i18next";
 
 const RelocationPreference = () => {
+  const { t } = useTranslation();
+  
   const {
     firstName,
     lastName,
@@ -124,28 +127,27 @@ const RelocationPreference = () => {
 
   const validateForm = () => {
     if (!relocationPreference) {
-      showTost({ title: "Please select your relocation preference" });
+      showTost({ title: t("validationRelocation") });
       return false;
     }
     if (!dateWithChildren) {
       showTost({
-        title:
-          "Please select your preference about dating someone with children",
+        title: t("validationDateChildren"),
       });
       return false;
     }
     if (!haveChildren) {
-      showTost({ title: "Please let us know if you have children" });
+      showTost({ title: t("validationHaveChildren") });
       return false;
     }
     if (!wantChildren) {
       showTost({
-        title: "Please select your preference about having children",
+        title: t("validationWantChildren"),
       });
       return false;
     }
     if (!travelWillingness) {
-      showTost({ title: "Please select your willingness to travel" });
+      showTost({ title: t("validationTravel") });
       return false;
     }
 
@@ -299,6 +301,43 @@ const RelocationPreference = () => {
     return payload;
   };
 
+  const relocationOptions = [
+    t("relocationYesAnywhere"),
+    t("relocationYesEurope"),
+    t("relocationYesLongTerm"),
+    t("relocationMaybe"),
+    t("relocationNo")
+  ];
+
+  const dateChildrenOptions = [
+    t("dateChildrenComfortable"),
+    t("dateChildrenRespect"),
+    t("dateChildrenMaybe"),
+    t("dateChildrenNo")
+  ];
+
+  const haveChildrenOptions = [
+    t("haveChildrenYesImportant"),
+    t("haveChildrenYesAdults"),
+    t("haveChildrenNo"),
+    t("haveChildrenPreferNot")
+  ];
+
+  const wantChildrenOptions = [
+    t("wantChildrenYesFuture"),
+    t("wantChildrenMaybe"),
+    t("wantChildrenNo"),
+    t("wantChildrenAlreadyNoMore"),
+    t("wantChildrenOpenMore")
+  ];
+
+  const travelOptions = [
+    t("travelYesInternational"),
+    t("travelYesCountry"),
+    t("travelMaybe"),
+    t("travelNo")
+  ];
+
   return (
     <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
@@ -312,10 +351,10 @@ const RelocationPreference = () => {
 
           <div className="mt-[10px]">
             <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
-              Lifestyle & Future Preferences 🌍
+              {t("relocationTitle")}
             </h1>
             <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
-              Help us understand your lifestyle choices and future plans
+              {t("relocationSubtitle")}
             </p>
           </div>
 
@@ -323,17 +362,10 @@ const RelocationPreference = () => {
             {/* Relocation Preference */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
               <label className="block font-medium text-xl mb-2 text-[#333333]">
-                Would you consider relocating to another country for the right
-                person? *
+                {t("relocationPreferenceLabel")}
               </label>
               <div>
-                {[
-                  "Yes — I can relocate anywhere",
-                  "Yes — but only within Europe",
-                  "Yes — for a long-term, serious relationship",
-                  "Maybe — I'm open to discussing it",
-                  "No — I prefer staying where I live",
-                ].map((option) => (
+                {relocationOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50"
@@ -355,15 +387,10 @@ const RelocationPreference = () => {
             {/* Dating someone with children */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
               <label className="block font-medium mb-2 text-xl text-[#333333]">
-                Would you date someone with children? *
+                {t("dateWithChildrenLabel")}
               </label>
               <div className="space-y-4">
-                {[
-                  "Yes — I'm very comfortable dating someone with children",
-                  "Yes — if family responsibilities are respected",
-                  "Maybe — it depends on the dynamics",
-                  "No — I prefer dating someone without children",
-                ].map((option) => (
+                {dateChildrenOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-start space-x-3 cursor-pointer py-1 rounded-lg transition-colors hover:bg-gray-50"
@@ -385,15 +412,10 @@ const RelocationPreference = () => {
             {/* Have children */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
               <label className="block font-medium mb-2 text-xl text-[#333333]">
-                Do you have children? *
+                {t("haveChildrenLabel")}
               </label>
               <div className="">
-                {[
-                  "Yes — they are an important part of my life",
-                  "Yes — but they are adults now",
-                  "No",
-                  "Prefer not to answer",
-                ].map((option) => (
+                {haveChildrenOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50"
@@ -415,16 +437,10 @@ const RelocationPreference = () => {
             {/* Want children */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
               <label className="block font-medium mb-2 text-xl text-[#333333]">
-                Do you want to have children? *
+                {t("wantChildrenLabel")}
               </label>
               <div>
-                {[
-                  "Yes — I want children in the future",
-                  "Maybe — I'm open but not certain",
-                  "No — I don't want children",
-                  "I already have children and don't want more",
-                  "I'm open to having more children",
-                ].map((option) => (
+                {wantChildrenOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50"
@@ -446,15 +462,10 @@ const RelocationPreference = () => {
             {/* Willing to travel */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-6 shadow-sm">
               <label className="block font-medium mb-2 text-xl text-[#333333]">
-                Are you willing to travel to meet someone? *
+                {t("travelWillingnessLabel")}
               </label>
               <div>
-                {[
-                  "Yes — I can travel internationally for the right person",
-                  "Yes — I can travel within my country/region to meet someone special",
-                  "Maybe — I'm open to traveling if the connection feels right",
-                  "No — I prefer someone near my location",
-                ].map((option) => (
+                {travelOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-start space-x-3 cursor-pointer py-2 rounded-lg transition-colors hover:bg-gray-50"
@@ -510,13 +521,13 @@ const RelocationPreference = () => {
               {isSubmitting ? (
                 <>
                   <span className="font-bold text-[1.25rem] text-white">
-                    Submitting...
+                    {t("submitting")}
                   </span>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 </>
               ) : (
                 <span className="font-bold text-[1.25rem] text-white">
-                  Submit my Profile
+                  {t("submitProfile")}
                 </span>
               )}
             </div>

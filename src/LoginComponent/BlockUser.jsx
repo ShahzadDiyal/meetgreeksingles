@@ -8,6 +8,7 @@ import { MyContext } from '../Context/MyProvider';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { showTost } from "../showTost";
+import Footer from './Footer';
 
 const BlockUser = () => {
   const { t } = useTranslation();
@@ -141,6 +142,7 @@ const BlockUser = () => {
           </div>
         </div>
       </div>
+              <Footer />
     </div>
   )
 }

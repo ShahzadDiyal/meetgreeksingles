@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { MyContext } from '../Context/MyProvider';
 import axios from 'axios';
 import { IoIosNotificationsOutline } from "react-icons/io";
+import Footer from './Footer';
+
 
 const NotificationShow = () => {
     const { t } = useTranslation();
@@ -63,6 +65,7 @@ const NotificationShow = () => {
                     </div>
                 </div>
             </div>
+                    <Footer />
         </div>
     )
 }

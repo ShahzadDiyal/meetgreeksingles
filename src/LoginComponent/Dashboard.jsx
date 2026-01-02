@@ -25,6 +25,7 @@ import CoinIcon from "../images/icons/buycoin-package.png";
 import Slider from "react-slick";
 import imag from "../images/logos/meet-greek.png";
 import CookiePopup from "./CookiePopup";
+import Footer from "./Footer";
 
 
 const Dashboard = () => {
@@ -1354,6 +1355,8 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+        <Footer />
+
       <CookiePopup />
 
     </>

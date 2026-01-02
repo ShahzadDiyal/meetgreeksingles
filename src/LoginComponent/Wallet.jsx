@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { showTost } from '../showTost';
 import Credit from "../images/icons/history-addion.png";
 import Debit from "../images/icons/history-subs.png";
+import Footer from "./Footer";
+
 const Wallet = () => {
 
     const { t } = useTranslation();
@@ -149,6 +151,8 @@ const Wallet = () => {
                     </div>
                 </div>
             </div>
+        <Footer />
+
             {/* <!-- Main Content End --> */}
 
             {/* ======== Payment Method ============== */}

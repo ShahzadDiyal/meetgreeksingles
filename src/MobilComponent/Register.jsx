@@ -13,6 +13,7 @@ import axios from "axios";
 import { showTost } from "../showTost";
 import { Link } from "react-router-dom";
 import logo from "../images/logos/meet-greek.png";
+import { useTranslation } from "react-i18next";
 // import Aries from "../images/zodiac/aries.png";
 // import Taurus from "../images/zodiac/taurus.png";
 // import Gemini from "../images/zodiac/gemini.png";
@@ -27,6 +28,8 @@ import logo from "../images/logos/meet-greek.png";
 // import Pisces from "../images/zodiac/pisces.png";
 
 const Register = () => {
+  const { t } = useTranslation();
+  
   const [Email, setemail] = useState("");
   const [Phone, setPhone] = useState("0123456789");
   const [Password, setpassword] = useState("");
@@ -102,7 +105,7 @@ const Register = () => {
     { id: "54456", name: "Northern Greece (Thessaloniki & North)" },
     { id: "54457", name: "Central Greece" },
     { id: "54458", name: "Peloponnese" },
-    { id: "54459", name: "Crete" },
+    { id: "54459", name: "Crete"},
     { id: "544510", name: "Cyclades (Mykonos, Naxos, Paros, Santorini)" },
     { id: "544511", name: "Dodecanese (Rhodes, Kos, Patmos)" },
     { id: "544512", name: "Ionian Islands (Corfu, Zakynthos, Kefalonia)" },
@@ -120,7 +123,7 @@ const Register = () => {
         })
         .catch((err) => {
           console.error("Error fetching countries:", err);
-          showTost({ title: "Failed to load countries" });
+          showTost({ title: t("Failed to load countries") });
         });
     }
   }, [accepted]);
@@ -144,7 +147,7 @@ const Register = () => {
       })
       .catch((err) => {
         console.error("Error fetching states:", err);
-        showTost({ title: "Failed to load states" });
+        showTost({ title: t("Failed to load states") });
       })
       .finally(() => setLoadingStates(false));
   }, [Country]);
@@ -164,7 +167,7 @@ const Register = () => {
       })
       .catch((err) => {
         console.error("Error fetching cities:", err);
-        showTost({ title: "Failed to load cities" });
+        showTost({ title: t("Failed to load cities") });
       })
       .finally(() => setLoadingCities(false));
   }, [State]);
@@ -196,28 +199,28 @@ const Register = () => {
     if (isRegistering) return;
 
     // Basic validations
-    // if (!Phone?.trim()) return showTost({ title: "Please Enter Phone Number" });
-    if (!Email?.trim()) return showTost({ title: "Please Enter Email" });
-    if (!Password?.trim()) return showTost({ title: "Please Enter Password" });
+    // if (!Phone?.trim()) return showTost({ title: t("Please Enter Phone Number") });
+    if (!Email?.trim()) return showTost({ title: t("Please Enter Email") });
+    if (!Password?.trim()) return showTost({ title: t("Please Enter Password") });
     if (Password.length < 8)
-      return showTost({ title: "Password must be at least 8 characters" });
-    if (!Gender) return showTost({ title: "Please select your gender" });
+      return showTost({ title: t("Password must be at least 8 characters") });
+    if (!Gender) return showTost({ title: t("Please select your gender") });
     // if (!GreekStatus)
-    //   return showTost({ title: "Please select your Greek status" });
+    //   return showTost({ title: t("Please select your Greek status") });
     if (!BirthDay || !BirthMonth || !BirthYear)
-      return showTost({ title: "Please select your birthdate" });
-    // if (!Zodiac) return showTost({ title: "Please select your Zodiac Sign" });
-    if (!Country) return showTost({ title: "Please select your country" });
-    if (!State) return showTost({ title: "Please select your state" });
-    // if (!City) return showTost({ title: "Please select your city" });
+      return showTost({ title: t("Please select your birthdate") });
+    // if (!Zodiac) return showTost({ title: t("Please select your Zodiac Sign") });
+    if (!Country) return showTost({ title: t("Please select your country") });
+    if (!State) return showTost({ title: t("Please select your state") });
+    // if (!City) return showTost({ title: t("Please select your city") });
     if (!Agreed)
-      return showTost({ title: "Please agree to Terms & Conditions" });
+      return showTost({ title: t("Please agree to Terms & Conditions") });
     if (!EligibilityConfirmation)
-      return showTost({ title: "Please agree to Eligibility Confirmation" });
+      return showTost({ title: t("Please agree to Eligibility Confirmation") });
 
     // Email validation
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    if (!emailRegex.test(Email)) return showTost({ title: "Invalid Email" });
+    if (!emailRegex.test(Email)) return showTost({ title: t("Invalid Email") });
 
     // Age validation (must be 18+)
     const birthDate = new Date(BirthYear, months.indexOf(BirthMonth), BirthDay);
@@ -230,7 +233,7 @@ const Register = () => {
     ) {
       age--;
     }
-    if (age < 18) return showTost({ title: "You must be 18 years or older" });
+    if (age < 18) return showTost({ title: t("You must be 18 years or older") });
 
     // Set loading state
     setIsRegistering(true);
@@ -296,7 +299,7 @@ const Register = () => {
       if (response.data.Result === "true") {
         // Registration successful
         showTost({
-          title: response.data.ResponseMsg || "Registration successful!",
+          title: response.data.ResponseMsg || t("Registration successful!"),
         });
 
         setUserId(response.data.User?.id);
@@ -317,12 +320,12 @@ const Register = () => {
         showTost({
           title:
             response.data.ResponseMsg ||
-            "Registration failed. Please try again.",
+            t("Registration failed. Please try again."),
         });
       }
     } catch (error) {
       console.error("Registration error:", error);
-      showTost({ title: "Network error. Please try again." });
+      showTost({ title: t("Network error. Please try again.") });
     } finally {
       setIsRegistering(false);
     }
@@ -330,11 +333,9 @@ const Register = () => {
 
   const handleAccept = () => setAccepted(true);
   const handleDecline = () => {
-    showTost({ title: "You must accept the terms to register." });
+    showTost({ title: t("You must accept the terms to register.") });
     navigation("/");
   };
-
-  
 
   return (
     <div className="w-[100%] multisteup-wrapper pt-[20px] Test">
@@ -352,37 +353,35 @@ const Register = () => {
               <img src="/favicon.ico" width={150} alt="Logo" className="mb-4" />
 
               <h1 className="text-2xl md:text-3xl font-extrabold text-[#222222] mb-3 leading-tight">
-                Welcome to Meet Greek Singles!
+                {t("Welcome to Meet Greek Singles!")}
               </h1>
 
               <p className="text-md md:text-[16px] text-[#222222] mb-6 max-w-xl">
-                We're delighted to have you here. <br />
-                Find love, friendship & Greek connection — wherever you are.
+                {t("We're delighted to have you here.")} <br />
+                {t("Find love, friendship & Greek connection — wherever you are.")}
               </p>
 
               <h2 className="text-2xl md:text-3xl font-bold text-[#222222] mb-4 border-b-4 border-[#222222] pb-2">
-                To Join Our Community:
+                {t("To Join Our Community:")}
               </h2>
 
               <ul className="text-[18px] text-start text-gray-700 mb-5 space-y-3 max-w-xl">
                 <li className="flex items-center gap-3">
                   <AiOutlineCheckCircle className="text-[#222222] w-6 h-6 flex-shrink-0" />
                   <p className="leading-snug">
-                    You must be <strong>18 years or older</strong> to join.
+                    {t("You must be")} <strong>{t("18 years or older")}</strong> {t("to join.")}
                   </p>
                 </li>
                 <li className="flex items-center gap-3">
                   <AiOutlineCheckCircle className="text-[#222222] w-6 h-6 flex-shrink-0" />
                   <p className="leading-snug">
-                    This site is strictly for single, separated, divorced, or
-                    widowed individuals, seeking meaningful connections with
-                    Greek-origin singles.
+                    {t("This site is strictly for single, separated, divorced, or widowed individuals, seeking meaningful connections with Greek-origin singles.")}
                   </p>
                 </li>
                 <li className="flex items-center gap-3">
                   <AiOutlineCloseCircle className="text-[#C95B5B] w-6 h-6 flex-shrink-0" />
                   <p className="leading-snug">
-                    <strong>Married individuals</strong> are not permitted.
+                    <strong>{t("Married individuals")}</strong> {t("are not permitted.")}
                   </p>
                 </li>
               </ul>
@@ -392,13 +391,13 @@ const Register = () => {
                   onClick={handleAccept}
                   className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#0066CC] text-white font-semibold rounded-full hover:bg-[#0055aa] transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  <AiOutlineCheckCircle /> Accept
+                  <AiOutlineCheckCircle /> {t("Accept")}
                 </button>
                 <button
                   onClick={handleDecline}
                   className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-300 text-gray-800 font-semibold rounded-full hover:bg-gray-400 transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  <AiOutlineCloseCircle /> Decline
+                  <AiOutlineCloseCircle /> {t("Decline")}
                 </button>
               </div>
             </div>
@@ -411,21 +410,20 @@ const Register = () => {
                   <img src={logo} alt="" width={100} height={100} />
                 </div>
                 <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222] text-center">
-                  Your Story Begins Here😎
+                  {t("Your Story Begins Here😎")}
                 </h1>
                 <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333] font-normal text-center mb-3">
-                  Create your free account and begin your journey toward
-                  meaningful Greek connections
+                  {t("Create your free account and begin your journey toward meaningful Greek connections")}
                 </p>
                 <h2 className="text-start text-gray-600 mt-2">
-                  Your information is always confidential.
+                  {t("Your information is always confidential.")}
                 </h2>
               </div>
 
               <div className="mt-[20px] w-[100%] space-y-6">
                 {/* <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
                   <label className="block font-medium text-gray-700">
-                    I am: *
+                    {t("I am: *")}
                   </label>
                   <div className="space-y-3">
                     <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
@@ -437,7 +435,7 @@ const Register = () => {
                         onChange={(e) => setGreekStatus(e.target.value)}
                         className="w-5 h-5 "
                       />
-                      <span className="text-gray-700 font-medium">Greek</span>
+                      <span className="text-gray-700 font-medium">{t("Greek")}</span>
                     </label>
                     <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
                       <input
@@ -449,7 +447,7 @@ const Register = () => {
                         className="w-5 h-5 "
                       />
                       <span className="text-gray-700 font-medium">
-                        Of Greek origin
+                        {t("Of Greek origin")}
                       </span>
                     </label>
                     <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors duration-150">
@@ -462,7 +460,7 @@ const Register = () => {
                         className="w-5 h-5 "
                       />
                       <span className="text-gray-700 font-medium">
-                        Philhellene
+                        {t("Philhellene")}
                       </span>
                     </label>
                   </div>
@@ -471,15 +469,15 @@ const Register = () => {
                 {/* Email */}
                 <div className="relative">
                   <label htmlFor="" className="font-semibold">
-                    Email
+                    {t("Email")}
                   </label>
-                  <p>We will never share your email with anyone.</p>
+                  <p>{t("We will never share your email with anyone.")}</p>
                   <input
                     onChange={(e) => setemail(e.target.value)}
                     value={Email}
                     className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
                     type="email"
-                    placeholder="Email *"
+                    placeholder={t("Email *")}
                   />
                   {Email && (
                     <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
@@ -489,15 +487,15 @@ const Register = () => {
                 {/* Phone Number */}
                 {/* <div className="relative">
                   <label htmlFor="" className="font-semibold">
-                    Phone Number
+                    {t("Phone Number")}
                   </label>
-                  <p>Used only for verification — never shared or displayed.</p>
+                  <p>{t("Used only for verification — never shared or displayed.")}</p>
                   <input
                     onChange={(e) => setPhone(e.target.value)}
                     value={Phone}
                     className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
                     type="number"
-                    placeholder="Phone Number *"
+                    placeholder={t("Phone Number *")}
                   />
                   {Phone && (
                     <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
@@ -507,10 +505,10 @@ const Register = () => {
                 {/* Password */}
                 <div className="relative">
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Password *
+                    {t("Password *")}
                   </label>
                   <p className="text-xs text-gray-500 mb-2">
-                    Minimum 8 characters.
+                    {t("Minimum 8 characters.")}
                   </p>
                   <div className="relative">
                     <input
@@ -519,7 +517,7 @@ const Register = () => {
                       id="input"
                       className="text-black w-[100%] border-2 items-center outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
                       type="password"
-                      placeholder="Create a password"
+                      placeholder={t("Create a password")}
                     />
                     <button
                       onClick={myFunction}
@@ -547,8 +545,8 @@ const Register = () => {
                       }`}
                     >
                       {Password.length >= 8
-                        ? "✓ Password is valid"
-                        : "Password must be at least 8 characters"}
+                        ? t("✓ Password is valid")
+                        : t("Password must be at least 8 characters")}
                     </p>
                   )}
                 </div>
@@ -556,7 +554,7 @@ const Register = () => {
                 {/* Birthdate */}
                 <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
                   <label className="block font-medium text-gray-700">
-                    Birthdate: *
+                    {t("Birthdate: *")}
                   </label>
                   <div className="grid grid-cols-3 gap-4">
                     <select
@@ -565,7 +563,7 @@ const Register = () => {
                       className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
                     >
                       <option value="" className="text-gray-400">
-                        Day
+                        {t("Day")}
                       </option>
                       {days.map((day) => (
                         <option key={day} value={day}>
@@ -579,7 +577,7 @@ const Register = () => {
                       className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
                     >
                       <option value="" className="text-gray-400">
-                        Month
+                        {t("Month")}
                       </option>
                       {months.map((month) => (
                         <option key={month} value={month}>
@@ -593,7 +591,7 @@ const Register = () => {
                       className="text-gray-700 border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-4 py-3 rounded-xl shadow-sm transition-all duration-200"
                     >
                       <option value="" className="text-gray-400">
-                        Year
+                        {t("Year")}
                       </option>
                       {years.map((year) => (
                         <option key={year} value={year}>
@@ -607,7 +605,7 @@ const Register = () => {
                 {/* Gender */}
                 <div className="bg-white border-2 border-gray-300 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow duration-200">
                   <label className="block font-medium text-gray-700">
-                    I am a: *
+                    {t("I am a: *")}
                   </label>
                   <div className="flex flex-row gap-[50px]">
                     <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
@@ -619,7 +617,7 @@ const Register = () => {
                         onChange={(e) => setGender(e.target.value)}
                         className="w-5 h-5 "
                       />
-                      <span className="text-gray-700 font-medium">Man</span>
+                      <span className="text-gray-700 font-medium">{t("Man")}</span>
                     </label>
                     <label className="flex items-center space-x-3 cursor-pointer rounded-lg py-2 transition-colors duration-150">
                       <input
@@ -630,16 +628,16 @@ const Register = () => {
                         onChange={(e) => setGender(e.target.value)}
                         className="w-5 h-5 "
                       />
-                      <span className="text-gray-700 font-medium">Woman</span>
+                      <span className="text-gray-700 font-medium">{t("Woman")}</span>
                     </label>
                   </div>
                 </div>
 
                 {/* Zodiac */}
                 {/* <div className="relative">
-                  <label className="font-semibold">Zodiac Sign</label>
+                  <label className="font-semibold">{t("Zodiac Sign")}</label>
                   <p className="text-gray-600">
-                    Many members enjoy this part of getting to know each other.
+                    {t("Many members enjoy this part of getting to know each other.")}
                   </p>
 
                   <button
@@ -656,11 +654,11 @@ const Register = () => {
                           className="w-6 h-6"
                           alt=""
                         />
-                        <span className="text-gray-800">{Zodiac}</span>
+                        <span className="text-gray-800">{t(Zodiac)}</span>
                       </div>
                     ) : (
                       <span className="text-gray-400">
-                        Select your zodiac sign
+                        {t("Select your zodiac sign")}
                       </span>
                     )}
                     <span className="text-gray-400">▼</span>
@@ -684,7 +682,7 @@ const Register = () => {
                           <img src={sign.icon} className="w-6 h-6" alt="" />
                           <div>
                             <p className="font-medium">
-                              {sign.name} ({sign.range})
+                              {t(sign.name)} ({sign.range})
                             </p>
                           </div>
                         </li>
@@ -696,20 +694,20 @@ const Register = () => {
                 {/* Country */}
                 <div>
                   <label htmlFor="" className="font-semibold">
-                    I live in:
+                    {t("I live in:")}
                   </label>
-                  <p>Country </p>
+                  <p>{t("Country")}</p>
                   <select
                     value={Country}
                     onChange={(e) => setCountry(e.target.value)}
                     className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200"
                   >
                     <option value="" className="text-gray-400">
-                      Select Country *
+                      {t("Select Country *")}
                     </option>
                     {Countries.map((country) => (
                       <option key={country.id} value={country.id}>
-                        {country.name}
+                        {t(country.name)}
                       </option>
                     ))}
                   </select>
@@ -717,10 +715,9 @@ const Register = () => {
 
                 {/* State */}
                 <div>
-                  <label htmlFor="">State / Region</label>
+                  <label htmlFor="">{t("State / Region")}</label>
                   <p>
-                    Choose the region you live in. Not sure? Select the closest
-                    area.
+                    {t("Choose the region you live in. Not sure? Select the closest area.")}
                   </p>
                   <select
                     value={State}
@@ -729,11 +726,11 @@ const Register = () => {
                     className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
                     <option value="" className="text-gray-400">
-                      {loadingStates ? "Loading states..." : "Select State *"}
+                      {loadingStates ? t("Loading states...") : t("Select State *")}
                     </option>
                     {(isGreece ? GREECE_REGIONS : States).map((state) => (
                       <option key={state.id} value={state.id}>
-                        {state.name}
+                        {t(state.name)}
                       </option>
                     ))}
                   </select>
@@ -747,11 +744,11 @@ const Register = () => {
                   className="text-gray-700 w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
                 >
                   <option value="" className="text-gray-400">
-                    {loadingCities ? "Loading cities..." : "Select City *"}
+                    {loadingCities ? t("Loading cities...") : t("Select City *")}
                   </option>
                   {Cities.map((city) => (
                     <option key={city.id} value={city.id}>
-                      {city.name}
+                      {t(city.name)}
                     </option>
                   ))}
                 </select> */}
@@ -769,9 +766,7 @@ const Register = () => {
                       id="agreement"
                     />
                     <span className="text-gray-700 leading-relaxed">
-                      I confirm that I am at least 18 years old and that I am
-                      single, separated, divorced, or widowed. I understand that
-                      married individuals are not allowed to join. *
+                      {t("I confirm that I am at least 18 years old and that I am single, separated, divorced, or widowed. I understand that married individuals are not allowed to join. *")}
                     </span>
                   </label>
                 </div>
@@ -787,21 +782,27 @@ const Register = () => {
                       id="agreement"
                     />
                     <span className="text-gray-700 leading-relaxed">
-                      I agree to the{" "}
+                      {t("I agree to the")}{" "}
                       <Link
                         to="/page/terms_&_conditions"
                         className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
                       >
-                        Terms & Conditions
+                        {t("Terms & Conditions")}
                       </Link>{" "}
-                      and{" "}
+                      ,{" "}
                       <Link
                         to="/page/privacy_policy_"
                         className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
                       >
-                        Privacy Policy
+                        {t("Privacy Policy")}
+                      </Link>{" "}
+                      {t("and")}{" "}
+                      <Link
+                        to="/page/cookie_policy_"
+                        className="text-amber-600 hover:text-amber-700 underline font-medium transition-colors duration-150"
+                      >
+                        {t("Cookie Policy")}
                       </Link>
-                      . *
                     </span>
                   </label>
                 </div>
@@ -841,13 +842,13 @@ const Register = () => {
                         ></path>
                       </svg>
                       <span className="font-bold text-[1.25rem] text-black">
-                        Creating Account...
+                        {t("Creating Account...")}
                       </span>
                     </>
                   ) : (
                     <>
                       <span className="font-bold text-[1.25rem] text-white ">
-                        Create Account
+                        {t("Create Account")}
                       </span>
                       <svg
                         className="mx-6"
@@ -870,7 +871,7 @@ const Register = () => {
               {/* Registration Progress Note */}
               {isRegistering && (
                 <div className="mt-4 text-center text-gray-600 text-sm">
-                  <p>Please wait while we create your account...</p>
+                  <p>{t("Please wait while we create your account...")}</p>
                 </div>
               )}
             </>

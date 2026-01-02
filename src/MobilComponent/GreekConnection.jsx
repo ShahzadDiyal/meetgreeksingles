@@ -7,8 +7,10 @@ import { VscVerifiedFilled } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
+import { useTranslation } from "react-i18next";
 
 const GreekConnection = () => {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   
   // Get context values - Fixed the typo in setgreekRootConnection
@@ -31,11 +33,11 @@ const GreekConnection = () => {
   const SubmitHandler = () => {
     // Basic validations
     if (!localGreekConnection)
-      return showTost({ title: "Please select your Greek connection" });
+      return showTost({ title: t("validationSelectGreekConnection") });
     
     if (!localGreekRootConnection?.trim())
       return showTost({
-        title: "Please tell us about your Greek roots/connection",
+        title: t("validationEnterGreekRoots"),
       });
 
     saveDataToContext();
@@ -62,11 +64,10 @@ const GreekConnection = () => {
 
           <div className="mt-[10px]">
             <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
-              Tell us about your Greek connection 🏛️
+              {t("greekConnectionTitle")}
             </h1>
             <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
-              This helps us understand your connection to Greek culture and
-              heritage
+              {t("greekConnectionSubtitle")}
             </p>
           </div>
 
@@ -74,22 +75,22 @@ const GreekConnection = () => {
             {/* Greek Connection Options */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-3 shadow-sm">
               <label className="block font-medium mb-4 text-lg text-[#333333]">
-                Your Greek Connection: *
+                {t("greekConnectionLabel")}
               </label>
               <div className="space-y-4">
                 <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors hover:bg-gray-50 p-2">
                   <input
                     type="radio"
                     name="greekOption"
-                    value="Greek"
-                    checked={localGreekConnection === "Greek"}
-                    onChange={() => handleGreekConnectionChange("Greek")}
+                    value={t("greekOptionGreek")}
+                    checked={localGreekConnection === t("greekOptionGreek")}
+                    onChange={() => handleGreekConnectionChange(t("greekOptionGreek"))}
                     className="w-5 h-5 text-[#C89A3D]"
                   />
                   <div className="flex-1">
-                    <span className="text-[#333333] font-medium">Greek</span>
+                    <span className="text-[#333333] font-medium">{t("greekOptionGreek")}</span>
                     <p className="text-[#333333] text-sm mt-1">
-                      I am a Greek citizen/resident
+                      {t("greekOptionGreekDesc")}
                     </p>
                   </div>
                 </label>
@@ -98,17 +99,17 @@ const GreekConnection = () => {
                   <input
                     type="radio"
                     name="greekOption"
-                    value="Greek origin"
-                    checked={localGreekConnection === "Greek origin"}
-                    onChange={() => handleGreekConnectionChange("Greek origin")}
+                    value={t("greekOptionGreekOrigin")}
+                    checked={localGreekConnection === t("greekOptionGreekOrigin")}
+                    onChange={() => handleGreekConnectionChange(t("greekOptionGreekOrigin"))}
                     className="w-5 h-5 text-[#C89A3D]"
                   />
                   <div className="flex-1">
                     <span className="text-[#333333] font-medium">
-                      Greek origin
+                      {t("greekOptionGreekOrigin")}
                     </span>
                     <p className="text-[#333333] text-sm mt-1">
-                      I have Greek ancestry/heritage
+                      {t("greekOptionGreekOriginDesc")}
                     </p>
                   </div>
                 </label>
@@ -117,17 +118,17 @@ const GreekConnection = () => {
                   <input
                     type="radio"
                     name="greekOption"
-                    value="Philhellene"
-                    checked={localGreekConnection === "Philhellene"}
-                    onChange={() => handleGreekConnectionChange("Philhellene")}
+                    value={t("greekOptionPhilhellene")}
+                    checked={localGreekConnection === t("greekOptionPhilhellene")}
+                    onChange={() => handleGreekConnectionChange(t("greekOptionPhilhellene"))}
                     className="w-5 h-5 text-[#C89A3D]"
                   />
                   <div className="flex-1">
                     <span className="text-[#333333] font-medium">
-                      Philhellene
+                      {t("greekOptionPhilhellene")}
                     </span>
                     <p className="text-[#333333] text-sm mt-1">
-                      I admire and love Greek culture, history, and language
+                      {t("greekOptionPhilhelleneDesc")}
                     </p>
                   </div>
                 </label>
@@ -137,24 +138,19 @@ const GreekConnection = () => {
             {/* Greek Roots/Connection Details */}
             <div className="relative">
               <label className="block font-medium mb-3 text-lg text-[#333333]">
-                My Greek roots / connection: *
+                {t("greekRootsLabel")}
               </label>
               <textarea
                 value={localGreekRootConnection}
                 onChange={(e) => setLocalGreekRootConnection(e.target.value)}
                 className="text-[#333333] w-[100%] outline-none focus:border-[#C89A3D] border-2 border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[150px] resize shadow-sm"
-                placeholder="Tell us more about your Greek connection...
-                  • Which Greek regions/places are you connected to?
-                  • Family background or ancestry
-                  • Cultural connections or experiences
-                  • Why Greek culture is important to you"
+                placeholder={t("greekRootsPlaceholder")}
               />
               {localGreekRootConnection && (
                 <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-3 right-5 text-green-500" />
               )}
               <p className="text-[#333333] text-sm mt-2">
-                Share details about your Greek heritage, family background, or
-                what draws you to Greek culture
+                {t("greekRootsHint")}
               </p>
             </div>
           </div>
@@ -166,7 +162,7 @@ const GreekConnection = () => {
             className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full hover:bg-[#1A4A87] transition-colors shadow-md"
           >
             <div className="flex items-center justify-center gap-[10px]">
-              <span className="font-bold text-[1.25rem] text-white">Next</span>
+              <span className="font-bold text-[1.25rem] text-white">{t("nextButton")}</span>
               <svg
                 className="mx-6"
                 width="19"

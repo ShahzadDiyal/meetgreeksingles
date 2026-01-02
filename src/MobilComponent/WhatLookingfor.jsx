@@ -6,15 +6,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { showTost } from "../showTost";
 import { MyContext } from "../Context/MyProvider";
+import { useTranslation } from "react-i18next";
 
 const WhatLookingFor = () => {
-  const availableGoals = [
-    "Friendship",
-    "Dating",
-    "Long-term relationship",
-    "Marriage",
-    "Undecided"
-  ];
+  const { t } = useTranslation();
   
   // Get context values
   const {
@@ -34,7 +29,7 @@ const WhatLookingFor = () => {
 
   const SubmitHandler = () => {
     if (relationshipGoals.length === 0)
-      return showTost({ title: "Please select at least one relationship goal" });
+      return showTost({ title: t("validationSelectGoal") });
 
     // Data is already saved in context through setRelationshipGoals
     const goalsData = {
@@ -45,6 +40,14 @@ const WhatLookingFor = () => {
 
     navigation("/relocation-preference");
   };
+
+  const availableGoals = [
+    t("relationshipGoalFriendship"),
+    t("relationshipGoalDating"),
+    t("relationshipGoalLongTerm"),
+    t("relationshipGoalMarriage"),
+    t("relationshipGoalUndecided")
+  ];
 
 return (
     <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
@@ -59,10 +62,10 @@ return (
 
           <div className="mt-[10px]">
             <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
-              What You're Looking For 💖
+              {t("whatLookingForTitle")}
             </h1>
             <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
-              Tell us about your relationship goals and preferences
+              {t("whatLookingForSubtitle")}
             </p>
           </div>
 
@@ -107,7 +110,7 @@ return (
               {relationshipGoals.length > 0 && (
                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
                   <p className="text-[#333333] font-medium">
-                    Selected: <span className="font-semibold text-[#1F5799]">{relationshipGoals.join(", ")}</span>
+                    {t("selectedLabel")} <span className="font-semibold text-[#1F5799]">{relationshipGoals.join(", ")}</span>
                   </p>
                 </div>
               )}
@@ -120,10 +123,9 @@ return (
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 <div>
-                  <p className="text-[#333333] font-medium">Important Note</p>
+                  <p className="text-[#333333] font-medium">{t("importantNoteTitle")}</p>
                   <p className="text-[#333333] text-sm mt-1">
-                    Your preferences will help us match you with compatible members. 
-                    You can update these settings anytime in your profile.
+                    {t("importantNoteText")}
                   </p>
                 </div>
               </div>
@@ -137,7 +139,7 @@ return (
             className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full hover:bg-[#1A4A87] transition-colors shadow-md hover:shadow-lg"
           >
             <div className="flex items-center justify-center gap-[10px]">
-              <span className="font-bold text-[1.25rem] text-white">Next</span>
+              <span className="font-bold text-[1.25rem] text-white">{t("nextButton")}</span>
               <svg
                 className="mx-6"
                 width="19"

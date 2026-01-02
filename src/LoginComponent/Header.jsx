@@ -93,25 +93,30 @@ const Header = () => {
       img: require("../images/flag/united-kingdom.png"),
       id: "en",
     },
-    { title: "Arabic", img: require("../images/flag/arabic.png"), id: "ar" },
-    { title: "Spanish", img: require("../images/flag/spain.png"), id: "sp" },
-    { title: "Gujarati", img: require("../images/flag/flag.png"), id: "gu" },
-    { title: "Hindi", img: require("../images/flag/flag.png"), id: "hi" },
     {
-      title: "Africans",
-      img: require("../images/flag/south-africa.png"),
-      id: "af",
-    },
-    {
-      title: "Bengali",
-      img: require("../images/flag/bangladesh.png"),
-      id: "ba",
-    },
-    {
-      title: "Indonesian",
-      img: require("../images/flag/indonesia-flag.png"),
-      id: "in",
-    },
+      title: "Greece",
+      img: require("../images/flag/greek-flag.png"),
+      id: "el",
+    }
+    // { title: "Arabic", img: require("../images/flag/arabic.png"), id: "ar" },
+    // { title: "Spanish", img: require("../images/flag/spain.png"), id: "sp" },
+    // { title: "Gujarati", img: require("../images/flag/flag.png"), id: "gu" },
+    // { title: "Hindi", img: require("../images/flag/flag.png"), id: "hi" },
+    // {
+    //   title: "Africans",
+    //   img: require("../images/flag/south-africa.png"),
+    //   id: "af",
+    // },
+    // {
+    //   title: "Bengali",
+    //   img: require("../images/flag/bangladesh.png"),
+    //   id: "ba",
+    // },
+    // {
+    //   title: "Indonesian",
+    //   img: require("../images/flag/indonesia-flag.png"),
+    //   id: "in",
+    // },
   ];
 
   const newProfile = user && user.profile_pic;
@@ -133,20 +138,30 @@ const Header = () => {
     slidesToScroll: 1,
   };
 
-  const changeLanguage = (lang) => {
-    i18n.changeLanguage(lang);
-    sessionStorage.setItem("I18", lang);
-  };
+   const changeLanguage = (lang) => {
+  // Change language using i18n
+  i18n.changeLanguage(lang);
+  
+  // Store in localStorage (react-i18next default)
+  localStorage.setItem('i18nextLng', lang);
+  
+  // Also store in sessionStorage for your custom logic
+  sessionStorage.setItem("I18", lang);
+};
 
-  const SelectLanuguageHandler = (img, name) => {
-    setImg(img);
-    setLanguage(name);
-    const Data = {
-      Name: name,
-      img: img,
-    };
-    sessionStorage.setItem("Language", JSON.stringify(Data));
+const SelectLanuguageHandler = (img, name, id) => {
+  setImg(img);
+  setLanguage(name);
+  
+  changeLanguage(id);
+  
+  const Data = {
+    Name: name,
+    img: img,
+    id: id // Add the language code
   };
+  sessionStorage.setItem("Language", JSON.stringify(Data));
+};
 
   const SlidBarHAndler = () => {
     if (window.innerWidth < 992) {
@@ -217,22 +232,57 @@ const Header = () => {
   }, [loading]);
 
   useEffect(() => {
-    const Data = sessionStorage.getItem("Language");
-    if (Data) {
-      const Json = JSON.parse(Data);
-      setImg(Json.img);
-      setLanguage(Json.Name);
+  // Fix for "Language" storage
+  const Data = sessionStorage.getItem("Language");
+  if (Data) {
+    try {
+      // Check if it's valid JSON first
+      if (Data.trim().startsWith('{') || Data.trim().startsWith('[')) {
+        const Json = JSON.parse(Data);
+        setImg(Json.img);
+        setLanguage(Json.Name);
+      } else {
+        // If it's just a string like "el", handle it differently
+        console.warn('Language data is not valid JSON:', Data);
+        
+        // Set default values
+        if (Data === 'el' || Data === 'gr') {
+          setImg(require("../images/flag/greek-flag.png"));
+          setLanguage("Greece");
+        } else {
+          setImg(require("../images/flag/united-kingdom.png"));
+          setLanguage("English");
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing Language data:', error);
+      
+      // Clear invalid data
+      sessionStorage.removeItem("Language");
+      
+      // Set default
+      setImg(require("../images/flag/united-kingdom.png"));
+      setLanguage("English");
     }
+  }
 
-    const Lan = sessionStorage.getItem("I18");
-    if (Lan) {
-      i18n.changeLanguage(Lan);
+  // Fix for "I18" storage
+  const Lan = sessionStorage.getItem("I18");
+  if (Lan) {
+    try {
+      // Validate the language code
+      const validLang = Lan === 'el' || Lan === 'gr' ? 'el' : 'en';
+      i18n.changeLanguage(validLang);
+    } catch (error) {
+      console.error('Error changing language:', error);
+      i18n.changeLanguage('en');
     }
+  }
 
-    firebaseAddDataHandle();
-    NotificationGetHandle();
-    GetKeyHandle();
-  }, []);
+  firebaseAddDataHandle();
+  NotificationGetHandle();
+  GetKeyHandle();
+}, []);
 
   const firebaseAddDataHandle = () => {
     const RegisterData = localStorage.getItem("Register_User");
@@ -350,6 +400,7 @@ const Header = () => {
   //   axios.post(`${basUrl}pagelist.php`).then((res) => {
   //     setList(res.data.pagelist);
   //   });
+  
   // };
 
   // OneSignal Notification Show
@@ -748,7 +799,7 @@ const Header = () => {
                       <li
                         onClick={() => {
                           changeLanguage(el.id);
-                          SelectLanuguageHandler(el.img, el.title);
+                          SelectLanuguageHandler(el.img, el.title, el.id)
                           ShowHAndler();
                         }}
                         className="cursor-pointer"
@@ -967,7 +1018,7 @@ const Header = () => {
                             color: color === "Home" && "#0066CC",
                           }}
                         >
-                          Home
+                           {t("home")}
                         </span>
                       </Link>
                     </li>
@@ -999,7 +1050,7 @@ const Header = () => {
                             color: color === "Explore" && "#0066CC",
                           }}
                         >
-                          Explore
+                           {t("Explore")}
                         </span>
                       </Link>
                     </li>
@@ -1032,7 +1083,7 @@ const Header = () => {
                             color: color === "Wallet" && "#0066CC",
                           }}
                         >
-                          Wallet
+                          {t("Wallet")}
                         </span>
                       </Link>
                     </li>
@@ -1079,7 +1130,7 @@ const Header = () => {
                             color: color === "BuyCoin" && "#0066CC",
                           }}
                         >
-                          Buy Coin
+                            {t("Buy Coin")}
                         </span>
                       </Link>
                     </li>
@@ -1163,7 +1214,7 @@ const Header = () => {
                             marginLeft: "8px",
                           }}
                         >
-                          FAQs
+                            {t("FAQs")}
                         </span>
                       </Link>
                     </li>
@@ -1195,7 +1246,7 @@ const Header = () => {
                             color: color === "Settings" && "#0066CC",
                           }}
                         >
-                          Settings
+                               {t("Settings")}
                         </span>
                       </Link>
                     </li>
@@ -1240,7 +1291,7 @@ const Header = () => {
                             color: color === "Aboutus" && "#0066CC",
                           }}
                         >
-                          About us
+                                {t("about")}
                         </span>
                       </Link>
                     </li>
@@ -1272,7 +1323,7 @@ const Header = () => {
                             color: color === "Account" && "#0066CC",
                           }}
                         >
-                          Account & Security
+                           {t("Account & Security")}
                         </span>
                       </Link>
                     </li>
@@ -1331,7 +1382,7 @@ const Header = () => {
                             fill="#25314C"
                           />
                         </svg>
-                        <span>Log Out</span>
+                        <span>{t("Log Out")}</span>
                       </Link>
                     </li>
                   </ul>

@@ -8,13 +8,13 @@ import { useTranslation } from "react-i18next";
 
 const Terms_Conditions = () => {
   const { t } = useTranslation();
-  const { basUrl, user } = useContext(MyContext); // assuming `user` contains uid and name
+  const { basUrl, user } = useContext(MyContext);  
   const Perams = useParams();
   const Title = Perams.title?.replaceAll("_", " ");
   const [list, setList] = useState([]);
   const [formData, setFormData] = useState({
     language: "English",
-    fullName: user?.name || "", // use logged-in user name if available
+    fullName: user?.name || "", 
     email: user?.email || "",
     subject: "",
     message: "",
@@ -49,7 +49,7 @@ const Terms_Conditions = () => {
 
     try {
       const payload = {
-        uid: user?.id || 0, // your logged-in user id
+        uid: user?.id || 0,  
         name: formData.fullName,
         email: formData.email,
         subject: formData.subject,

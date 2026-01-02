@@ -548,7 +548,7 @@ const Detail = () => {
                             ></path>
                           </svg>
                           <div className="flex items-center gap-[10px] relative">
-                            <span className="fs-16 text-gray">{api?.profile_distance} from you</span>
+                            <span className="fs-16 text-gray">{api?.profile_distance} {t("from you" )}</span>
                             <button onClick={() => setOption(!options)}>
                               <img
                                 src={Dott}
@@ -892,9 +892,9 @@ const Detail = () => {
             </div>
             <button
               onClick={SednHandler}
-              className="font-bold text-[18px] rounded-[10px] mt-[20px] text-[#333333] py-[10px] w-[100%] bg-[#0066CC]"
+              className="font-bold text-[18px] rounded-[10px] mt-[20px] text-white py-[10px] w-[100%] bg-[#0066CC]"
             >
-              Send
+             {t("Send")}
             </button>
           </div>
         </div>

@@ -6,8 +6,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
+import { useTranslation } from "react-i18next";
 
 const FaithCultureTradition = () => {
+  const { t } = useTranslation();
   const navigation = useNavigate()
   // Get context setters
   const {
@@ -29,16 +31,16 @@ const FaithCultureTradition = () => {
 
   // Available traditions
   const availableTraditions = [
-    "Easter (Pascha)",
-    "Sacraments (weddings, baptisms)",
-    "Name Days",
-    "Christmas",
-    "New year",
-    "Summer festivals",
-    "Lighting candles",
-    "Visiting monasteries / churches",
-    "Fasting",
-    "Other",
+    t("traditionEaster"),
+    t("traditionSacraments"),
+    t("traditionNameDays"),
+    t("traditionChristmas"),
+    t("traditionNewYear"),
+    t("traditionSummerFestivals"),
+    t("traditionLightingCandles"),
+    t("traditionVisitingMonasteries"),
+    t("traditionFasting"),
+    t("traditionOther"),
   ];
 
   // Handle tradition selection
@@ -75,14 +77,14 @@ const FaithCultureTradition = () => {
   const SubmitHandler = () => {
     // Basic validations
     if (!localReligiousBackground)
-      return showTost({ title: "Please select your religious background" });
+      return showTost({ title: t("validationSelectReligiousBackground") });
     if (!localFaithImportance)
-      return showTost({ title: "Please select importance of faith" });
+      return showTost({ title: t("validationSelectFaithImportance") });
     if (!localChurchAttendance)
-      return showTost({ title: "Please select church attendance frequency" });
+      return showTost({ title: t("validationSelectChurchAttendance") });
     if (!localPartnerFaithPreference)
       return showTost({
-        title: "Please select preference for partner's faith",
+        title: t("validationSelectPartnerFaith"),
       });
 
     // Save all data to context
@@ -104,6 +106,37 @@ const FaithCultureTradition = () => {
     navigation("/looking-for");
   };
 
+  const religiousBackgroundOptions = [
+    t("religiousBackgroundGreekOrthodox"),
+    t("religiousBackgroundChristianOther"),
+    t("religiousBackgroundSpiritual"),
+    t("religiousBackgroundOther"),
+    t("religiousBackgroundPreferNotSay")
+  ];
+
+  const faithImportanceOptions = [
+    t("faithImportanceVeryImportant"),
+    t("faithImportanceSomewhatImportant"),
+    t("faithImportanceNotVeryImportant"),
+    t("faithImportanceNotImportant"),
+    t("faithImportancePreferNotShare")
+  ];
+
+  const churchAttendanceOptions = [
+    t("churchAttendanceRegularly"),
+    t("churchAttendanceOccasionally"),
+    t("churchAttendanceRarely"),
+    t("churchAttendanceNever"),
+    t("churchAttendancePreferNotSay")
+  ];
+
+  const partnerFaithOptions = [
+    t("partnerFaithVeryImportant"),
+    t("partnerFaithPreferable"),
+    t("partnerFaithNotNecessary"),
+    t("partnerFaithPreferNotSay")
+  ];
+
  return (
     <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
@@ -117,10 +150,10 @@ const FaithCultureTradition = () => {
 
           <div className="mt-[10px]">
             <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
-              Faith & Cultural Traditions ⛪
+              {t("faithCultureTitle")}
             </h1>
             <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
-              Share about your religious background and cultural practices
+              {t("faithCultureSubtitle")}
             </p>
           </div>
 
@@ -128,16 +161,10 @@ const FaithCultureTradition = () => {
             {/* Religious Background */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
               <label className="block font-medium mb-3 text-lg text-[#333333]">
-                Religious Background: *
+                {t("religiousBackgroundLabel")}
               </label>
               <div className="space-y-3">
-                {[
-                  "Greek Orthodox Christian",
-                  "Christian (other)",
-                  "Spiritual but not religious",
-                  "Other",
-                  "Prefer not to say",
-                ].map((option) => (
+                {religiousBackgroundOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-center space-x-3 cursor-pointer"
@@ -159,16 +186,10 @@ const FaithCultureTradition = () => {
             {/* Importance of Faith */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
               <label className="block font-medium mb-3 text-lg text-[#333333]">
-                Importance of Faith: *
+                {t("faithImportanceLabel")}
               </label>
               <div className="space-y-3">
-                {[
-                  "Very important",
-                  "Somewhat important",
-                  "Not very important",
-                  "Not important",
-                  "Prefer not to share",
-                ].map((option) => (
+                {faithImportanceOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-center space-x-3 cursor-pointer"
@@ -190,16 +211,10 @@ const FaithCultureTradition = () => {
             {/* Church Attendance */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
               <label className="block font-medium mb-3 text-lg text-[#333333]">
-                Church Attendance: *
+                {t("churchAttendanceLabel")}
               </label>
               <div className="space-y-3">
-                {[
-                  "Regularly",
-                  "Occasionally (holidays, celebrations)",
-                  "Rarely",
-                  "Never",
-                  "Prefer not to say",
-                ].map((option) => (
+                {churchAttendanceOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-center space-x-3 cursor-pointer"
@@ -221,16 +236,10 @@ const FaithCultureTradition = () => {
             {/* Partner Faith Preference */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
               <label className="block font-medium mb-3 text-lg text-[#333333]">
-                Would you prefer a partner who shares your faith and traditions?
-                *
+                {t("partnerFaithLabel")}
               </label>
               <div className="space-y-3">
-                {[
-                  "Very important",
-                  "Preferable",
-                  "Not necessary",
-                  "Prefer not to say",
-                ].map((option) => (
+                {partnerFaithOptions.map((option) => (
                   <label
                     key={option}
                     className="flex items-center space-x-3 cursor-pointer"
@@ -254,9 +263,9 @@ const FaithCultureTradition = () => {
             {/* Favorite Greek Traditions */}
         <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
   <label className="block font-medium mb-3 text-lg text-[#333333]">
-    Favorite Greek traditions:
+    {t("favoriteTraditionsLabel")}
   </label>
-  <p className="text-[#333333] mb-4 text-sm">Select all that apply</p>
+  <p className="text-[#333333] mb-4 text-sm">{t("favoriteTraditionsHint")}</p>
 
   <div className="gap-3">
     {availableTraditions.map((tradition) => (
@@ -265,12 +274,12 @@ const FaithCultureTradition = () => {
           <input
             type="checkbox"
             checked={
-              tradition !== "Other"
+              tradition !== t("traditionOther")
                 ? localFavoriteTraditions.includes(tradition)
                 : localFavoriteTraditions.some((t) => !availableTraditions.includes(t))
             }
             onChange={() => {
-              if (tradition === "Other") {
+              if (tradition === t("traditionOther")) {
                 // Add placeholder empty string to start typing
                 if (!localFavoriteTraditions.some((t) => !availableTraditions.includes(t))) {
                   setLocalFavoriteTraditions([...localFavoriteTraditions, ""]);
@@ -285,11 +294,11 @@ const FaithCultureTradition = () => {
         </label>
 
         {/* Show Other input if selected */}
-        {tradition === "Other" &&
+        {tradition === t("traditionOther") &&
           localFavoriteTraditions.some((t) => !availableTraditions.includes(t)) && (
             <input
               type="text"
-              placeholder="Enter your own tradition"
+              placeholder={t("otherTraditionPlaceholder")}
               value={localFavoriteTraditions.find((t) => !availableTraditions.includes(t)) || ""}
               onChange={(e) => {
                 const otherValue = e.target.value;
@@ -308,7 +317,7 @@ const FaithCultureTradition = () => {
   {localFavoriteTraditions.length > 0 && (
     <div className="mt-3">
       <p className="text-sm text-[#333333]">
-        Selected: <span className="font-medium">{localFavoriteTraditions.length}</span> tradition(s)
+        {t("selectedTraditions")} <span className="font-medium">{localFavoriteTraditions.length}</span> {t("traditionsCount")}
       </p>
     </div>
   )}
@@ -319,20 +328,16 @@ const FaithCultureTradition = () => {
             {/* Additional Information (Optional) */}
             <div>
               <label className="block font-medium mb-3 text-lg text-[#333333]">
-                Optional: Share anything about your faith, culture, or values
+                {t("additionalInfoLabel")}
               </label>
               <textarea
                 value={localAdditionalInfo}
                 onChange={(e) => setLocalAdditionalInfo(e.target.value)}
                 className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[170px] resize-none shadow-sm"
-                placeholder="You can share about:
-                    • Your personal spiritual journey
-                    • Cultural traditions important to you
-                    • Values that guide your life
-                    • Anything else you'd like to mention..."
+                placeholder={t("additionalInfoPlaceholder")}
               />
               <p className="text-[#333333] text-sm mt-2">
-                This is optional but helps others understand you better
+                {t("additionalInfoHint")}
               </p>
             </div>
           </div>
@@ -344,7 +349,7 @@ const FaithCultureTradition = () => {
             className="btn btn-w-md nextstep mt-[20px] w-full py-3 rounded-full hover:bg-[#1A4A87] transition-colors shadow-md"
           >
             <div className="flex items-center justify-center gap-[10px]">
-              <span className="font-bold text-[1.25rem] text-white">Next</span>
+              <span className="font-bold text-[1.25rem] text-white">{t("nextButton")}</span>
               <svg
                 className="mx-6"
                 width="19"

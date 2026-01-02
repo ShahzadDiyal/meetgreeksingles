@@ -21,7 +21,7 @@ import { MdOutlineErrorOutline } from "react-icons/md";
 import { showTost } from "../showTost";
 import wallet from "../Icon/wallet.svg";
 import { Check, X, Shield, MessageCircle, Calendar, MapPin, Rocket } from "lucide-react";
-
+import Footer from "./Footer";
 // import logo1 from "../images/logos/logo1.png";
 import logo1 from "../images/logos/meet-greek.png";
 
@@ -153,14 +153,14 @@ const Upgrade = () => {
     } else {
       if (btnDis) {
         if (planLIst[id].amt > coin) {
-          showTost({ title: "Please Add Balance..!!" });
+          showTost({ title: t("pleaseAddBalance") });
           setIsVisible(false);
         } else {
           setPayId(Id);
           setPlanId("PaymentDone");
         }
       } else {
-        showTost({ title: "Please Select Payment Method" });
+        showTost({ title: t("pleaseSelectPayment") });
       }
     }
   };
@@ -213,7 +213,7 @@ const Upgrade = () => {
       setId(index);
       setPageName("Upgrade");
     } else {
-      showTost({ title: "Allredy Purchase" });
+      showTost({ title: t("alreadyPurchase") });
     }
   };
 
@@ -240,24 +240,24 @@ const Upgrade = () => {
 
   // Features comparison data - you can modify this based on your database structure
   const features = [
-    { name: "Create a profile", free: true, premium: true },
-    { name: "Browse other profiles", free: true, premium: true },
-    { name: "Unlimited messaging", free: false, premium: true },
-    { name: "Phone & video chat", free: false, premium: true },
-    { name: "Browse profiles invisibly (no one sees you viewing them)", free: false, premium: true },
-    { name: "Priority visibility (Profile appear higher in search result)", free: false, premium: true },
-    { name: "View who liked your profile", free: false, premium: true },
-    { name: "Premium search filters", free: false, premium: true },
-    { name: "Access to community rooms (coming soon)", free: false, premium: true },
-    { name: "Post and host local events", free: false, premium: true },
-    { name: "Invitations to events & trips in Greece & worldwide", free: false, premium: true },
+    { name: t("createProfile"), free: true, premium: true },
+    { name: t("browseProfiles"), free: true, premium: true },
+    { name: t("unlimitedMessaging"), free: false, premium: true },
+    { name: t("phoneVideoChat"), free: false, premium: true },
+    { name: t("browseInvisibly"), free: false, premium: true },
+    { name: t("priorityVisibility"), free: false, premium: true },
+    { name: t("viewWhoLiked"), free: false, premium: true },
+    { name: t("premiumFilters"), free: false, premium: true },
+    { name: t("communityRooms"), free: false, premium: true },
+    { name: t("postHostEvents"), free: false, premium: true },
+    { name: t("eventInvitations"), free: false, premium: true },
     {
-      name: "Access to community rooms (coming soon)",
+      name: t("communityRooms"),
       free: false,
       premium: true,
     },
-    { name: "Eligibility to become a Community Ambassador", free: false, premium: true },
-    { name: "Founding Member status (lifetime badge of appreciation)", free: false, premium: true },
+    { name: t("eligibilityAmbassador"), free: false, premium: true },
+    { name: t("foundingMemberStatus"), free: false, premium: true },
   ];
 
   return (
@@ -275,14 +275,11 @@ const Upgrade = () => {
                   </div>
 
                   <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
-                    Become a Founding Member <br /> of Meet Greek Singles
+                    {t("becomeFoundingMember")}
                   </h1>
 
                   <p className="text-gray-700 mb-4 mt-4 text-xl rounder-xl mx-auto">
-                    Join a warm, authentic community created for meaningfull
-                    Greek <br />
-                    connection and help shape the future of Meet Greek Singles
-                    from a very beginning.
+                    {t("communityDescription")}
                   </p>
 
                   {planLIst.length > 0 && (
@@ -297,7 +294,7 @@ const Upgrade = () => {
                   )}
 
                   <p className=" text-xl">
-                    Founding member launch offer. No auto-renewal
+                    {t("foundingMemberLaunch")}
                   </p>
 
                   <div className="my-3">
@@ -313,7 +310,7 @@ const Upgrade = () => {
                             onClick={() => GetStartedHandler(index, item.id)}
                             className="bg-[#1f5799] text-center text-2xl text-white font-bold py-3 px-6 rounded-full border-3 border-amber-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                           >
-                            Become a Founding Member
+                            {t("becomeFoundingMember")}
                           </button>
                         );
                       }
@@ -322,78 +319,73 @@ const Upgrade = () => {
                   </div>
 
                   <p className="mt-3 text-xl">
-                    Payments are secure, and you may choose to pay in your own
-                    currency.
+                    {t("securePayments")}
                   </p>
                   {/* Founding Member Explanation */}
                   <div className="text-xl py-6 rounded-lg mb-6 mx-auto text-center">
                     <p className="text-gray-700 text-xl ">
-                      As a Founding Member, you unlock full access to the
-                      community and help us grow a warm, authentic<br />  space for
-                      Greek singles and Philhellenes worldwide.
+                      {t("communityDescription")}
                     </p>
                     <h1 className="my-3 text-3xl md:text-4xl font-semibold text-gray-900 mb-2">
-                    Why Become a Founding Member?
-                  </h1>
+                      {t("whyBecomeMember")}
+                    </h1>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                      <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
+                        <Shield className="w-12 h-12 text-amber-500 mb-4" /> 
+                        <h3 className="text-2xl font-semibold mb-2">{t("foundingMemberBadge")}</h3> 
+                        <p className="text-gray-600 text-xl">
+                          {t("badgeDescription")}
+                        </p>
+                      </div>
 
-  <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
-    <Shield className="w-12 h-12 text-amber-500 mb-4" /> 
-    <h3 className="text-2xl font-semibold mb-2">Founding Member Badge</h3> 
-    <p className="text-gray-600 text-xl">
-      Be recognize as an early supporter who helped build the community.
-    </p>
-  </div>
+                      {/* Card 2 */}
+                      <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
+                        <MessageCircle  className="w-12 h-12 text-amber-500 mb-4" />
+                        <h3 className="text-2xl font-semibold mb-2">{t("fullAccess")}</h3>
+                        <p className="text-gray-600 text-xl">
+                          {t("accessDescription")}
+                        </p>
+                      </div>
 
-  {/* Card 2 */}
-  <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
-    <MessageCircle  className="w-12 h-12 text-amber-500 mb-4" />
-    <h3 className="text-2xl font-semibold mb-2">Full Access to the Plateform</h3>
-    <p className="text-gray-600 text-xl">
-      Send and recieve messages, likes and connect freely with other members. 
-    </p>
-  </div>
+                      {/* Card 3 */}
+                      <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
+                        <Calendar  className="w-12 h-12 text-amber-500 mb-4" />
+                        <h3 className="text-2xl font-semibold mb-2">{t("eventsTrips")}</h3>
+                        <p className="text-gray-600 text-xl">
+                          {t("eventsDescription")}
+                        </p>
+                      </div>
 
-  {/* Card 3 */}
-  <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
-    <Calendar  className="w-12 h-12 text-amber-500 mb-4" />
-    <h3 className="text-2xl font-semibold mb-2">Event & Trips to Greece</h3>
-    <p className="text-gray-600 text-xl">
-      Priority invitations to organized events, gatherings and trips to Greece.
-    </p>
-  </div>
-
-  {/* Card 4 */}
-  <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
-    <Rocket  className="w-12 h-12 text-amber-500 mb-4" />
-    <h3 className="text-2xl font-semibold mb-2">Special Launch Price</h3>
-    <p className="text-gray-600 text-xl">
-       €10 per month, billed once for 6 months, this offer will not be repeated.
-    </p>
-  </div>
-</div>
-
+                      {/* Card 4 */}
+                      <div className="rounded-xl shadow-md p-6 flex flex-col items-center text-center border-2 border-amber-500">
+                        <Rocket  className="w-12 h-12 text-amber-500 mb-4" />
+                        <h3 className="text-2xl font-semibold mb-2">{t("specialLaunchPrice")}</h3>
+                        <p className="text-gray-600 text-xl">
+                          {t("priceDescription")}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Membership Comparison Table */}
-                  <h1 className="mb-3 mt-4 text-center text-3xl md:text-4xl font-semibold text-gray-900 mb-2">
-                    Free Members vs Founding Members
-                  </h1>
+                <h1 className="mb-3 mt-4 text-center text-3xl md:text-4xl font-semibold text-gray-900 mb-2">
+                  {t("freeVsPremium")}
+                </h1>
+                
                 <div className="mb-8 overflow-hidden rounded-xl border border-gray-200">
-                  
                   <table className="w-full">
                     <thead>
                       <tr className="bg-gradient-to-r from-amber-50 to-amber-100">
                         <th className="py-4 text-xl px-4 md:px-6 text-left text-gray-800 font-semibold border-b border-amber-200">
-                          Feature
+                          {t("feature")}
                         </th>
                         <th className="py-4 text-xl px-4 md:px-6 text-center text-gray-800 font-semibold border-b border-amber-200">
-                          Free Membership
+                          {t("freeMembership")}
                         </th>
                         <th className="py-4 text-xl px-4 md:px-6 text-center text-gray-800 font-semibold border-b border-amber-200 bg-amber-500">
-                          Premium (Founding Member)
+                          {t("premiumMembership")}
                         </th>
                       </tr>
                     </thead>
@@ -427,49 +419,38 @@ const Upgrade = () => {
                 </div>
 
                 <p className="text-xl p-2 rounded-lg text-gray-500 text-sm text-center mb-6">
-                  Community Ambassadors are trusted members who help organize events
-and support the <br /> Meet Greek Singles community locally. Selection is by
-invitation or approved application.
+                  {t("communityAmbassadorsNote")}
                 </p>
 
                 {/* CTA Buttons */}
                 <div className="text-center" >
                   <div>
-                    {/* <button
-                      className="w-full md:w-1/2 border-2 border-amber-500 text-amber-600 font-semibold py-3 px-6 rounded-full hover:bg-amber-50 transition-colors duration-200"
-                      onClick={() =>
-                        showTost({ title: "Continuing as Free Member" })
-                      }
-                    >
-                      Continue as Free Member
-                    </button> */}
-   <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-2">
-                    More than a Subscription
-                  </h1>
+                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-2">
+                      {t("moreThanSubscription")}
+                    </h1>
                     <div className="my-3">
-                    {planLIst.map((item, index) => {
-                      const isPremium =
-                        item.amt >= (planLIst[0]?.amt || 60) ||
-                        item.title.toLowerCase().includes("premium");
+                      {planLIst.map((item, index) => {
+                        const isPremium =
+                          item.amt >= (planLIst[0]?.amt || 60) ||
+                          item.title.toLowerCase().includes("premium");
 
-                      if (isPremium) {
-                        return (
-                          <button
-                            key={index}
-                            onClick={() => GetStartedHandler(index, item.id)}
-                            className="bg-[#1f5799] text-center text-2xl text-white font-bold py-3 px-6 rounded-full border-3 border-amber-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                          >
-                            Become a Founding Member
-                          </button>
-                        );
-                      }
-                      return null;
-                    })}
-                  </div>
+                        if (isPremium) {
+                          return (
+                            <button
+                              key={index}
+                              onClick={() => GetStartedHandler(index, item.id)}
+                              className="bg-[#1f5799] text-center text-2xl text-white font-bold py-3 px-6 rounded-full border-3 border-amber-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                            >
+                              {t("becomeFoundingMember")}
+                            </button>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
                   </div>
                 </div>
 
-               
                 {/* Original Plan Cards - Hidden on desktop, visible on mobile */}
                 <div className="mt-8 d-block d-md-none">
                   <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
@@ -510,7 +491,7 @@ invitation or approved application.
                                       }}
                                       className="card fw-medium m-0 text-white py-[5px] px-[10px]"
                                     >
-                                      Active
+                                      {t("active")}
                                     </h6>
                                     <button onClick={PalanDetailsHandler}>
                                       <MdOutlineErrorOutline className="text-white me-[10px] text-[20px]" />
@@ -537,10 +518,10 @@ invitation or approved application.
                                 }
                                 className="btn text-[#ffffff] w-full my-3"
                               >
-                                {t("Get Started")}
+                                {t("getStarted")}
                               </button>
                               <div className="plans-includes">
-                                <span>Includes:</span>
+                                <span>{t("includes")}:</span>
                               </div>
                               <ul className="list-unstyled p-0 mt-[15px]">
                                 {item.description
@@ -565,69 +546,6 @@ invitation or approved application.
               </div>
             </div>
           </div>
-
-          {/* Original Plan Cards - Desktop View */}
-          {/* <div className="row d-none d-md-block">
-                        <div className="col-xl-12 mt-2">
-                            <div className="tab-content plan-content">
-                                <div className="tab-pane border-0 active show">
-                                    <div className="row justify-content-center">
-                                        {planLIst?.map((item, index) => {
-                                            return (
-                                                <div key={index} className="col-xxl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
-                                                    <div className={`card card-rounded-1 ${item.id === packageId && "ActivePlan"}`}>
-                                                        <div className="card-body p-0">
-                                                            <div className="p-sm-4 p-4">
-                                                                <h3 className="mb-0">{item.title}</h3>
-                                                                <h2 className="mb-0">{currency ? currency : "€"}{item.amt}</h2>
-                                                                <p className="fw-semi-bold mb-2">Per {item.day_limit} Days</p>
-                                                                <button 
-                                                                    onClick={() => GetStartedHandler(index, item.id)}
-                                                                    style={{
-                                                                        background: "#1F5799",
-                                                                        color: "#ffffff",
-                                                                        borderRadius: "999px",
-                                                                        boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-                                                                        padding: "10px 18px"
-                                                                    }}
-                                                                    onMouseOver={(e) => e.currentTarget.style.background = "#174173"}
-                                                                    onMouseOut={(e) => e.currentTarget.style.background = "#1F5799"}
-                                                                    className="btn text-[#ffffff] my-3"
-                                                                >
-                                                                    {t('Get Started')}
-                                                                </button>
-                                                                <div className="plans-includes">
-                                                                    <span>Includes:</span>
-                                                                </div>
-                                                                <ul className="list-unstyled p-0 mt-[15px]">
-                                                                    {item.description.split('\n').map((line, idx) => (
-                                                                        <li className='py-[8px] flex items-center' key={idx}>
-                                                                            <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                                                                            {line}
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                        {item.id === packageId && (
-                                                            <div style={{ background: "#1F5799" }} className="position-absolute popular-title flex items-center rounded-[5px]">
-                                                                <h6 style={{ background: "#1F5799", borderRadius: "5px" }} className="card fw-medium m-0 text-white py-[5px] px-[10px]">
-                                                                    Active
-                                                                </h6>
-                                                                <button onClick={PalanDetailsHandler}>
-                                                                    <MdOutlineErrorOutline className='text-white me-[10px] text-[20px]' />
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
         </div>
       </div>
 
@@ -642,7 +560,7 @@ invitation or approved application.
             className="bg-white rounded-2xl p-6 max-w-lg w-full mx-4"
           >
             <h3 className="text-xl font-bold text-gray-900 mb-6">
-              Select Payment Method
+              {t("selectPaymentMethod")}
             </h3>
 
             {coin > 0 && (
@@ -650,9 +568,9 @@ invitation or approved application.
                 <div className="flex items-center gap-3">
                   <img src={wallet} alt="Wallet" className="w-8 h-8" />
                   <div>
-                    <h6 className="m-0 font-semibold">My Wallet</h6>
+                    <h6 className="m-0 font-semibold">{t("myWallet")}</h6>
                     <p className="m-0 text-sm text-gray-600">
-                      Available: {currency || "€"}
+                      {t("available")}: {currency || "€"}
                       {coin}
                     </p>
                   </div>
@@ -716,7 +634,7 @@ invitation or approved application.
               onClick={() => SendHandler(border)}
               className="w-full bg-gradient-to-r from-pink-500 to-blue-500 text-white font-semibold py-3 px-6 rounded-full hover:shadow-lg mt-6 transition-all"
             >
-              Continue
+              {t("continue")}
             </button>
           </div>
         </div>
@@ -799,29 +717,29 @@ invitation or approved application.
             className="w-[20%] max-_430_:w-[100%] max-_768_:w-[75%] max-_1030_:w-[45%] max-_1500_:w-[35%] bg-white rounded-2xl px-6 py-4"
           >
             <h3 className="text-xl font-bold text-gray-900 mb-4">
-              Plan Details
+              {t("planDetails")}
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between py-2">
-                <h6 className="m-0 text-gray-600">Payment method</h6>
+                <h6 className="m-0 text-gray-600">{t("paymentMethod")}</h6>
                 <h6 className="m-0 font-semibold">{planData?.p_name}</h6>
               </div>
               <div className="flex items-center justify-between py-2 border-t border-gray-200">
-                <h6 className="m-0 text-gray-600">Transaction id</h6>
+                <h6 className="m-0 text-gray-600">{t("transactionId")}</h6>
                 <h6 className="m-0 font-semibold">{planData?.trans_id}</h6>
               </div>
               <div className="flex items-center justify-between py-2 border-t border-gray-200">
-                <h6 className="m-0 text-gray-600">Date of Purchase</h6>
+                <h6 className="m-0 text-gray-600">{t("dateOfPurchase")}</h6>
                 <h6 className="m-0 font-semibold">
                   {planData?.plan_start_date}
                 </h6>
               </div>
               <div className="flex items-center justify-between py-2 border-t border-gray-200">
-                <h6 className="m-0 text-gray-600">Date of Expiry</h6>
+                <h6 className="m-0 text-gray-600">{t("dateOfExpiry")}</h6>
                 <h6 className="m-0 font-semibold">{planData?.plan_end_date}</h6>
               </div>
               <div className="flex items-center justify-between py-2 border-t border-gray-200">
-                <h6 className="m-0 text-gray-600">Membership Amount</h6>
+                <h6 className="m-0 text-gray-600">{t("membershipAmount")}</h6>
                 <h6 className="m-0 font-semibold text-amber-600">
                   {currency ? currency : "€"}
                   {planData?.amount}
@@ -840,6 +758,7 @@ invitation or approved application.
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 };

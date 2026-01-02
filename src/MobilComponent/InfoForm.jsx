@@ -9,8 +9,10 @@ import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
 import axios from "axios";
 import Check from "../Icon/check.svg";
+import { useTranslation } from "react-i18next";
 
 const InfoForm = () => {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const {
     setFirstName,
@@ -109,56 +111,79 @@ const InfoForm = () => {
 
   const SubmitHandler = () => {
     if (!localFirstName?.trim())
-      return showTost({ title: "Please enter your first name" });
+      return showTost({ title: t("validationEnterFirstName") });
     if (!localLastName?.trim())
-      return showTost({ title: "Please enter your last name" });
+      return showTost({ title: t("validationEnterLastName") });
     if (!localRelationshipStatus)
-      return showTost({ title: "Please select your relationship status" });
+      return showTost({ title: t("validationSelectRelationship") });
     if (!localEducation)
-      return showTost({ title: "Please select your education level" });
+      return showTost({ title: t("validationSelectEducation") });
     if (!localProfession?.trim())
-      return showTost({ title: "Please enter your profession" });
+      return showTost({ title: t("validationEnterProfession") });
     if (!localSmoking)
-      return showTost({ title: "Please select your smoking preference" });
+      return showTost({ title: t("validationSelectSmoking") });
     if (!localDrinking)
-      return showTost({ title: "Please select your drinking preference" });
+      return showTost({ title: t("validationSelectDrinking") });
     if (localLanguages.length === 0)
-      return showTost({ title: "Please select at least one language" });
+      return showTost({ title: t("validationSelectLanguage") });
     if (!localBio?.trim())
-      return showTost({ title: "Please write a short bio about yourself" });
+      return showTost({ title: t("validationEnterBio") });
     if (localBio.length < 5)
-      return showTost({ title: "Bio should be at least 5 characters" });
+      return showTost({ title: t("validationBioMinLength") });
 
     saveDataToContext();
 
     navigation("/greek-connection");
   };
 
+  const relationshipStatusOptions = [
+    t("infoFormSingle"),
+    t("infoFormSeparated"),
+    t("infoFormDivorced"),
+    t("infoFormWidowed")
+  ];
+
+  const smokingOptions = [
+    t("infoFormNonSmoker"),
+    t("infoFormSocialSmoker"),
+    t("infoFormSmoker"),
+    t("infoFormTryingToQuit")
+  ];
+
+  const drinkingOptions = [
+    t("infoFormNonDrinker"),
+    t("infoFormSocialDrinker"),
+    t("infoFormDrinker"),
+    t("infoFormOccasionally")
+  ];
+
+  const languageOptions = [
+    t("infoFormEnglish"),
+    t("infoFormGreek"),
+    t("infoFormOtherLanguage")
+  ];
+
   return (
     <div className="w-[100%] multisteup-wrapper pt-[20px] Test bg-[#F7F5F2]">
       <div className="container mx-auto">
         <section className="steps step-1 active rounded-[40px] relative bg-white">
-          {/* ----- Progress Bar ----- */}
           <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
             <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
               <div className="bg-[#1F5799] rounded-full w-[25%] h-[5px]"></div>
             </div>
           </div>
 
-          {/* ----- Registration Form ----- */}
           <>
             <div className="mt-[10px] text-center">
               <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
-                Share Your Details with Confidence
+                {t("infoFormTitle")}
               </h1>
               <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333]">
-                Honesty is the heart of every meaningful connection. Share
-                openly, so others can truly meet the real you.
+                {t("infoFormSubtitle")}
               </p>
             </div>
 
             <div className="mt-[20px] w-[100%] space-y-4">
-              {/* First Name & Last Name */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="relative">
                   <input
@@ -166,7 +191,7 @@ const InfoForm = () => {
                     onChange={(e) => setLocalFirstName(e.target.value)}
                     className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm"
                     type="text"
-                    placeholder="First Name *"
+                    placeholder={t("infoFormFirstName")}
                   />
                   {localFirstName && (
                     <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
@@ -178,7 +203,7 @@ const InfoForm = () => {
                     onChange={(e) => setLocalLastName(e.target.value)}
                     className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm"
                     type="text"
-                    placeholder="Last Name *"
+                    placeholder={t("infoFormLastName")}
                   />
                   {localLastName && (
                     <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
@@ -186,13 +211,12 @@ const InfoForm = () => {
                 </div>
               </div>
 
-              {/* Relationship Status */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
                 <label className="block font-medium mb-3 text-[#333333]">
-                  Relationship Status: *
+                  {t("infoFormRelationshipStatus")}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  {["Single", "Separated", "Divorced", "Widowed"].map(
+                  {relationshipStatusOptions.map(
                     (status) => (
                       <label
                         key={status}
@@ -215,50 +239,42 @@ const InfoForm = () => {
                 </div>
               </div>
 
-              {/* Education */}
               <div>
                 <select
                   value={localEducation}
                   onChange={(e) => setLocalEducation(e.target.value)}
                   className="w-full border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm text-[#333333]"
                 >
-                  <option value="">Select Education Level</option>
-                  <option value="High School">High School</option>
-                  <option value="Some College">Some College</option>
-                  <option value="Associate Degree">Associate Degree</option>
-                  <option value="Bachelor's Degree">Bachelor's Degree</option>
-                  <option value="Master's Degree">Master's Degree</option>
-                  <option value="Doctorate">Doctorate</option>
-                  <option value="Other">Other</option>
+                  <option value="">{t("infoFormEducationLabel")}</option>
+                  <option value={t("infoFormHighSchool")}>{t("infoFormHighSchool")}</option>
+                  <option value={t("infoFormSomeCollege")}>{t("infoFormSomeCollege")}</option>
+                  <option value={t("infoFormAssociateDegree")}>{t("infoFormAssociateDegree")}</option>
+                  <option value={t("infoFormBachelorsDegree")}>{t("infoFormBachelorsDegree")}</option>
+                  <option value={t("infoFormMastersDegree")}>{t("infoFormMastersDegree")}</option>
+                  <option value={t("infoFormDoctorate")}>{t("infoFormDoctorate")}</option>
+                  <option value={t("infoFormOther")}>{t("infoFormOther")}</option>
                 </select>
               </div>
 
-              {/* Profession */}
               <div className="relative">
                 <input
                   value={localProfession}
                   onChange={(e) => setLocalProfession(e.target.value)}
                   className="text-[#333333] w-[100%] border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] shadow-sm"
                   type="text"
-                  placeholder="Profession *"
+                  placeholder={t("infoFormProfession")}
                 />
                 {localProfession && (
                   <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-[12px] right-5 text-green-500" />
                 )}
               </div>
 
-              {/* Smoking */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
                 <label className="block font-medium mb-3 text-[#333333]">
-                  Smoking: *
+                  {t("infoFormSmoking")}
                 </label>
                 <div className="grid grid-cols-2  gap-3">
-                  {[
-                    "Non-smoker",
-                    "Social smoker",
-                    "Smoker",
-                    "Trying to quit",
-                  ].map((option) => (
+                  {smokingOptions.map((option) => (
                     <label
                       key={option}
                       className="flex items-center space-x-2 cursor-pointer"
@@ -277,18 +293,12 @@ const InfoForm = () => {
                 </div>
               </div>
 
-              {/* Drinking */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
                 <label className="block font-medium mb-3 text-[#333333]">
-                  Drinking: *
+                  {t("infoFormDrinking")}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  {[
-                    "Non-drinker",
-                    "Social drinker",
-                    "Drinker",
-                    "Occasionally",
-                  ].map((option) => (
+                  {drinkingOptions.map((option) => (
                     <label
                       key={option}
                       className="flex items-center space-x-2 cursor-pointer"
@@ -307,91 +317,83 @@ const InfoForm = () => {
                 </div>
               </div>
 
-              {/* Languages */}
               <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-4 shadow-sm">
-  <label className="block font-medium mb-3 text-[#333333]">
-    Languages:
-  </label>
+                <label className="block font-medium mb-3 text-[#333333]">
+                  {t("infoFormLanguages")}
+                </label>
 
-  {["English", "Greek", "Other"].map((lang) => (
-    <label
-      key={lang}
-      className="w-full flex flex-row items-center justify-between text-[18px] max-_430_:text-[14px] py-[10px] cursor-pointer"
-      style={{
-        borderColor:
-          selectedLanguages === lang || (lang === "Other" && selectedLanguages !== "English" && selectedLanguages !== "Greek")
-            ? "#C89A3D"
-            : "",
-      }}
-    >
-      <div className="flex items-center gap-[10px]">
-        <input
-          type="radio"
-          name="language"
-          value={lang}
-          checked={
-            selectedLanguages === lang ||
-            (lang === "Other" && selectedLanguages !== "English" && selectedLanguages !== "Greek")
-          }
-          onChange={() => {
-            if (lang === "Other" && !["English", "Greek"].includes(selectedLanguages)) {
-              // keep existing other value
-            } else if (lang === "Other") {
-              setSelectedLanguages(""); // clear for typing
-            } else {
-              setSelectedLanguages(lang);
-            }
-          }}
-          className="w-[18px] h-[18px]"
-        />
-        <span className="text-[#333333]">{lang}</span>
-      </div>
-    </label>
-  ))}
+                {languageOptions.map((lang) => (
+                  <label
+                    key={lang}
+                    className="w-full flex flex-row items-center justify-between text-[18px] max-_430_:text-[14px] py-[10px] cursor-pointer"
+                    style={{
+                      borderColor:
+                        selectedLanguages === lang || (lang === t("infoFormOtherLanguage") && selectedLanguages !== t("infoFormEnglish") && selectedLanguages !== t("infoFormGreek"))
+                          ? "#C89A3D"
+                          : "",
+                    }}
+                  >
+                    <div className="flex items-center gap-[10px]">
+                      <input
+                        type="radio"
+                        name="language"
+                        value={lang}
+                        checked={
+                          selectedLanguages === lang ||
+                          (lang === t("infoFormOtherLanguage") && selectedLanguages !== t("infoFormEnglish") && selectedLanguages !== t("infoFormGreek"))
+                        }
+                        onChange={() => {
+                          if (lang === t("infoFormOtherLanguage") && ![t("infoFormEnglish"), t("infoFormGreek")].includes(selectedLanguages)) {
+                          } else if (lang === t("infoFormOtherLanguage")) {
+                            setSelectedLanguages("");
+                          } else {
+                            setSelectedLanguages(lang);
+                          }
+                        }}
+                        className="w-[18px] h-[18px]"
+                      />
+                      <span className="text-[#333333]">{lang}</span>
+                    </div>
+                  </label>
+                ))}
 
-  {/* Other Language Input */}
-  {selectedLanguages !== "English" && selectedLanguages !== "Greek" && (
-    <input
-      type="text"
-      placeholder="Enter your language"
-      value={selectedLanguages}
-      onChange={(e) => setSelectedLanguages(e.target.value)}
-      className="w-full mt-[15px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] text-[16px]"
-    />
-  )}
-</div>
+                {selectedLanguages !== t("infoFormEnglish") && selectedLanguages !== t("infoFormGreek") && (
+                  <input
+                    type="text"
+                    placeholder={t("infoFormOtherLanguagePlaceholder")}
+                    value={selectedLanguages}
+                    onChange={(e) => setSelectedLanguages(e.target.value)}
+                    className="w-full mt-[15px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] text-[16px]"
+                  />
+                )}
+              </div>
 
-
-              {/* Interests & Hobbies */}
               <div className="">
                 <label className="block font-semibold text-[#333333]">
-                  Interests & Hobbies:
+                  {t("infoFormInterests")}
                 </label>
 
                 <textarea
                   value={interests}
                   onChange={(e) => setInterests(e.target.value)}
-                  placeholder="Share the things you enjoy — your interests help others connect with your personality."
+                  placeholder={t("infoFormInterestsPlaceholder")}
                   rows={4}
                   className="w-full text-[16px] max-_430_:text-[14px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] resize-none focus:outline-none focus:border-[#C89A3D]"
                 />
               </div>
 
-              {/* Bio */}
               <div>
                 <label className="block font-semibold text-[#333333]">
-                  Tell us about yourself
+                  {t("infoFormBioLabel")}
                 </label>
                 <p>
-                  This is your moment to shine. Share your story, what you
-                  value, what brings you joy, and what you're hoping to find.
-                  Your words help others see the real heart behind your profile.
+                  {t("infoFormBioDescription")}
                 </p>
                 <textarea
                   value={localBio}
                   onChange={handleBioChange}
                   className="w-full border-[2px] outline-none focus:border-[#C89A3D] border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[120px] resize-none shadow-sm text-[#333333]"
-                  placeholder="Write a few lines about yourself, your personality, and what you're looking for… (minimum 5 characters)"
+                  placeholder={t("infoFormBioPlaceholder")}
                   maxLength={maxBioLength}
                 />
                 <div className="flex justify-between mt-2">
@@ -401,8 +403,8 @@ const InfoForm = () => {
                     }`}
                   >
                     {bioCharCount >= 5
-                      ? "✓ Bio is long enough"
-                      : `Minimum 5 characters required`}
+                      ? t("infoFormBioEnough")
+                      : t("infoFormBioMinLength")}
                   </span>
                   <span
                     className={`text-sm ${
@@ -417,7 +419,6 @@ const InfoForm = () => {
               </div>
             </div>
 
-            {/* Next Button */}
             <button
               style={{ background: "#1F5799", borderRadius: "999px" }}
               onClick={SubmitHandler}
@@ -425,7 +426,7 @@ const InfoForm = () => {
             >
               <div className="flex items-center justify-center gap-[10px]">
                 <span className="font-bold text-[1.25rem] text-white">
-                  Next
+                  {t("infoFormNextButton")}
                 </span>
                 <svg
                   className="mx-6"

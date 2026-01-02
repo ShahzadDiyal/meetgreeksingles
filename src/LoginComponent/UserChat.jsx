@@ -27,6 +27,8 @@ import VideoCall from "../User_Call/Video_call";
 import Onesignal from '../User_Call/Onesignal';
 import { useNavigate } from 'react-router-dom';
 import { showTost } from '../showTost';
+
+
 const UserChat = () => {
     const { t } = useTranslation();
 
@@ -1074,7 +1076,6 @@ const UserChat = () => {
                     <h6 className='m-0'>{deviceCheck}</h6>
                 </div>
             </div>}
-
         </div>
     );
 }

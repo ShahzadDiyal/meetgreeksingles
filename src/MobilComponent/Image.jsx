@@ -5,8 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
 import logo from "../images/logos/meet-greek.png";
+import { useTranslation } from "react-i18next";
+
 
 const Imagecom = () => {
+  const {t} = useTranslation();
   const {
     setLatitude,
     setLongitude,
@@ -134,12 +137,10 @@ const Imagecom = () => {
               />
               <div className="flex-1">
                 <h1 className="text-[28px] max-_430_:text-[27px] font-[600] max-_430_:w-[260px]">
-                  Show your best self 📸
+                  {t("title")} {/* Updated */}
                 </h1>
                 <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
-                  Upload a clear photo to help others get to know you video to
-                  make a fantastic first impression. Let your personality shine.
-                  Minimum 3 images required.
+                  {t("description")} {/* Updated */}
                 </p>
               </div>
             </div>
@@ -378,8 +379,9 @@ const Imagecom = () => {
 
                 <div className="mt-4 text-center">
                   <p className="text-gray-700">
-                    Selected: <span className="font-bold">{selectedCount}</span>{" "}
-                    / 6 images
+                    {t("selectedCount")} {/* Updated */}
+                    <span className="font-bold">{selectedCount}</span>{" "}
+                    {t("of")} 6 {t("images")} {/* Updated */}
                     {selectedCount >= 3 && " ✓"}
                   </p>
                   <p
@@ -388,8 +390,11 @@ const Imagecom = () => {
                     }`}
                   >
                     {selectedCount >= 3
-                      ? "Minimum requirement met! You can proceed."
-                      : `Select ${3 - selectedCount} more image(s)`}
+                      ? t("minimumMet") // Updated
+                      : t("selectMore", {
+                          count: 3 - selectedCount,
+                        })}{" "}
+                    {/* Updated */}
                   </p>
                 </div>
               </div>
@@ -408,8 +413,9 @@ const Imagecom = () => {
                 <div className="flex items-center justify-center gap-[10px]">
                   <span className="font-bold text-[1.25rem] text-white rounded-xl">
                     {selectedCount >= 3
-                      ? "Continue to Next Step"
-                      : "Select More Images"}
+                      ? t("continueButton") // Updated
+                      : t("selectMoreButton")}{" "}
+                    {/* Updated */}
                   </span>
                   {selectedCount >= 3 && (
                     <svg
