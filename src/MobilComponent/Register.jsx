@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
 
 const Register = () => {
   const { t } = useTranslation();
-  
+
   const [Email, setemail] = useState("");
   const [Phone, setPhone] = useState("0123456789");
   const [Password, setpassword] = useState("");
@@ -105,7 +105,7 @@ const Register = () => {
     { id: "54456", name: "Northern Greece (Thessaloniki & North)" },
     { id: "54457", name: "Central Greece" },
     { id: "54458", name: "Peloponnese" },
-    { id: "54459", name: "Crete"},
+    { id: "54459", name: "Crete" },
     { id: "544510", name: "Cyclades (Mykonos, Naxos, Paros, Santorini)" },
     { id: "544511", name: "Dodecanese (Rhodes, Kos, Patmos)" },
     { id: "544512", name: "Ionian Islands (Corfu, Zakynthos, Kefalonia)" },
@@ -540,9 +540,8 @@ const Register = () => {
                   </div>
                   {Password && (
                     <p
-                      className={`text-xs mt-1 ${
-                        Password.length >= 8 ? "text-green-600" : "text-red-600"
-                      }`}
+                      className={`text-xs mt-1 ${Password.length >= 8 ? "text-green-600" : "text-red-600"
+                        }`}
                     >
                       {Password.length >= 8
                         ? t("✓ Password is valid")

@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { showTost } from "../showTost";
 import { MyContext } from "../Context/MyProvider";
 import { useTranslation } from "react-i18next";
+import logo from "../images/logos/meet-greek.png";
+
 
 const WhatLookingFor = () => {
   const { t } = useTranslation();
@@ -59,6 +61,14 @@ return (
               <div className="bg-[#1F5799] rounded-full w-[75%] h-[5px]"></div>
             </div>
           </div>
+
+           <img
+                src={logo}
+                alt=""
+                width={80}
+                height={80}
+                className="mt-1 flex-shrink-0"
+              />
 
           <div className="mt-[10px]">
             <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">

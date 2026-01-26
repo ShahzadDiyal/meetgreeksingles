@@ -94,7 +94,7 @@ const Header = () => {
       id: "en",
     },
     {
-      title: "Greece",
+      title: "Greek",
       img: require("../images/flag/greek-flag.png"),
       id: "el",
     }
@@ -279,35 +279,111 @@ const SelectLanuguageHandler = (img, name, id) => {
     }
   }
 
-  firebaseAddDataHandle();
+
+  // const token = localStorage.getItem("token");
+  // const userId = localStorage.getItem("UserId");
+  
+  // if (token && userId) {
+  //   // Add a small delay to ensure localStorage is updated
+  //   setTimeout(() => {
+  //     firebaseAddDataHandle();
+  //   }, 100);
+  // } else {
+  //   console.log("Header: User not logged in, skipping firebaseAddDataHandle");
+  // }
+
+
+  // firebaseAddDataHandle();
   NotificationGetHandle();
   GetKeyHandle();
 }, []);
 
-  const firebaseAddDataHandle = () => {
-    const RegisterData = localStorage.getItem("Register_User");
-    if (RegisterData) {
-      const data = JSON.parse(RegisterData);
-      const userRef = doc(db, "datingUser", data.id);
+  // const firebaseAddDataHandle = () => {
+  //   const RegisterData = localStorage.getItem("Register_User");
+  //   if (RegisterData) {
+  //     const data = JSON.parse(RegisterData);
+  //     const userRef = doc(db, "datingUser", data.id);
 
-      getDoc(userRef)
-        .then((docSnapshot) => {
-          if (docSnapshot.exists()) {
-          } else {
-            const Pro_Pic = data.profile_pic || null;
-            setDoc(userRef, {
-              email: data.email,
-              isOnline: true,
-              name: data.name,
-              number: data.mobile,
-              uid: data.id,
-              pro_pic: Pro_Pic,
-            });
-          }
-        })
-        .catch((error) => {});
+  //     getDoc(userRef)
+  //       .then((docSnapshot) => {
+  //         if (docSnapshot.exists()) {
+  //         } else {
+  //           const Pro_Pic = data.profile_pic || null;
+  //           setDoc(userRef, {
+  //             email: data.email,
+  //             isOnline: true,
+  //             name: data.name,
+  //             number: data.mobile,
+  //             uid: data.id,
+  //             pro_pic: Pro_Pic,
+  //           });
+  //         }
+  //       })
+  //       .catch((error) => {});
+  //   }
+  // };
+  const firebaseAddDataHandle = () => {
+  try {
+    const RegisterData = localStorage.getItem("Register_User");
+    
+    if (!RegisterData) {
+      console.log("Header: No user data in localStorage");
+      return;
     }
-  };
+    
+    let data;
+    try {
+      data = JSON.parse(RegisterData);
+    } catch (parseError) {
+      console.error("Header: Failed to parse user data:", parseError);
+      return;
+    }
+    
+    // Validate data and data.id
+    if (!data || !data.id) {
+      console.error("Header: Invalid user data or missing ID:", data);
+      return;
+    }
+    
+    // Convert to string and validate
+    const userId = String(data.id).trim();
+    
+    if (!userId || userId === "undefined" || userId === "null" || userId === "NaN") {
+      console.error("Header: Invalid user ID after conversion:", userId);
+      return;
+    }
+    
+    console.log("Header: Creating Firestore reference for user:", userId);
+    
+    const userRef = doc(db, "datingUser", userId);
+
+    getDoc(userRef)
+      .then((docSnapshot) => {
+        if (docSnapshot.exists()) {
+          console.log("Header: User already exists in Firestore");
+        } else {
+          const Pro_Pic = data.profile_pic || "null";
+          setDoc(userRef, {
+            email: data.email || "",
+            isOnline: true,
+            name: data.name || "",
+            number: data.mobile || "",
+            uid: userId,
+            pro_pic: Pro_Pic,
+          });
+          console.log("Header: New user created in Firestore");
+        }
+      })
+      .catch((error) => {
+        console.error("Header: Firestore error:", error);
+      });
+      
+  } catch (error) {
+    console.error("Header: Unexpected error in firebaseAddDataHandle:", error);
+  }
+};
+
+
 
   const ProfileHandler = (e) => {
     if (e.target.id === "EditPhoto") {
@@ -425,6 +501,7 @@ const SelectLanuguageHandler = (img, name, id) => {
   };
 
   const LogOutHandler = () => {
+    localStorage.clear()
     showTost({ title: "Logout Successfully!!" });
 
     const userRef = doc(db, "datingUser", user.id);
@@ -1087,7 +1164,7 @@ const SelectLanuguageHandler = (img, name, id) => {
                         </span>
                       </Link>
                     </li>
-                    <li
+                    {/* <li
                       onClick={() => {
                         ColorHandler("BuyCoin");
                         SlidBarHAndler();
@@ -1133,7 +1210,7 @@ const SelectLanuguageHandler = (img, name, id) => {
                             {t("Buy Coin")}
                         </span>
                       </Link>
-                    </li>
+                    </li> */}
                     <li
                       onClick={() => {
                         ColorHandler("Chat");

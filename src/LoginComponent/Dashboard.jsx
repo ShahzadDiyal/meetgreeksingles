@@ -7,6 +7,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import CloseIcon from "../Icon/times.svg";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import Lottie from "lottie-react";
@@ -26,7 +27,6 @@ import Slider from "react-slick";
 import imag from "../images/logos/meet-greek.png";
 import CookiePopup from "./CookiePopup";
 import Footer from "./Footer";
-
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -49,15 +49,15 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [preference, setPreference] = useState("");
-  const [distance, setDistance] = useState(0);
-  const [agemin, setAgemin] = useState(16);
-  const [agemax, setAgemax] = useState(40);
+  const [distance, setDistance] = useState("anywhere");
+  const [agemin, setAgemin] = useState(18);
+  const [agemax, setAgemax] = useState(100);
   const [isVisible, setIsVisible] = useState(false);
   const [giftid, setGiftId] = useState([]);
   const [interestId, setInterestId] = useState([]);
   const [language, setLanguage] = useState([]);
-  const [religion, setReligion] = useState("");
-  const [relationship, setRelationship] = useState("");
+  const [religion, setReligion] = useState(-1);
+  const [relationship, setRelationship] = useState(-1);
   const [verify, setVerify] = useState("");
   const [close, setClose] = useState([]);
   const [bg, setBg] = useState([]);
@@ -83,6 +83,14 @@ const Dashboard = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentIndex2, setCurrentIndex2] = useState(0);
   const [totalCards, setTotalCards] = useState(0);
+  const [greekConnection, setGreekConnection] = useState("");
+  const [otherLanguage, setOtherLanguage] = useState("");
+  const otherLanguageInputRef = useRef(null);
+
+  // New state for collapsible sections
+  const [expandedSections, setExpandedSections] = useState({
+    verification: false,
+  });
 
   const kilometers = Math.floor(distance / 100);
   const centimeters = distance % 100;
@@ -112,6 +120,14 @@ const Dashboard = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
+  };
+
+  // Toggle section expansion
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
   };
 
   const FilterHandler = () => {
@@ -206,19 +222,9 @@ const Dashboard = () => {
     }
   };
 
-  // const IdHandler = (i, index, name) => {
-  //   const Title = name.replace(/\s+/g, '_');
-  //   const FinalText = Title.toLowerCase();
-  //   navigate(`/detail/${FinalText}`);
-  //   setDetails(i);
-  //   setBlockId(index);
-  //   localStorage.setItem("DetailsId", index);
-  // };
-
   const IdHandler = (i, index, name) => {
     const Title = name.replace(/\s+/g, "_");
     const FinalText = Title.toLowerCase();
-    // Pass the profile_id as a URL parameter instead of just slug
     navigate(`/detail/${FinalText}/${index}`);
     setDetails(i);
     setBlockId(index);
@@ -298,6 +304,12 @@ const Dashboard = () => {
     if (localData) {
       const userData = JSON.parse(localData);
 
+      const savedFilterData = localStorage.getItem("FilterData");
+      if (savedFilterData) {
+        FilterDataGetHandler("");
+        return;
+      }
+
       if (currentIndex < 0) {
         setLoading(true);
       } else {
@@ -312,20 +324,18 @@ const Dashboard = () => {
         });
 
         if (response.data.Result === "true") {
-          if (!localStorage.getItem("FilterData")) {
-            if (currentIndex > 0) {
-              setApi((prevCards) => [
-                ...prevCards,
-                ...response.data.profilelist.slice(
-                  currentIndex,
-                  currentIndex + 12
-                ),
-              ]);
-            } else {
-              setApi(response.data.profilelist.slice(0, currentIndex + 12));
-            }
-            setTotalCards(response.data.profilelist.length);
+          if (currentIndex > 0) {
+            setApi((prevCards) => [
+              ...prevCards,
+              ...response.data.profilelist.slice(
+                currentIndex,
+                currentIndex + 12
+              ),
+            ]);
+          } else {
+            setApi(response.data.profilelist.slice(0, currentIndex + 12));
           }
+          setTotalCards(response.data.profilelist.length);
 
           const profileList = response.data.profilelist;
           const lastProfile =
@@ -354,6 +364,45 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    const savedFilterData = localStorage.getItem("FilterData");
+    if (savedFilterData) {
+      try {
+        const filter = JSON.parse(savedFilterData);
+
+        if (filter.radius_search === "0") {
+          setDistance("sameCity");
+        } else if (filter.radius_search === "50") {
+          setDistance("50");
+        } else if (filter.radius_search === "200") {
+          setDistance("200");
+        } else if (parseInt(filter.radius_search) >= 9999) {
+          setDistance("anywhere");
+        }
+
+        setPreference(filter.search_preference || "");
+        setAgemin(parseInt(filter.minage) || 18);
+        setAgemax(parseInt(filter.maxage) || 100);
+        setReligion(parseInt(filter.religion) || -1);
+        setRelationship(parseInt(filter.relation_goal) || -1);
+        setVerify(filter.is_verify || "");
+
+        if (filter.language && filter.language !== "0") {
+          const langIds = filter.language.split(",");
+          setLanguage(langIds);
+        }
+
+        if (filter.custom_language) {
+          setOtherLanguage(filter.custom_language);
+        }
+
+        setGreekConnection(filter.greek_connection || "");
+      } catch (error) {
+        console.error("Error restoring filter data:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (!localStorage.getItem("FilterData")) {
       fetchUserData();
     } else {
@@ -377,10 +426,9 @@ const Dashboard = () => {
     }
   };
 
-  // Hook to handle scrolling
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll); // Clean up
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
   useEffect(() => {
@@ -423,7 +471,6 @@ const Dashboard = () => {
     GetHandler();
   }, []);
 
-  // <<------- Filter Api Call -------->>
   const FilterResetHandler = async (id) => {
     if (id) {
       setLoading(true);
@@ -434,15 +481,19 @@ const Dashboard = () => {
       fetchUserData();
     }
     showTost({ title: "Filter Reset Successfully!!" });
-    setDistance(0);
-    setAgemin(16);
-    setAgemax(40);
+
+    setDistance("anywhere");
+    setAgemin(18);
+    setAgemax(100);
     setPreference("");
-    setInterestId("");
-    setLanguage("");
-    setReligion("");
-    setRelationship("");
+    setInterestId([]);
+    setLanguage([]);
+    setReligion(-1);
+    setRelationship(-1);
     setVerify("");
+    setGreekConnection("");
+    setOtherLanguage("");
+
     localStorage.setItem("FilterData", "");
   };
 
@@ -452,20 +503,47 @@ const Dashboard = () => {
     if (!localData) return;
     const userData = JSON.parse(localData);
 
+    let radiusValue = 0;
+    if (distance === "sameCity") {
+      radiusValue = 0;
+    } else if (distance === "50") {
+      radiusValue = 50;
+    } else if (distance === "200") {
+      radiusValue = 200;
+    } else if (distance === "anywhere") {
+      radiusValue = 9999;
+    }
+
+    let formattedLanguages = "0";
+    if (language.length > 0) {
+      formattedLanguages = language.join(",");
+    }
+
+    let backendGreekConnection = "0";
+    if (greekConnection) {
+      backendGreekConnection = greekConnection;
+    }
+
+    const customLanguageText = otherLanguage || "";
+
     const FilterData = {
       uid: userData.id,
-      radius_search: distance === 0 ? 0 : String(distance / 100),
+      radius_search: String(radiusValue),
       search_preference: preference || "0",
       lats: latitude,
       longs: longitude,
       minage: String(agemin),
       maxage: String(agemax),
-      relation_goal: relationship || "0",
+      relation_goal: relationship === -1 ? "0" : String(relationship),
       interest: interestId.length > 0 ? interestId.join(",") : "0",
-      religion: religion || "0",
-      language: language.length > 0 ? language.join(",") : "0",
+      religion: religion === -1 ? "0" : String(religion),
+      language: formattedLanguages,
       is_verify: verify || "0",
+      greek_connection: backendGreekConnection,
+      custom_language: customLanguageText,
     };
+
+    console.log("Sending filter data:", FilterData);
 
     await localStorage.setItem("FilterData", JSON.stringify(FilterData));
 
@@ -488,18 +566,22 @@ const Dashboard = () => {
 
       const filterParams = {
         uid: userData.id,
-        radius_search: filter.radius_search,
-        search_preference: filter.search_preference,
+        radius_search: filter.radius_search || "0",
+        search_preference: filter.search_preference || "0",
         lats: latitude,
         longs: longitude,
-        minage: filter.minage,
-        maxage: filter.maxage,
-        relation_goal: filter.relation_goal,
-        interest: filter.interest,
-        religion: filter.religion,
-        language: filter.language,
-        is_verify: filter.is_verify,
+        minage: filter.minage || "18",
+        maxage: filter.maxage || "100",
+        relation_goal: filter.relation_goal || "0",
+        interest: filter.interest || "0",
+        religion: filter.religion || "0",
+        language: filter.language || "0",
+        is_verify: filter.is_verify || "0",
+        greek_connection: filter.greek_connection || "0",
+        custom_language: filter.custom_language || "",
       };
+
+      console.log("Fetching with params:", filterParams);
 
       if (currentIndex2 < 0) {
         setLoading(true);
@@ -527,44 +609,43 @@ const Dashboard = () => {
         setTotalCards(response.data.profilelist.length);
         setLoading(false);
         setLazyLoading(false);
+      } else {
+        showTost({ title: response.data.ResponseMsg || "No results found" });
+        setApi([]);
+        setLoading(false);
+        setLazyLoading(false);
       }
     } catch (error) {
       console.error("Error fetching filtered data:", error);
+      showTost({ title: "Filter error occurred" });
       setLoading(false);
       setLazyLoading(false);
     }
   };
 
-  // <<--------- intrest , Language , Religion , Relation All Api Call ------------>>
-
   const GetHandler = () => {
-    // <<------------- intrest Api Call Hear -------------->>
-    axios.post(`${basUrl}interest.php`).then((res) => {
-      setInterestList(res.data.interestlist);
-    });
+    // axios.post(`${basUrl}interest.php`).then((res) => {
+    //   setInterestList(res.data.interestlist);
+    // });
 
-    // <<------------- Language Api Call Hear -------------->>
     axios.post(`${basUrl}languagelist.php`).then((res) => {
       setLanguageList(res.data.languagelist);
     });
 
-    // <<------------- Religion Api Call Hear -------------->>
     axios.post(`${basUrl}religionlist.php`).then((res) => {
       setReligionList(res.data.religionlist);
     });
 
-    // <<------------- RelationsipGoal Api Call Hear -------------->>
     axios.post(`${basUrl}goal.php`).then((res) => {
       setRelationshipList(res.data.goallist);
     });
   };
 
-  // <<-------- Users Chat Handler ------------>>
-
   const ChatHandler = (UserId, name) => {
     if (directchat === "1") {
       setChatId(UserId);
       sessionStorage.setItem("ChatId", UserId);
+      localStorage.setItem("ChatId", UserId);
       setChatUserName(name);
     } else {
       showTost({ title: "No Direct Chat any User" });
@@ -606,14 +687,13 @@ const Dashboard = () => {
                               {" "}
                               {localStorage.getItem("Register_User")
                                 ? JSON.parse(
-                                    localStorage.getItem("Register_User")
-                                  ).name
+                                  localStorage.getItem("Register_User")
+                                ).name
                                 : ""}
                             </strong>
                           </h2>
                         </div>
 
-                        {/* Header + Filter */}
                         <div className="person-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
                           <div className="fw-medium fs-16 px-3">
                             {t("Start Your Search for the Perfect Partner")}
@@ -700,13 +780,11 @@ const Dashboard = () => {
                         return (
                           <div
                             key={i}
-                            className={`${
-                              bg.includes(el.profile_name) ? "hidden" : "block"
-                            } ${
-                              likeDn.includes(el.profile_name)
+                            className={`${bg.includes(el.profile_name) ? "hidden" : "block"
+                              } ${likeDn.includes(el.profile_name)
                                 ? "hidden"
                                 : "block"
-                            } custom-card cursor-pointer bg-amber-200 md:bg-gray-100 card-rounded-1 relative z-[444] overflow-hidden`}
+                              } custom-card cursor-pointer bg-amber-200 md:bg-gray-100 card-rounded-1 relative z-[444] overflow-hidden`}
                           >
                             {close.includes(el.profile_id) && (
                               <Lottie
@@ -725,12 +803,11 @@ const Dashboard = () => {
                               />
                             )}
                             <div
-                              className={`${
-                                close?.includes(el?.profile_id) ||
-                                like?.includes(el?.profile_id)
+                              className={`${close?.includes(el?.profile_id) ||
+                                  like?.includes(el?.profile_id)
                                   ? "opacity-0"
                                   : "opacity-[1]"
-                              } duration-[0.7s] ease-in`}
+                                } duration-[0.7s] ease-in`}
                             >
                               <div className="position-relative rounded-[1rem] overflow-hidden">
                                 <div
@@ -739,7 +816,6 @@ const Dashboard = () => {
                                     IdHandler(i, el.profile_id, el.profile_name)
                                   }
                                 >
-                                  {/* Image Container - Clean, No Heavy Overlay */}
                                   <div className="Coloreffect">
                                     {el?.profile_images.length > 1 ? (
                                       <Slider
@@ -783,62 +859,6 @@ const Dashboard = () => {
                                           </h6>
                                         </div>
                                       </div>
-
-                                      {/* <div className="">
-                      {el.is_subscribe === "0" ? (
-                        ""
-                      ) : (
-                        <div className="flex items-center gap-[10px]">
-                          <div className="bg-white p-[2px] rounded-full z-[555]">
-                            <img
-                              src={Crown}
-                              style={{
-                                width: "20px",
-                                height: "20px",
-                              }}
-                              alt="user-avatar"
-                              className="rounded-full p-[2px]"
-                            />
-                          </div>
-                          <h1 className="text-[15px] text-white font-[500] m-0">
-                            {t("Premium")}
-                          </h1>
-                        </div>
-                      )}
-
-                      <div className="relative flex items-center justify-center mt-[8px] mb-[8px]">
-                        <svg
-                          className="size-full w-[50px] -rotate-90"
-                          viewBox="0 0 36 36"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle
-                            cx="18"
-                            cy="18"
-                            r="16"
-                            fill="none"
-                            className="stroke-current text-[#fffdfd3f]"
-                            strokeWidth="3"
-                          ></circle>
-                          <circle
-                            cx="18"
-                            cy="18"
-                            r="16"
-                            fill="none"
-                            className="stroke-current text-white"
-                            strokeWidth="3"
-                            strokeDasharray="100"
-                            strokeDashoffset={`${
-                              100 - el.match_ratio.toFixed(0)
-                            }`}
-                            strokeLinecap="round"
-                          ></circle>
-                        </svg>
-                        <h6 className="m-0 absolute text-white text-[14px] p-[5px]">
-                          {el.match_ratio.toFixed(0)}%
-                        </h6>
-                      </div>
-                    </div> */}
                                     </div>
                                   </div>
                                 </div>
@@ -860,13 +880,11 @@ const Dashboard = () => {
                                     >
                                       <RxCross2 className="w-[24px] h-[24px] text-red-500" />
                                     </button>
-                                    {/* Hover Label */}
                                     <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[999]">
                                       Pass
                                     </span>
                                   </div>
 
-                                  {/* Like Button */}
                                   <div className="relative group/btn">
                                     <button
                                       onClick={() =>
@@ -886,7 +904,6 @@ const Dashboard = () => {
                                     </button>
                                   </div>
 
-                                  {/* Chat Button */}
                                   <div className="relative group/btn">
                                     <button
                                       onClick={(e) => {
@@ -909,30 +926,10 @@ const Dashboard = () => {
                                       />
                                     </button>
 
-                                    {/* Hover Label */}
                                     <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[999]">
                                       Chat
                                     </span>
                                   </div>
-
-                                  {/* Gift Button */}
-                                  {/* <div className="relative group/btn">
-                                    <button
-                                      className="action-btn avatar avatar-lg rounded-full z-1 bg-white shadow-md hover:shadow-lg transition-shadow"
-                                      title="Gift"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleBottomSheet();
-                                        setGiftreceiverId(el.profile_id);
-                                      }}
-                                    >
-                                      <img
-                                        src={GiftIcon}
-                                        alt="Gift icon"
-                                        className="w-[30px]"
-                                      />
-                                    </button>
-                                  </div> */}
                                 </div>
                               </div>
                             </div>
@@ -967,7 +964,10 @@ const Dashboard = () => {
         <div ref={Classadd} className="filter-area overflow-y-scroll w-[100%]">
           <div className="filter-content">
             <div className="filter-heading">
-              <h3 className="fw-semi-bold mb-0">{t("Filter & Show")}</h3>
+              <div className="flex flex-col mb-2">
+                <h3 className="fw-semi-bold mb-0">{t("Filter & Show")}</h3>
+                <p className=" mb-0">{t("FilterSubText")}</p>
+              </div>
               <button onClick={FilterHandler}>
                 <svg
                   width="17"
@@ -986,241 +986,744 @@ const Dashboard = () => {
               </button>
             </div>
 
-            <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
-              <div className="">
-                <div className="flex justify-between items-center">
-                  <h1 className="text-[16px] font-[400] text-black">
-                    {t("Distance Range")}
-                  </h1>
-                  <h1 className="text-[16px] font-[400] text-black">
-                    {kilometers}.{centimeters} {t("km")}
-                  </h1>
-                </div>
-                <input
-                  style={sliderStyle}
-                  type="range"
-                  className="Range"
-                  min="0"
-                  max="50000"
-                  value={distance}
-                  onChange={(e) => setDistance(e.target.value)}
-                />
-              </div>
-            </div>
+            {/* BASICS SECTION - Collapsible */}
+            <div className="mb-4">
 
-            <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
-              <div
-                className="range-slider position-relative w-100 pb-3"
-                data-role="rangeslider"
-              >
-                <div className="range-label mb-3">
-                  <label className="form-label">{t("Age")}</label>
-                  <span id="range-value" className="form-label">
-                    {AGEMIN}-{AGEMAX}
-                  </span>
-                </div>
-                <div className="track position-absolute w-100"></div>
-                <div
-                  style={{ left: percentmin + "%", right: percentmax + "%" }}
-                  className="fill position-absolute"
-                  id="fill"
-                ></div>
 
-                <input
-                  type="range"
-                  name="ageMin"
-                  id="ageMin"
-                  value={agemin}
-                  onChange={(e) => {
-                    const min = e.target.value;
-                    min < agemax && setAgemin(min);
-                  }}
-                  min="0"
-                  max="101"
-                  className="position-absolute border-0 form-input-range"
-                />
 
-                <input
-                  type="range"
-                  name="ageMax"
-                  id="ageMax"
-                  value={agemax}
-                  onChange={(e) => {
-                    const max = e.target.value;
-                    max > agemin && setAgemax(max);
-                  }}
-                  min="0"
-                  max="100"
-                  className="position-absolute border-0 form-input-range"
-                />
-              </div>
-            </div>
-
-            <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
-              <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t("Serach Preference")}
-              </h6>
-              <div className="">
-                <ul className="flex flex-wrap items-center gap-[10px]  m-0 p-0">
-                  <li
-                    onClick={() => setPreference("MALE")}
-                    className={`${
-                      preference === "MALE" && "Active"
-                    } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
-                  >
-                    {t("MALE")}
-                  </li>
-                  <li
-                    onClick={() => setPreference("FEMALE")}
-                    className={`${
-                      preference === "FEMALE" ? "Active" : "hover:bg-[#ddd]"
-                    } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
-                  >
-                    {t("FEMALE")}
-                  </li>
-                  <li
-                    onClick={() => setPreference("Both")}
-                    className={`${
-                      preference === "Both" ? "Active" : "hover:bg-[#ddd]"
-                    } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
-                  >
-                    {t("Both")}
-                  </li>
-                </ul>
-              </div>
-            </div>
-            {/* <!-- Serach Preference End --> */}
-
-            {/* <!-- Interests Start --> */}
-            <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
-              <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t("Interests")}
-              </h6>
-              <div className="">
-                {interestList.map((el, index) => {
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => InterestMapHandler(el.id)}
-                      className="inline-block"
-                    >
-                      <div
-                        className={`button text-[16px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-center gap-[10px] ${
-                          interestId.includes(el.id) && "selected"
-                        }`}
-                      >
-                        {t(el.title)}{" "}
-                        <img
-                          src={imageBaseURL + el.img}
-                          alt=""
-                          className="w-[20px] h-[20px]"
-                        />
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            {/* <!-- Interests End --> */}
-
-            {/* <!-- Languages Start --> */}
-            <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
-              <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t("Langusges I Know")}
-              </h6>
-              {languageList.map((el, index) => {
-                return (
-                  <button
-                    key={index}
-                    onClick={() => LanguageMapHandler(el.id)}
-                    className="inline-block"
-                  >
-                    <div
-                      className={`button text-[16px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-cente ${
-                        language.includes(el.id) && "selected"
-                      }`}
-                    >
-                      {t(el.title)}{" "}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-            {/* <!-- Languages End --> */}
-
-            {/* <!-- Religion Start --> */}
-            <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
-              <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t("Religion")}
-              </h6>
-              {religionList.map((el, index) => {
-                return (
-                  <h6
-                    key={index}
-                    onClick={() => setReligion(index)}
-                    className={`font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[8px] px-[15px] ${
-                      religion === index ? "Active" : "hover:bg-[#ddd]"
-                    }`}
-                  >
-                    {t(el.title)}
+              <div className="mt-3 space-y-4">
+                {/* Search Preference */}
+                <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
+                  <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
+                    {t("Serach Preference")}
                   </h6>
-                );
-              })}
-            </div>
-            {/* <!-- Religion End --> */}
+                  <div className="">
+                    <ul className="flex flex-wrap items-center gap-[10px]  m-0 p-0">
+                      <li
+                        onClick={() => setPreference("MALE")}
+                        className={`${preference === "MALE" && "Active"
+                          } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
+                      >
+                        {t("MALE")}
+                      </li>
+                      <li
+                        onClick={() => setPreference("FEMALE")}
+                        className={`${preference === "FEMALE"
+                            ? "Active"
+                            : "hover:bg-[#ddd]"
+                          } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
+                      >
+                        {t("FEMALE")}
+                      </li>
+                      <li
+                        onClick={() => setPreference("Both")}
+                        className={`${preference === "Both" ? "Active" : "hover:bg-[#ddd]"
+                          } text-[16px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px]`}
+                      >
+                        {t("Both")}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
 
-            {/* <!-- Relationship Goals Start --> */}
-            <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
-              <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t("Relationship Goals")}
-              </h6>
-              {relationshipList.map((el, index) => {
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setRelationship(index)}
-                    className="inline-block"
+                {/* Age Range */}
+                <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
+                  <div
+                    className="range-slider position-relative w-100 pb-3"
+                    data-role="rangeslider"
                   >
-                    <div
-                      className={`text-[16px] px-[13px] py-[5px] border-[2px] gap-[5px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-cente ${
-                        relationship === index ? "Active" : "hover:bg-[#ddd]"
-                      }`}
-                    >
-                      {t(el.title)}{" "}
+                    <div className="range-label mb-3">
+                      <label className="text-[18px] font-[500] max-_430_:text-[16px]">
+                        {t("Age")}
+                      </label>
+                      <span id="range-value" className="form-label">
+                        {AGEMIN}-{AGEMAX}
+                      </span>
                     </div>
-                  </button>
-                );
-              })}
-            </div>
-            {/* <!-- Relationship Goals End --> */}
+                    <div className="track position-absolute w-100"></div>
+                    <div
+                      style={{
+                        left: percentmin + "%",
+                        right: percentmax + "%",
+                      }}
+                      className="fill position-absolute"
+                      id="fill"
+                    ></div>
 
-            {/* <!-- Verify Profile Goals Start --> */}
-            <div className="filter-element">
-              <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
-                {t("Verify Profile")}
-              </h6>
-              <div className="">
-                <button
-                  onClick={() => setVerify("0")}
-                  className={` font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${
-                    verify === "0" ? "Active" : "hover:bg-[#ddd]"
-                  }`}
-                >
-                  {t("Unverify")}
-                </button>
-                <button
-                  onClick={() => setVerify("2")}
-                  className={` font-[400] text-[16px] inline-block me-[15px] cursor-pointer border-[2px] border-gray-300 rounded-full py-[5px] px-[15px] ${
-                    verify === "2" ? "Active" : "hover:bg-[#ddd]"
-                  }`}
-                >
-                  {t("Verify")}
-                </button>
+                    <input
+                      type="range"
+                      name="ageMin"
+                      id="ageMin"
+                      value={agemin}
+                      onChange={(e) => {
+                        const min = e.target.value;
+                        min < agemax && setAgemin(min);
+                      }}
+                      min="0"
+                      max="101"
+                      className="position-absolute border-0 form-input-range"
+                    />
+
+                    <input
+                      type="range"
+                      name="ageMax"
+                      id="ageMax"
+                      value={agemax}
+                      onChange={(e) => {
+                        const max = e.target.value;
+                        max > agemin && setAgemax(max);
+                      }}
+                      min="0"
+                      max="100"
+                      className="position-absolute border-0 form-input-range"
+                    />
+                  </div>
+                </div>
+
+                {/* Distance Range */}
+                <div className="filter-element border-b-[2px] pb-[10px] border-gray-300">
+                  <div className="">
+                    <div className="flex justify-between items-center mb-2">
+                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px]">
+                        {t("Distance Range")}
+                      </h6>
+                      <span className="form-label">
+                        {distance === "anywhere"
+                          ? t("Anywhere")
+                          : `${distance} ${t("km")}`}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="sameCity"
+                          name="distanceRange"
+                          value="sameCity"
+                          checked={distance === "sameCity"}
+                          onChange={(e) => setDistance(e.target.value)}
+                          className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                        />
+                        <label
+                          htmlFor="sameCity"
+                          className="ml-2 text-[14px] font-[400] text-black cursor-pointer"
+                        >
+                          {t("Same city")}
+                        </label>
+                      </div>
+
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="50km"
+                          name="distanceRange"
+                          value="50"
+                          checked={distance === "50"}
+                          onChange={(e) => setDistance(e.target.value)}
+                          className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                        />
+                        <label
+                          htmlFor="50km"
+                          className="ml-2 text-[14px] font-[400] text-black cursor-pointer"
+                        >
+                          50 {t("km")}
+                        </label>
+                      </div>
+
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="200km"
+                          name="distanceRange"
+                          value="200"
+                          checked={distance === "200"}
+                          onChange={(e) => setDistance(e.target.value)}
+                          className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                        />
+                        <label
+                          htmlFor="200km"
+                          className="ml-2 text-[14px] font-[400] text-black cursor-pointer"
+                        >
+                          200 {t("km")}
+                        </label>
+                      </div>
+
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="anywhere"
+                          name="distanceRange"
+                          value="anywhere"
+                          checked={distance === "anywhere"}
+                          onChange={(e) => setDistance(e.target.value)}
+                          className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                        />
+                        <label
+                          htmlFor="anywhere"
+                          className="ml-2 text-[14px] font-[400] text-black cursor-pointer"
+                        >
+                          {t("Anywhere")}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            {/* <!-- Verify Profile Goals End --> */}
 
-            {/* <!-- Apply Btn Start --> */}
+            </div>
+
+            {/* GREEK CONNECTION & CULTURE SECTION - Collapsible */}
+            <div className="mb-4">
+
+              <h5 className="text-[18px] font-[600] mb-0">
+                {t("GREEK CONNECTION & CULTURE")}
+              </h5>
+
+
+
+              <div className="mt-3 space-y-4">
+                {/* Greek Connection */}
+                <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
+                  <h6 className="text-[18px] font-[500] max-_430_:text-[16px] mb-4">
+                    {t("Greek Connection")}
+                  </h6>
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="Greek"
+                        name="greekConnection"
+                        value="Greek"
+                        checked={greekConnection === "Greek"}
+                        onChange={(e) => setGreekConnection(e.target.value)}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="Greek"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer flex items-center gap-2"
+                      >
+                        {t("greekOptionGreek")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="Greek origin / Greek heritage"
+                        name="greekConnection"
+                        value="Greek origin / Greek heritage"
+                        checked={
+                          greekConnection === "Greek origin / Greek heritage"
+                        }
+                        onChange={(e) => setGreekConnection(e.target.value)}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="Greek origin / Greek heritage"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer flex items-center gap-2"
+                      >
+                        {t("greekOptionGreekOrigin")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="Philhellene"
+                        name="greekConnection"
+                        value="Philhellene"
+                        checked={greekConnection === "Philhellene"}
+                        onChange={(e) => setGreekConnection(e.target.value)}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="Philhellene"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer flex items-center gap-2"
+                      >
+                        {t("greekOptionPhilhellene")}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Languages */}
+                <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
+                  <h6 className="text-[18px] font-[500] max-_430_:text-[16px] mb-4">
+                    {t("Languages I Know")}
+                  </h6>
+
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="english"
+                        value="1"
+                        checked={language.includes("1")}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setLanguage([...language, "1"]);
+                          } else {
+                            setLanguage(
+                              language.filter((item) => item !== "1")
+                            );
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="english"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("English")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="greek"
+                        value="2"
+                        checked={language.includes("2")}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setLanguage([...language, "2"]);
+                          } else {
+                            setLanguage(
+                              language.filter((item) => item !== "2")
+                            );
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="greek"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Greek")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="other"
+                        value="3"
+                        checked={
+                          language.includes("3") || otherLanguage !== ""
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setLanguage([...language, "3"]);
+                            if (otherLanguageInputRef.current) {
+                              setTimeout(() => {
+                                otherLanguageInputRef.current.focus();
+                              }, 100);
+                            }
+                          } else {
+                            setLanguage(
+                              language.filter((item) => item !== "3")
+                            );
+                            setOtherLanguage("");
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="other"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Other")}
+                      </label>
+                    </div>
+                  </div>
+
+                  {(language.includes("3") || otherLanguage !== "") && (
+                    <div className="mt-3">
+                      <label
+                        htmlFor="otherLanguage"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        {t("Please specify other language")}
+                      </label>
+                      <input
+                        ref={otherLanguageInputRef}
+                        type="text"
+                        id="otherLanguage"
+                        value={otherLanguage}
+                        onChange={(e) => setOtherLanguage(e.target.value)}
+                        placeholder={t("Enter language name")}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1F5799] focus:border-transparent"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Religion */}
+                <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
+                  <h6 className="text-[18px] font-[500] max-_430_:text-[16px] mb-4">
+                    {t("Religion")}
+                  </h6>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="orthodox"
+                        checked={religion === 0}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setReligion(0);
+                          } else {
+                            setReligion(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="orthodox"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Orthodox Christian")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="christianOther"
+                        checked={religion === 1}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setReligion(1);
+                          } else {
+                            setReligion(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="christianOther"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Christian (Other)")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="jewish"
+                        checked={religion === 2}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setReligion(2);
+                          } else {
+                            setReligion(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="jewish"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Jewish")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="muslim"
+                        checked={religion === 3}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setReligion(3);
+                          } else {
+                            setReligion(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="muslim"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Muslim")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="noPreference"
+                        checked={religion === 4}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setReligion(4);
+                          } else {
+                            setReligion(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="noPreference"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("No preference")}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* RELATIONSHIP INTENT SECTION - Collapsible */}
+            <div className="mb-4">
+
+              <h5 className="text-[18px] font-[600] mb-0">
+                {t("RELATIONSHIP INTENT")}
+              </h5>
+
+
+
+
+              <div className="mt-3 space-y-4">
+                <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
+                  <h6 className="text-[18px] font-[500] max-_430_:text-[16px] mb-4">
+                    {t("Relationship Goals")}
+                  </h6>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="marriage"
+                        checked={relationship === 0}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setRelationship(0);
+                          } else {
+                            setRelationship(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="marriage"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Marriage")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="seriousRelationship"
+                        checked={relationship === 1}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setRelationship(1);
+                          } else {
+                            setRelationship(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="seriousRelationship"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Serious relationship")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="companionship"
+                        checked={relationship === 2}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setRelationship(2);
+                          } else {
+                            setRelationship(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="companionship"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Companionship")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="friendshipFirst"
+                        checked={relationship === 3}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setRelationship(3);
+                          } else {
+                            setRelationship(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="friendshipFirst"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Friendship first")}
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="notSureYet"
+                        checked={relationship === 4}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setRelationship(4);
+                          } else {
+                            setRelationship(-1);
+                          }
+                        }}
+                        className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                      />
+                      <label
+                        htmlFor="notSureYet"
+                        className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                      >
+                        {t("Not sure yet")}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* VERIFICATION SECTION - Collapsible */}
+            <div className="mb-4">
+              <button
+                onClick={() => toggleSection("verification")}
+                className="w-full flex items-center py-3  "
+              >
+                <h5 className="text-[18px] font-[600] mb-0 pr-2">
+                  {t("More Filters")}
+                </h5>
+                {expandedSections.verification ? (
+                  <FaChevronUp className="text-gray-600" />
+                ) : (
+                  <FaChevronDown className="text-gray-600" />
+                )}
+              </button>
+
+              {expandedSections.verification && (
+                <div className="mt-3 space-y-4">
+                  <div className="filter-element">
+                    <h6 className="text-[18px] font-[500] max-_430_:text-[16px] mb-4">
+                      {t("Verify Profile")}
+                    </h6>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="unverify"
+                          checked={verify === "0"}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setVerify("0");
+                            } else {
+                              setVerify("");
+                            }
+                          }}
+                          className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                        />
+                        <label
+                          htmlFor="unverify"
+                          className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                        >
+                          {t("Unverify")}
+                        </label>
+                      </div>
+
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="verify"
+                          checked={verify === "2"}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setVerify("2");
+                            } else {
+                              setVerify("");
+                            }
+                          }}
+                          className="h-4 w-4 text-[#1F5799] border-gray-300 rounded focus:ring-[#1F5799]"
+                        />
+                        <label
+                          htmlFor="verify"
+                          className="ml-3 text-[16px] font-[400] text-black cursor-pointer"
+                        >
+                          {t("Verify")}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <!-- Interests Start --> */}
+                  <div className="filter-element border-b-[2px] pb-[20px] border-gray-300">
+
+
+                    <div className="filter-element pb-[20px] border-gray-300">
+                      <h6 className="text-[18px] font-[500] max-_430_:text-[16px] mb-4">
+                        {t("Interests")}
+                      </h6>
+
+                      <div className="flex flex-wrap gap-2">
+                        {/* Static interest options */}
+                        {[
+                          { id: "1", title: "Travel" },
+                          { id: "2", title: "Family" },
+                          { id: "3", title: "Culture" },
+                          { id: "4", title: "Food" },
+                          { id: "5", title: "Faith" }
+                        ].map((el, index) => {
+                          return (
+                            <button
+                              key={index}
+                              onClick={() => InterestMapHandler(el.id)}
+                              className="inline-block"
+                            >
+                              <div
+                                className={`button text-[16px] max-_430_:text-[14px] px-[13px] py-[5px] border-[2px] border-gray-300 rounded-[50px] mb-[10px] me-[10px] flex items-center gap-[10px] ${interestId.includes(el.id) && "selected"
+                                  }`}
+                              >
+                                {t(el.title)}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  {/* <!-- Interests End --> */}
+                </div>
+              )}
+            </div>
+
+            {/* Apply Buttons */}
             <div className="flex justify-center gap-[15px] mt-[20px]">
               <button
                 onClick={FilterResetHandler}
@@ -1236,21 +1739,16 @@ const Dashboard = () => {
                 {t("Apply")}
               </button>
             </div>
-
-            {/* <!-- Apply Btn End --> */}
           </div>
         </div>
 
-        {/* <!-- Overlay Start --> */}
         <div
           ref={BgDisplay}
           onClick={FilterHandler}
           id="overlay"
           className="overlay z-[888]"
         ></div>
-        {/* <!-- Overlay End -->
- 
-         {/* <!-- Scroll To Top Start --> */}
+
         <button className="scroll-to-top block">
           <svg
             width="16"
@@ -1266,7 +1764,6 @@ const Dashboard = () => {
             />
           </svg>
         </button>
-        {/* <!-- Scroll To Top End --> */}
 
         {isVisible && (
           <div
@@ -1295,6 +1792,7 @@ const Dashboard = () => {
                 {iconArray.map((el, i) => {
                   return (
                     <button
+                      key={i}
                       onClick={() => GiftHandler(el.id, el.price, el.img)}
                       style={{
                         borderColor: giftid.includes(el.id)
@@ -1313,9 +1811,8 @@ const Dashboard = () => {
                           <img
                             src={CoinIcon}
                             alt=""
-                            className={`w-[15px] ${
-                              el.price === "0" && "hidden text-center"
-                            }`}
+                            className={`w-[15px] ${el.price === "0" && "hidden text-center"
+                              }`}
                           />
                           <span className="text-[14px] font-[500]">
                             {el.price === "0" ? "Free" : el.price}
@@ -1342,7 +1839,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* <<------------ Chat Sheet Show ---------->> */}
         {chatId && (
           <div onClick={ChatCloseHandle} className="bottom-sheet z-[999]">
             <div
@@ -1355,10 +1851,8 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-        <Footer />
-
+      <Footer />
       <CookiePopup />
-
     </>
   );
 };

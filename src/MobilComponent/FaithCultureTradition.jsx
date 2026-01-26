@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
 import { useTranslation } from "react-i18next";
+import logo from "../images/logos/meet-greek.png";
+
 
 const FaithCultureTradition = () => {
   const { t } = useTranslation();
@@ -148,6 +150,13 @@ const FaithCultureTradition = () => {
             </div>
           </div>
 
+  <img
+                src={logo}
+                alt=""
+                width={80}
+                height={80}
+                className="mt-1 flex-shrink-0"
+              />
           <div className="mt-[10px]">
             <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
               {t("faithCultureTitle")}

@@ -8,7 +8,7 @@ import plus from "../Icon/plus.svg";
 import Bell from "../Icon/bell-slash.svg";
 import BlockIcon from '../Icon/block.gif';
 import Setting from "../Icon/settings.svg";
-import { useLocation, useNavigate ,useParams} from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import CloseIcon from "../Icon/times.svg";
 import { IoIosCheckmarkCircle } from "react-icons/io";
@@ -60,9 +60,9 @@ const Detail = () => {
     if (id) {
       localStorage.setItem("DetailsId", id);
     }
-    
+
     DetailsHandler();
-  }, [id, latitude, longitude]); 
+  }, [id, latitude, longitude]);
 
   const toggleBottomSheet = (e) => {
     if (e.target.id === 'BlockSection') {
@@ -166,7 +166,7 @@ const Detail = () => {
   const DetailsHandler = () => {
     setLoding(true);
     const profileId = id || localStorage.getItem("DetailsId");
-    
+
     if (!profileId) {
       showTost({ title: "Profile ID not found" });
       navigate("/");
@@ -182,7 +182,7 @@ const Detail = () => {
       .then((res) => {
         if (res.data && res.data.status === true && res.data.data) {
           const userData = res.data.data;
-          
+
           // Calculate age from birth_date
           const calculateAge = (birthDate) => {
             if (!birthDate) return "N/A";
@@ -195,36 +195,36 @@ const Detail = () => {
             }
             return age;
           };
-          
+
           // Parse profile images from other_pic field
           const parseProfileImages = () => {
             if (!userData.other_pic) return [];
-            
+
             // Split by $; and filter out empty strings
             const images = userData.other_pic
               .split('$;')
               .map(img => img.trim())
               .filter(img => img !== "");
-            
+
             return images;
           };
-          
+
           // Transform the API data
           const transformedData = {
             ...userData,
-            
+
             // Transformed fields for your component
             profile_id: userData.id,
             profile_name: userData.name,
-            profile_age: calculateAge(userData.birth_date),
+            profile_age: calculateAge(userData.bday),
             profile_bio: userData.profile_bio || "",
-            profile_distance: userData.radius_search ? 
-              `${parseFloat(userData.radius_search).toFixed(1)} km` : 
+            profile_distance: userData.radius_search ?
+              `${parseFloat(userData.radius_search).toFixed(1)} km` :
               "Distance unknown",
             profile_images: parseProfileImages(),
             is_verify: userData.is_verify,
           };
-          
+
           setApi(transformedData);
           setImageData(transformedData.profile_images);
           setIsVerify(transformedData.is_verify);
@@ -447,8 +447,8 @@ const Detail = () => {
                           : imageData?.length === 1
                             ? <img className="rounded-[1rem]" src={`${imageBaseURL}${imageData[0]}`} alt="" />
                             : <div className="rounded-[1rem] bg-gray-200 w-full h-64 flex items-center justify-center">
-                                <span className="text-gray-500">No images available</span>
-                              </div>
+                              <span className="text-gray-500">No images available</span>
+                            </div>
                         }
                         <div className="absolute bottom-10 max-_1445_:bottom-16 max-_430_:hidden flex items-center justify-center w-[100%] gap-[10px]">
                           <div className=" flex items-center gap-[10px] px-[8px] py-[6px] rounded-[50px] bg-black">
@@ -548,7 +548,7 @@ const Detail = () => {
                             ></path>
                           </svg>
                           <div className="flex items-center gap-[10px] relative">
-                            <span className="fs-16 text-gray">{api?.profile_distance} {t("from you" )}</span>
+                            <span className="fs-16 text-gray">{api?.profile_distance} {t("from you")}</span>
                             <button onClick={() => setOption(!options)}>
                               <img
                                 src={Dott}
@@ -571,7 +571,7 @@ const Detail = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Bio Section */}
                       {api?.profile_bio && api.profile_bio !== "undefined" && api.profile_bio.trim() !== "" && (
                         <div className="px-sm-2 py-4 px-1 border-bottom">
@@ -592,7 +592,7 @@ const Detail = () => {
                                 <span className="font-medium">{api.gender}</span>
                               </div>
                             )}
-                            
+
                             {/* Country */}
                             {api?.country && (
                               <div className="flex items-center gap-2">
@@ -600,7 +600,7 @@ const Detail = () => {
                                 <span className="font-medium">{api.country}</span>
                               </div>
                             )}
-                            
+
                             {/* State */}
                             {api?.state && api.state.trim() !== "" && (
                               <div className="flex items-center gap-2">
@@ -608,7 +608,7 @@ const Detail = () => {
                                 <span className="font-medium">{api.state}</span>
                               </div>
                             )}
-                            
+
                             {/* City */}
                             {api?.city && (
                               <div className="flex items-center gap-2">
@@ -616,7 +616,7 @@ const Detail = () => {
                                 <span className="font-medium">{api.city}</span>
                               </div>
                             )}
-                            
+
                             {/* Birth Date */}
                             {api?.birth_date && (
                               <div className="flex items-center gap-2">
@@ -639,7 +639,7 @@ const Detail = () => {
                                 <span className="font-medium">{api.religious_background}</span>
                               </div>
                             )}
-                            
+
                             {/* Profession */}
                             {api?.profession && api.profession.trim() !== "" && (
                               <div className="flex items-center gap-2">
@@ -671,7 +671,7 @@ const Detail = () => {
                                 <span className="font-medium">{api.education}</span>
                               </div>
                             )}
-                            
+
                             {/* Profession */}
                             {api?.profession && api.profession.trim() !== "" && (
                               <div className="flex items-center gap-2">
@@ -695,7 +695,7 @@ const Detail = () => {
                                 <span className="font-medium">{api.smoking}</span>
                               </div>
                             )}
-                            
+
                             {/* Drinking */}
                             {api?.drinking && api.drinking.trim() !== "" && (
                               <div className="flex items-center gap-2">
@@ -894,7 +894,7 @@ const Detail = () => {
               onClick={SednHandler}
               className="font-bold text-[18px] rounded-[10px] mt-[20px] text-white py-[10px] w-[100%] bg-[#0066CC]"
             >
-             {t("Send")}
+              {t("Send")}
             </button>
           </div>
         </div>

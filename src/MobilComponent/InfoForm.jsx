@@ -10,6 +10,8 @@ import { showTost } from "../showTost";
 import axios from "axios";
 import Check from "../Icon/check.svg";
 import { useTranslation } from "react-i18next";
+import logo from "../images/logos/meet-greek.png";
+
 
 const InfoForm = () => {
   const { t } = useTranslation();
@@ -40,7 +42,7 @@ const InfoForm = () => {
   const [localInterests, setLocalInterests] = useState([]);
   const [interests, setInterests] = useState("");
   const [localBio, setLocalBio] = useState("");
-  const [selectedLanguages, setSelectedLanguages] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [otherLanguage, setOtherLanguage] = useState("");
   const [selectedInterests, setSelectedInterests] = useState([]);
 
@@ -102,7 +104,14 @@ const InfoForm = () => {
     setSmoking(localSmoking);
     setDrinking(localDrinking);
 
-    setLanguages(localLanguages.join(", "));
+    // Combine selected languages with "Other" language if it exists
+    const allLanguages = [...selectedLanguages];
+    if (otherLanguage.trim() && selectedLanguages.includes(t("infoFormOtherLanguage"))) {
+      // Replace "Other Language" with the actual custom language entered
+      const index = allLanguages.indexOf(t("infoFormOtherLanguage"));
+      allLanguages[index] = otherLanguage.trim();
+    }
+    setLanguages(allLanguages.join(", "));
 
     setHobbies(interests);
 
@@ -124,8 +133,10 @@ const InfoForm = () => {
       return showTost({ title: t("validationSelectSmoking") });
     if (!localDrinking)
       return showTost({ title: t("validationSelectDrinking") });
-    if (localLanguages.length === 0)
+    if (selectedLanguages.length === 0)
       return showTost({ title: t("validationSelectLanguage") });
+    if (selectedLanguages.includes(t("infoFormOtherLanguage")) && !otherLanguage?.trim())
+      return showTost({ title: "Please enter other language" });
     if (!localBio?.trim())
       return showTost({ title: t("validationEnterBio") });
     if (localBio.length < 5)
@@ -169,11 +180,20 @@ const InfoForm = () => {
         <section className="steps step-1 active rounded-[40px] relative bg-white">
           <div className="w-[100%] bg-[#EFEDEE] pt-[30px] z-[999] pb-[20px] fixed top-[0px]">
             <div className="bg-white w-[83%] h-[5px] mx-auto rounded-full">
-              <div className="bg-[#1F5799] rounded-full w-[25%] h-[5px]"></div>
+              <div className="bg-[#1F5799] rounded-full w-[25%] h-[5px]">
+                
+              </div>
             </div>
           </div>
 
           <>
+            <img
+                src={logo}
+                alt=""
+                width={80}
+                height={80}
+                className="mt-1 flex-shrink-0"
+              />
             <div className="mt-[10px] text-center">
               <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
                 {t("infoFormTitle")}
@@ -328,26 +348,36 @@ const InfoForm = () => {
                     className="w-full flex flex-row items-center justify-between text-[18px] max-_430_:text-[14px] py-[10px] cursor-pointer"
                     style={{
                       borderColor:
-                        selectedLanguages === lang || (lang === t("infoFormOtherLanguage") && selectedLanguages !== t("infoFormEnglish") && selectedLanguages !== t("infoFormGreek"))
+                        (selectedLanguages.includes(lang)) || 
+                        (lang === t("infoFormOtherLanguage") && otherLanguage)
                           ? "#C89A3D"
                           : "",
                     }}
                   >
                     <div className="flex items-center gap-[10px]">
                       <input
-                        type="radio"
+                        type="checkbox"
                         name="language"
                         value={lang}
-                        checked={
-                          selectedLanguages === lang ||
-                          (lang === t("infoFormOtherLanguage") && selectedLanguages !== t("infoFormEnglish") && selectedLanguages !== t("infoFormGreek"))
-                        }
+                        checked={selectedLanguages.includes(lang)}
                         onChange={() => {
-                          if (lang === t("infoFormOtherLanguage") && ![t("infoFormEnglish"), t("infoFormGreek")].includes(selectedLanguages)) {
-                          } else if (lang === t("infoFormOtherLanguage")) {
-                            setSelectedLanguages("");
+                          if (lang === t("infoFormOtherLanguage")) {
+                            // Toggle "Other" checkbox
+                            if (selectedLanguages.includes(lang)) {
+                              // Remove "Other" and clear the text input
+                              setSelectedLanguages(selectedLanguages.filter(l => l !== lang));
+                              setOtherLanguage("");
+                            } else {
+                              // Add "Other" to selection
+                              setSelectedLanguages([...selectedLanguages, lang]);
+                            }
                           } else {
-                            setSelectedLanguages(lang);
+                            // Toggle regular language in the array
+                            if (selectedLanguages.includes(lang)) {
+                              setSelectedLanguages(selectedLanguages.filter(l => l !== lang));
+                            } else {
+                              setSelectedLanguages([...selectedLanguages, lang]);
+                            }
                           }
                         }}
                         className="w-[18px] h-[18px]"
@@ -357,12 +387,12 @@ const InfoForm = () => {
                   </label>
                 ))}
 
-                {selectedLanguages !== t("infoFormEnglish") && selectedLanguages !== t("infoFormGreek") && (
+                {selectedLanguages.includes(t("infoFormOtherLanguage")) && (
                   <input
                     type="text"
                     placeholder={t("infoFormOtherLanguagePlaceholder")}
-                    value={selectedLanguages}
-                    onChange={(e) => setSelectedLanguages(e.target.value)}
+                    value={otherLanguage}
+                    onChange={(e) => setOtherLanguage(e.target.value)}
                     className="w-full mt-[15px] px-[13px] py-[10px] border-[2px] border-gray-300 rounded-[10px] text-[16px]"
                   />
                 )}

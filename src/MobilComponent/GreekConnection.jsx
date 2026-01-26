@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { MyContext } from "../Context/MyProvider";
 import { showTost } from "../showTost";
 import { useTranslation } from "react-i18next";
-
+import logo from "../images/logos/meet-greek.png";
+ 
 const GreekConnection = () => {
   const { t } = useTranslation();
   const navigation = useNavigate();
@@ -61,6 +62,13 @@ const GreekConnection = () => {
               <div className="bg-[#1F5799] rounded-full w-[43%] h-[5px]"></div>
             </div>
           </div>
+            <img
+                          src={logo}
+                          alt=""
+                          width={80}
+                          height={80}
+                          className="mt-1 flex-shrink-0"
+                        />
 
           <div className="mt-[10px]">
             <h1 className="text-[28px] max-_430_:text-[27px] font-[600] text-[#222222]">
@@ -74,9 +82,12 @@ const GreekConnection = () => {
           <div className="mt-[20px] w-[100%] space-y-6">
             {/* Greek Connection Options */}
             <div className="border-[2px] bg-white border-gray-300 rounded-[10px] p-3 shadow-sm">
-              <label className="block font-medium mb-4 text-lg text-[#333333]">
+              <label className="block font-medium text-lg text-[#333333]">
                 {t("greekConnectionLabel")}
               </label>
+                <p className="text-[#333333] text-sm mb-4 mt-1">
+                      {t("greekConnectionSubLabel")}
+                    </p>
               <div className="space-y-4">
                 <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors hover:bg-gray-50 p-2">
                   <input
@@ -89,11 +100,13 @@ const GreekConnection = () => {
                   />
                   <div className="flex-1">
                     <span className="text-[#333333] font-medium">{t("greekOptionGreek")}</span>
-                    <p className="text-[#333333] text-sm mt-1">
+                    
+                  </div>
+                  
+                </label>
+                <p className="text-[#333333] text-sm mt-1 px-2.5">
                       {t("greekOptionGreekDesc")}
                     </p>
-                  </div>
-                </label>
 
                 <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors hover:bg-gray-50 p-2">
                   <input
@@ -108,11 +121,12 @@ const GreekConnection = () => {
                     <span className="text-[#333333] font-medium">
                       {t("greekOptionGreekOrigin")}
                     </span>
-                    <p className="text-[#333333] text-sm mt-1">
-                      {t("greekOptionGreekOriginDesc")}
-                    </p>
+                   
                   </div>
                 </label>
+                   <p className="text-[#333333] text-sm mt-1 px-2.5">
+                      {t("greekOptionGreekOriginDesc")}
+                    </p>
 
                 <label className="flex items-center space-x-3 cursor-pointer rounded-lg transition-colors hover:bg-gray-50 p-2">
                   <input
@@ -127,11 +141,12 @@ const GreekConnection = () => {
                     <span className="text-[#333333] font-medium">
                       {t("greekOptionPhilhellene")}
                     </span>
-                    <p className="text-[#333333] text-sm mt-1">
-                      {t("greekOptionPhilhelleneDesc")}
-                    </p>
+                   
                   </div>
                 </label>
+                  <p className="text-[#333333] text-sm mt-1 px-2.5">
+                      {t("greekOptionPhilhelleneDesc")}
+                    </p>
               </div>
             </div>
 
@@ -146,9 +161,7 @@ const GreekConnection = () => {
                 className="text-[#333333] w-[100%] outline-none focus:border-[#C89A3D] border-2 border-gray-300 bg-white px-[15px] py-[15px] rounded-[10px] min-h-[150px] resize shadow-sm"
                 placeholder={t("greekRootsPlaceholder")}
               />
-              {localGreekRootConnection && (
-                <VscVerifiedFilled className="w-[25px] h-[25px] absolute bottom-3 right-5 text-green-500" />
-              )}
+             
               <p className="text-[#333333] text-sm mt-2">
                 {t("greekRootsHint")}
               </p>

@@ -213,6 +213,26 @@ const UserChat = () => {
     };
 
     // User Get Handler
+    // const UserGetHandler = () => {
+    //     const UserData = localStorage.getItem('Register_User');
+    //     if (UserData) {
+
+    //         const Data = JSON.parse(UserData);
+    //         const usersCollection = collection(db, "datingUser");
+
+    //         const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
+    //             const users = [];
+    //             snapshot.forEach((doc) => {
+    //                 const userData = doc.data();
+    //                 if (userData.uid !== Data.id) {
+    //                     users.push(userData);
+    //                 }
+    //             });
+    //             setData(users);
+    //         });
+    //         return () => unsubscribe();
+    //     }
+    // };
     const UserGetHandler = () => {
         const UserData = localStorage.getItem('Register_User');
         if (UserData) {
@@ -225,45 +245,106 @@ const UserChat = () => {
                 snapshot.forEach((doc) => {
                     const userData = doc.data();
                     if (userData.uid !== Data.id) {
-                        users.push(userData);
+                        // Convert uid to string to match Flutter behavior
+                        users.push({
+                            ...userData,
+                            uid: String(userData.uid)  // ← THIS IS THE FIX
+                        });
                     }
                 });
+                // console.log("Users from Firebase:", users); // ADD THIS LOG
                 setData(users);
             });
             return () => unsubscribe();
         }
     };
 
+
     // get My chats Users
     const MyCHatsUserGetHandel = () => {
         const userData = localStorage.getItem('Register_User');
         if (userData) {
             const Data = JSON.parse(userData);
-            const userId = Data.id;
-
+            // const userId = Data.id;
+            const userId = String(Data.id);
             if (!userId) return;
 
             const usersCollection = collection(db, 'chat_rooms');
 
+            // const fetchLastMessage = async (userData) => {
+            //     const [id1, id2] = userData.split("_");
+
+            //     const otherId = id1 === userId ? id2 : id2 === userId ? id1 : null;
+
+            //     if (!otherId) return null;
+
+            //     const messagesRef = collection(db, "chat_rooms", userData, "message");
+            //     const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
+
+            //     const snapshot = await getDocs(messagesQuery);
+            //     const messages = snapshot.docs.map(doc => doc.data());
+
+            //     if (messages.length === 0) return null;
+
+            //     const lastMessage = messages[messages.length - 1];
+            //     const messageTime = lastMessage.timestamp && lastMessage.timestamp.toDate();
+
+            //     if (!messageTime) return null;
+
+            //     let hours = messageTime.getHours();
+            //     const minutes = messageTime.getMinutes();
+            //     const period = hours >= 12 ? 'PM' : 'AM';
+
+            //     hours = hours % 12;
+            //     hours = hours ? hours : 12;
+
+            //     const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes} ${period}`;
+
+            //     return {
+            //         otherId,
+            //         lastMessage: lastMessage.message,
+
+            //         timestamp: formattedTime,
+            //         sortchat: lastMessage.timestamp
+            //     };
+
+            // };
             const fetchLastMessage = async (userData) => {
+                // console.log("🔎 Fetching messages for:", userData); // ADD THIS
+
                 const [id1, id2] = userData.split("_");
+                // console.log("  IDs:", id1, id2, "Current userId:", userId); // ADD THIS
 
                 const otherId = id1 === userId ? id2 : id2 === userId ? id1 : null;
+                // console.log("  Other ID:", otherId); // ADD THIS
 
-                if (!otherId) return null;
+                if (!otherId) {
+                    // console.log("   otherId is null!"); // ADD THIS
+                    return null;
+                }
 
                 const messagesRef = collection(db, "chat_rooms", userData, "message");
                 const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
 
                 const snapshot = await getDocs(messagesQuery);
+                // console.log("  📨 Messages found:", snapshot.docs.length); // ADD THIS
+
                 const messages = snapshot.docs.map(doc => doc.data());
 
-                if (messages.length === 0) return null;
+                if (messages.length === 0) {
+                    // console.log("   No messages in this chat room"); // ADD THIS
+                    return null;
+                }
 
                 const lastMessage = messages[messages.length - 1];
+                // console.log("   Last message:", lastMessage.message); // ADD THIS
+
                 const messageTime = lastMessage.timestamp && lastMessage.timestamp.toDate();
 
-                if (!messageTime) return null;
+                if (!messageTime) {
+                    // console.log("   No timestamp on message"); // ADD THIS
+                    return null;
+                }
 
                 let hours = messageTime.getHours();
                 const minutes = messageTime.getMinutes();
@@ -280,23 +361,26 @@ const UserChat = () => {
                     timestamp: formattedTime,
                     sortchat: lastMessage.timestamp
                 };
-
             };
-
             const unsubscribe = onSnapshot(usersCollection, async (snapshot) => {
+                // console.log(" Total chat rooms:", snapshot.docs.length);
                 const users = [];
                 const lastmsg = [];
 
                 for (const doc of snapshot.docs) {
                     const userData = doc.id;
+                    // console.log(" Chat room ID:", userData);
                     const user = await fetchLastMessage(userData);
 
+
                     if (user) {
+                        // console.log(" User found:", user);
                         lastmsg.push(user);
                         users.push(user.otherId);
                     }
                 }
 
+                // console.log("📋 Final lastMsg:", lastmsg);
                 setMyChatsUser(users);
                 setLastMsg(lastmsg);
 
@@ -306,9 +390,32 @@ const UserChat = () => {
         }
     };
 
+    // const memoizedSortedData = useMemo(() => {
+    //     const result = lastMsg?.map(chat => {
+    //         const matchedUser = data.find(user => user.uid === chat.otherId);
+
+    //         if (matchedUser) {
+    //             return {
+    //                 ...chat,
+    //                 name: matchedUser.name,
+    //                 pro_pic: matchedUser.pro_pic
+    //             };
+    //         }
+    //         return chat;
+    //     });
+
+    //     return result?.sort((a, b) => {
+    //         if (b.sortchat.seconds !== a.sortchat.seconds) {
+    //             return b.sortchat.seconds - a.sortchat.seconds;
+    //         }
+    //         return b.sortchat.nanoseconds - a.sortchat.nanoseconds;
+    //     });
+
+    // }, [lastMsg, data]);
     const memoizedSortedData = useMemo(() => {
         const result = lastMsg?.map(chat => {
-            const matchedUser = data.find(user => user.uid === chat.otherId);
+            // Convert both to strings for comparison - THIS IS THE FIX
+            const matchedUser = data.find(user => String(user.uid) === String(chat.otherId));
 
             if (matchedUser) {
                 return {
@@ -321,13 +428,14 @@ const UserChat = () => {
         });
 
         return result?.sort((a, b) => {
-            if (b.sortchat.seconds !== a.sortchat.seconds) {
-                return b.sortchat.seconds - a.sortchat.seconds;
+            if (b.sortchat?.seconds !== a.sortchat?.seconds) {
+                return (b.sortchat?.seconds || 0) - (a.sortchat?.seconds || 0);
             }
-            return b.sortchat.nanoseconds - a.sortchat.nanoseconds;
+            return (b.sortchat?.nanoseconds || 0) - (a.sortchat?.nanoseconds || 0);
         });
 
     }, [lastMsg, data]);
+
 
     useEffect(() => {
         setSearchData(memoizedSortedData);
@@ -440,7 +548,7 @@ const UserChat = () => {
         if ("Notification" in window) {
             if (Notification.permission !== "granted") {
                 Notification.requestPermission().then(permission => {
-                   
+
                 });
             }
         }
@@ -684,10 +792,11 @@ const UserChat = () => {
     };
 
     // Search Handle 
+    // Search Handle 
     useEffect(() => {
         if (searchData?.length > 0) {
             const searchResults = sortData.filter((item) =>
-                item.name.toLowerCase().includes(input.toLowerCase())
+                item.name?.toLowerCase().includes(input?.toLowerCase() || "")  // ← Fixed with optional chaining
             );
             if (input) {
                 setSearchData(searchResults);
@@ -817,11 +926,14 @@ const UserChat = () => {
                         handleButtonClick();
                     }
                     options && ModalShow();
-                }} className="main-wrapper-3 bg-[#e5e5e5] flex">
-                    <div className="content-body">
-                        <div className="container-fluid my-4 px-sm-4 px-3">
+                }} className="main-wrapper-3 bg-[#e5e5e5] flex mb-0">
+                    <div className="content-body mt-0 mb-0">
+                        <div className="container-fluid px-sm-4 px-3">
                             <div ref={Open} className="main-chart-wrapper abcd d-lg-flex max-_1200_:-mt-[125px] max-_1200_:h-[100vh]">
-                                <div className="chat-sidebar-info card card-rounded p-sm-4 p-3 max-_1200_:mt-[125px] max-_1200_:h-[80%]">
+                                {/* Sidebar - Match height with chatbox */}
+                                <div className="chat-sidebar-info card card-rounded p-sm-4 p-3 max-_1200_:mt-[125px] flex flex-col h-[85vh] max-_1200_:h-[100vh]">
+                                    <h2 className='my-2'>Chats</h2>
+
                                     <div className="sidebar-search flex items-center mb-3">
                                         <input type="text" onChange={(e) => setInput(e.target.value)} className="searchbar mx-lg-0 form-control bg-white focus-within:outline-[#0066CC]" placeholder="Search" />
                                         <div className="-ms-[30px]">
@@ -833,8 +945,10 @@ const UserChat = () => {
                                             </svg>
                                         </div>
                                     </div>
-                                    <div className="chat-message-list">
-                                        <ul className="my-2 scroll-msg h-[575px]" id="msgList">
+
+                                    {/* Scrollable user list */}
+                                    <div className="chat-message-list flex-1 overflow-y-auto">
+                                        <ul className="my-2" id="msgList">
                                             {searchData?.length > 0
                                                 && searchData?.map((user, index) => {
                                                     if (!chatUserBlock.includes(user.otherId)) {
@@ -873,7 +987,9 @@ const UserChat = () => {
                                     </div>
                                 </div>
 
-                                <div className="main-chat-area w-100 max-_1200_:mt-[125px]">
+                                {/* Chat Area - Match height with sidebar and fix input at bottom */}
+                                <div className="main-chat-area w-100 max-_1200_:mt-[125px] flex flex-col h-[85vh]">
+                                    {/* Header */}
                                     <div className="d-flex align-items-center justify-between p-sm-4 p-3 card card-rounded">
                                         <div className="d-flex align-items-center">
                                             <button onClick={ChatOffHandler} className="back-chat mx-2 d-xl-none">
@@ -894,26 +1010,6 @@ const UserChat = () => {
                                             </div>
                                         </div>
                                         {receiverId && <div className="d-flex flex-wrap rightIcons d-sm-flex">
-                                            {/* {audio_video === "1" && <button onClick={AudioCallHandler} aria-label="button" type="button"
-                                                className="call btn btn-outline-light rounded-circle m-1" data-bs-toggle="modal"
-                                                data-bs-target="#phoneCall">
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M14.591 11.3034C14.5503 11.2711 11.5938 9.14003 10.7823 9.293C10.3949 9.36154 10.1734 9.62575 9.72891 10.1547C9.65739 10.2401 9.48555 10.4447 9.35196 10.5902C9.07105 10.4986 8.79704 10.3871 8.532 10.2565C7.16401 9.59049 6.05872 8.4852 5.39272 7.11721C5.26204 6.85221 5.1505 6.57819 5.05898 6.29725C5.20499 6.16316 5.40961 5.99132 5.49702 5.91782C6.02346 5.4758 6.28817 5.2543 6.35671 4.86593C6.49726 4.06137 4.36765 1.08449 4.3453 1.05767C4.24868 0.91964 4.12258 0.804812 3.97613 0.721495C3.82969 0.638179 3.66655 0.588457 3.49853 0.575928C2.63536 0.575928 0.171021 3.77282 0.171021 4.31118C0.171021 4.34247 0.216215 7.52297 4.1382 11.5125C8.12376 15.43 11.3038 15.4752 11.3351 15.4752C11.8739 15.4752 15.0703 13.0109 15.0703 12.1477C15.0579 11.9803 15.0085 11.8177 14.9256 11.6717C14.8427 11.5257 14.7285 11.3999 14.591 11.3034Z"
-                                                        fill="#F41781" />
-                                                </svg>
-                                            </button>} */}
-                                            {/* {audio_video === "1" && <button onClick={VideoCallHandler} aria-label="button" type="button"
-                                                className="videocall btn btn-outline-light rounded-circle m-1" data-bs-toggle="modal"
-                                                data-bs-target="#videoCall">
-                                                <svg width="18" height="13" viewBox="0 0 18 13" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M17.3537 2.3579V9.95702C17.3536 10.0784 17.3193 10.1973 17.2546 10.3C17.1898 10.4028 17.0974 10.4851 16.988 10.5376C16.8785 10.5901 16.7564 10.6106 16.6358 10.5968C16.5152 10.5829 16.401 10.5353 16.3063 10.4594L14.4544 8.9729C14.4245 8.94882 14.4003 8.91833 14.3837 8.88367C14.3671 8.84902 14.3585 8.81108 14.3586 8.77266V3.54227C14.3585 3.50385 14.3671 3.46591 14.3837 3.43125C14.4003 3.39659 14.4245 3.3661 14.4544 3.34202L16.3063 1.85557C16.401 1.77964 16.5152 1.732 16.6358 1.71816C16.7564 1.70431 16.8785 1.72482 16.988 1.77731C17.0974 1.82981 17.1898 1.91216 17.2546 2.01488C17.3193 2.11759 17.3536 2.2365 17.3537 2.3579ZM13.0749 9.58049V2.73443C13.1247 2.38571 13.0926 2.03019 12.9812 1.69602C12.8697 1.36185 12.6821 1.0582 12.433 0.809121C12.1839 0.560038 11.8802 0.372357 11.5461 0.260934C11.2119 0.149512 10.8564 0.117407 10.5077 0.167162H2.80584C2.45712 0.117407 2.1016 0.149512 1.76743 0.260934C1.43326 0.372357 1.12962 0.560038 0.880532 0.809121C0.631449 1.0582 0.443768 1.36185 0.332345 1.69602C0.220923 2.03019 0.188818 2.38571 0.238574 2.73443V9.58049C0.188818 9.92921 0.220923 10.2847 0.332345 10.6189C0.443768 10.9531 0.631449 11.2567 0.880532 11.5058C1.12962 11.7549 1.43326 11.9426 1.76743 12.054C2.1016 12.1654 2.45712 12.1975 2.80584 12.1478H10.5077C10.8564 12.1975 11.2119 12.1654 11.5461 12.054C11.8802 11.9426 12.1839 11.7549 12.433 11.5058C12.6821 11.2567 12.8697 10.9531 12.9812 10.6189C13.0926 10.2847 13.1247 9.92921 13.0749 9.58049Z"
-                                                        fill="#0CC94C" />
-                                                </svg>
-                                            </button>} */}
                                             <div className="">
                                                 <button className="bg-blue-100 rounded-circle m-1" onClick={ModalShow}><HiDotsVertical className='text-[15px] text-[blue]' /></button>
                                             </div>
@@ -931,7 +1027,9 @@ const UserChat = () => {
                                             )}
                                         </div>}
                                     </div>
-                                    <div className="chat-body scroll-Chat" id="msgInOut" ref={chatBoxBodyRef}>
+
+                                    {/* Scrollable Chat Body */}
+                                    <div className="chat-body scroll-Chat flex-1 overflow-y-auto" id="msgInOut" ref={chatBoxBodyRef}>
                                         <ul>
                                             {allChat.length > 0 &&
                                                 allChat.map((el, index) => {
@@ -947,11 +1045,12 @@ const UserChat = () => {
                                                     }
                                                     return null;
                                                 })}
-
                                         </ul>
                                     </div>
-                                    <div className="chat-footer">
-                                        <div className="d-flex align-items-center px-2 py-4 card card-rounded">
+
+                                    {/* Footer - Fixed at bottom with no margin */}
+                                    <div className="chat-footer mt-auto mb-0">
+                                        <div className="d-flex align-items-center px-2 py-4 card card-rounded mb-0">
                                             <button onClick={handleButtonClick} aria-label="button" type="button" className="btn emoji px-3 py-0 border-right relative">
                                                 <svg width="22" height="23" viewBox="0 0 22 23" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">

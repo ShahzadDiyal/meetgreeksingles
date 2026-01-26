@@ -6,7 +6,6 @@ import ShowPassword from "../Icon/eye.svg";
 import HidePassword from "../Icon/eye-slash.svg";
 import EmailIcon from "../Icon/envelope.svg";
 import UblockIcon from "../Icon/unlock.svg";
-import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import CloseIcon from "../Icon/times.svg";
 import { Link, useNavigate } from "react-router-dom";
@@ -38,7 +37,6 @@ const Login = () => {
   const [checkOtp, setChechOtp] = useState();
   const [passwordShow, setPasswordShow] = useState(false);
   const [otpShow, setOtpShow] = useState(false);
-  const [fcmToken, setFcmToken] = useState();
 
   const navigate = useNavigate();
 
@@ -60,53 +58,54 @@ const Login = () => {
     }
   }
 
-  // const SigninHandler = () => {
-  //   const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-  //   if (Email && Password) {
-  //     axios
-  //       .post(`${basUrl}user_php`, {
+
+
+  // const SigninHandler = async () => {
+
+  //   try {
+  //     // Check if input is empty
+  //     if (!Email)
+  //       return showTost({ title: t("enterEmailMobile") }); // Updated
+  //     if (!Password) return showTost({ title: t("enterPassword") }); // Updated
+
+  //     // Determine if input is email or mobile
+  //     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  //     const isEmail = emailRegex.test(Email);
+
+  //     // Prepare request data based on input type
+  //     let requestData;
+
+  //     if (isEmail) {
+  //       requestData = {
+  //         email: Email, // backend expects mobile
+  //         password: Password,
+  //       };
+  //     } else {
+  //       // For mobile login (extract country code if present)
+  //       let mobileNumber = Email;
+  //       let countryCode = "+91"; // Default to India
+
+  //       // Check if number includes country code
+  //       if (Email.startsWith("+")) {
+  //         // Extract country code (assume it's + followed by 1-4 digits)
+  //         const match = Email.match(/^(\+\d{1,4})(\d+)$/);
+  //         if (match) {
+  //           countryCode = match[1];
+  //           mobileNumber = match[2];
+  //         }
+  //       }
+
+  //       requestData = {
   //         mobile: Email,
   //         ccode: "+91",
   //         password: Password,
-  //       })
-  //       .then((res) => {
-  //         if (res.data.Result === "true") {
-  //           setToastShow(true);
-  //           showTost({ title: res.data.ResponseMsg });
-  //           UserAddHandler(res.data.UserLogin);
-  //           Data.setDemo(Data.demo + "123");
-  //           const token = res.data.token || uid(32);
-  //           localStorage.setItem("token", token);
-  //           localStorage.setItem("UserId", res.data.Userid);
-  //           localStorage.setItem("Register_User", JSON.stringify(res.data.UserLogin));
-  //           setTimeout(() => {
-  //             navigate("/");
-  //           }, 500);
-  //         } else {
-  //           showTost({ title: res.data.ResponseMsg });
-  //         }
-  //       });
-  //   } else if (!test(Email)) {
-  //     showTost({ title: "Please Enter Valid Email" });
-  //   } else if (!Email) {
-  //     showTost({ title: "Please Enter Email" });
-  //   } else if (!Password) {
-  //     showTost({ title: "Please Enter Password" });
-  //   }
-  // };
-  //   const SigninHandler = async () => {
-  //   console.log("SigninHandler clicked");
+  //       };
+  //     }
 
-  //   try {
-  //     const Validation = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-  //     if (!Email) return showTost({ title: "Please Enter Email" });
-  //     if (!Password) return showTost({ title: "Please Enter Password" });
+  //     console.log("Sending login request:", requestData);
 
-  //     const res = await axios.post(`${basUrl}user_php`, {
-  //       mobile: Email,
-  //       ccode: "+91",
-  //       password: Password,
-  //     });
+  //     // API call for login - use different endpoint or parameters based on your backend
+  //     const res = await axios.post(`${basUrl}user_login.php`, requestData);
 
   //     if (res.data.Result === "true") {
   //       const user = res.data.UserLogin;
@@ -120,42 +119,23 @@ const Login = () => {
   //       showTost({ title: res.data.ResponseMsg });
   //       Data.setDemo(Data.demo + "123");
 
-  //       // --- CHECK ONBOARDING STATUS FROM LOCALSTORAGE ---
-  //       const onboardingStatus = user.onboarding_status;
-  //       let redirectPath = "/";
+  //       // --- ONBOARDING STATUS CHECK ---
+  //       const onboardingStatus = (user.onboarding_status || "").toLowerCase();
+  //       const redirectPath =
+  //         onboardingStatus === "completed" ? "/dashboard" : "/image";
 
-  //       console.log("📊 Onboarding status from login response:", onboardingStatus);
-
-  //       if (onboardingStatus === "completed" || onboardingStatus === "Completed") {
-  //         redirectPath = "/dashboard"; // or your main dashboard page
-  //       } else {
-  //         redirectPath = "/image"; // onboarding image upload page
-  //       }
-
-  //       console.log(" Redirecting to:", redirectPath);
-
-  //       // --- SAVE USER TO FIRESTORE WITH FCM TOKEN (in background) ---
+  //       // --- SAVE USER TO FIRESTORE (background process) ---
   //       const saveUserToFirestore = async () => {
   //         try {
-  //           const { id, name, email, mobile, profile_pic, token } = user;
+  //           const { id, name, email, mobile, profile_pic } = user;
   //           const userRef = doc(db, "datingUser", id);
 
   //           let fcmToken = "";
-
   //           console.log("🔄 Starting Firestore save for user:", id);
 
-  //           // Initialize OneSignal and get FCM token
+  //           // Get FCM token from OneSignal if available
   //           if (window.OneSignal) {
   //             try {
-  //               console.log("🔄 Initializing OneSignal...");
-
-  //               await window.OneSignal.init({
-  //                 appId: "720a0530-a6f1-42b6-8725-f1a47dc284f3",
-  //                 allowLocalhostAsSecureOrigin: true,
-  //               });
-
-  //               console.log(" OneSignal initialized");
-
   //               await new Promise((resolve) => {
   //                 window.OneSignal.push(() => {
   //                   console.log(" OneSignal is ready");
@@ -163,30 +143,29 @@ const Login = () => {
   //                 });
   //               });
 
-  //               await window.OneSignal.setExternalUserId(user.id);
-  //               console.log(" External user ID set:", user.id);
+  //               await window.OneSignal.setExternalUserId(id);
+  //               console.log(" External user ID set:", id);
 
-  //               try {
-  //                 await new Promise(resolve => setTimeout(resolve, 1000));
+  //               for (let attempt = 0; attempt < 3; attempt++) {
+  //                 await new Promise((resolve) => setTimeout(resolve, 1000));
   //                 fcmToken = await window.OneSignal.getUserId();
-  //                 console.log(" FCM Token from OneSignal:", fcmToken);
-
-  //                 if (!fcmToken) {
-  //                   console.log("⚠️ No FCM token available, trying alternative method...");
-  //                   await new Promise(resolve => setTimeout(resolve, 2000));
-  //                   fcmToken = await window.OneSignal.getUserId();
-  //                   console.log(" FCM Token (retry):", fcmToken);
+  //                 if (fcmToken) {
+  //                   console.log(
+  //                     " FCM Token received on attempt",
+  //                     attempt + 1,
+  //                     ":",
+  //                     fcmToken
+  //                   );
+  //                   break;
   //                 }
-
-  //               } catch (tokenError) {
-  //                 console.warn(" Error getting FCM token:", tokenError);
   //               }
 
+  //               if (!fcmToken) {
+  //                 console.warn("⚠️ No FCM token available after 3 attempts");
+  //               }
   //             } catch (oneSignalError) {
-  //               console.warn(" OneSignal initialization error:", oneSignalError);
+  //               console.warn(" OneSignal error:", oneSignalError);
   //             }
-  //           } else {
-  //             console.log("⚠️ OneSignal not available in window");
   //           }
 
   //           // Prepare user data
@@ -200,72 +179,38 @@ const Login = () => {
   //             isOnline: true,
   //             last_seen: new Date().toISOString(),
   //             updated_at: new Date().toISOString(),
+  //             onboarding_status: onboardingStatus || "pending",
   //           };
 
-  //           console.log("📦 Data to save to Firestore:", userData);
-
+  //           console.log("📦 Saving data to Firestore...");
   //           await setDoc(userRef, userData, { merge: true });
   //           console.log(" Firestore save completed");
-
-  //           // Verify the save
-  //           const savedDoc = await getDoc(userRef);
-  //           if (savedDoc.exists()) {
-  //             const savedData = savedDoc.data();
-  //             console.log("🔍 VERIFICATION - Firestore document saved successfully");
-  //           } else {
-  //             console.error(" Document doesn't exist after save!");
-  //           }
-
   //         } catch (error) {
   //           console.error("🔥 Firestore save error:", error);
-
-  //           // Fallback: Save without token
-  //           try {
-  //             const { id, name, email, mobile, profile_pic } = user;
-  //             const userRef = doc(db, "datingUser", id);
-
-  //             const fallbackData = {
-  //               uid: id,
-  //               name: name || "",
-  //               email: email || "",
-  //               number: mobile || "",
-  //               token: "",
-  //               pro_pic: profile_pic || "null",
-  //               isOnline: true,
-  //               last_seen: new Date().toISOString(),
-  //             };
-
-  //             await setDoc(userRef, fallbackData, { merge: true });
-  //             console.log(" Fallback Firestore save completed");
-  //           } catch (fallbackError) {
-  //             console.error("🔥 Fallback Firestore save failed:", fallbackError);
-  //           }
   //         }
   //       };
 
-  //       // Start Firestore save in background (don't await it)
+  //       // Start Firestore save in background
   //       saveUserToFirestore();
 
-  //       // Navigate after short delay
+  //       // Navigate
   //       setTimeout(() => navigate(redirectPath), 500);
-
   //     } else {
-  //       showTost({ title: res.data.ResponseMsg });
+  //       showTost({
+  //         title: res.data.ResponseMsg || t("loginFailed"), // Updated
+  //       });
   //     }
   //   } catch (err) {
-  //     console.error("🔥 SigninHandler crashed:", err);
-  //     showTost({ title: "Login failed" });
+  //     console.error("🔥 SigninHandler error:", err);
+  //     showTost({ title: t("loginFailed") }); // Updated
   //   }
   // };
-
   const SigninHandler = async () => {
-    console.log("SigninHandler clicked");
-
     try {
       // Check if input is empty
       if (!Email)
-        return showTost({ title: t("enterEmailMobile") }); // Updated
-      if (!Password) return showTost({ title: t("enterPassword") }); // Updated
+        return showTost({ title: t("enterEmailMobile") });
+      if (!Password) return showTost({ title: t("enterPassword") });
 
       // Determine if input is email or mobile
       const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
@@ -275,25 +220,13 @@ const Login = () => {
       let requestData;
 
       if (isEmail) {
+        // Use 'email' parameter for email login
         requestData = {
-          mobile: Email, // backend expects mobile
+          email: Email,
           password: Password,
         };
       } else {
-        // For mobile login (extract country code if present)
-        let mobileNumber = Email;
-        let countryCode = "+91"; // Default to India
-
-        // Check if number includes country code
-        if (Email.startsWith("+")) {
-          // Extract country code (assume it's + followed by 1-4 digits)
-          const match = Email.match(/^(\+\d{1,4})(\d+)$/);
-          if (match) {
-            countryCode = match[1];
-            mobileNumber = match[2];
-          }
-        }
-
+        // For mobile login
         requestData = {
           mobile: Email,
           ccode: "+91",
@@ -301,10 +234,16 @@ const Login = () => {
         };
       }
 
-      console.log("Sending login request:", requestData);
+      console.log("Sending login request:", JSON.stringify(requestData));
 
-      // API call for login - use different endpoint or parameters based on your backend
-      const res = await axios.post(`${basUrl}user_login.php`, requestData);
+      // API call for login
+      const res = await axios.post(`${basUrl}user_login.php`, requestData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log("Login response:", res.data);
 
       if (res.data.Result === "true") {
         const user = res.data.UserLogin;
@@ -317,6 +256,8 @@ const Login = () => {
 
         showTost({ title: res.data.ResponseMsg });
         Data.setDemo(Data.demo + "123");
+        UserAddHandler(user);
+
 
         // --- ONBOARDING STATUS CHECK ---
         const onboardingStatus = (user.onboarding_status || "").toLowerCase();
@@ -327,10 +268,35 @@ const Login = () => {
         const saveUserToFirestore = async () => {
           try {
             const { id, name, email, mobile, profile_pic } = user;
-            const userRef = doc(db, "datingUser", id);
+
+            // EXTRA VALIDATION: Ensure user object exists
+            if (!user) {
+              console.error("❌ Firestore save aborted: User object is undefined");
+              return;
+            }
+
+            // EXTRA VALIDATION: Ensure id exists and is valid
+            if (!id && id !== 0) {
+              console.error("❌ Firestore save aborted: User ID is undefined/null", user);
+              return;
+            }
+
+            // Convert to string and trim
+            const userId = String(id).trim();
+
+            if (!userId || userId === "undefined" || userId === "null") {
+              console.error("❌ Firestore save aborted: Invalid user ID after conversion:", userId);
+              return;
+            }
+
+            console.log("🔄 Creating Firestore reference for user:", userId);
+
+            // Create Firestore reference
+            const userRef = doc(db, "datingUser", userId);
+            console.log("🔄 Firestore reference created successfully");
 
             let fcmToken = "";
-            console.log("🔄 Starting Firestore save for user:", id);
+            console.log("🔄 Starting Firestore save for user:", userId);
 
             // Get FCM token from OneSignal if available
             if (window.OneSignal) {
@@ -342,8 +308,8 @@ const Login = () => {
                   });
                 });
 
-                await window.OneSignal.setExternalUserId(id);
-                console.log(" External user ID set:", id);
+                await window.OneSignal.setExternalUserId(userId);
+                console.log(" External user ID set:", userId);
 
                 for (let attempt = 0; attempt < 3; attempt++) {
                   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -369,7 +335,7 @@ const Login = () => {
 
             // Prepare user data
             const userData = {
-              uid: id,
+              uid: userId,
               name: name || "",
               email: email || "",
               number: mobile || "",
@@ -382,84 +348,260 @@ const Login = () => {
             };
 
             console.log("📦 Saving data to Firestore...");
-            await setDoc(userRef, userData, { merge: true });
-            console.log(" Firestore save completed");
+            console.log("📦 User data payload:", userData);
+
+            // Try-catch for setDoc operation
+            try {
+              await setDoc(userRef, userData, { merge: true });
+              console.log("✅ Firestore save completed for user:", userId);
+            } catch (setDocError) {
+              console.error("🔥 setDoc error:", setDocError);
+              console.error("🔥 Error during document set:", {
+                message: setDocError.message,
+                code: setDocError.code,
+                stack: setDocError.stack
+              });
+            }
           } catch (error) {
             console.error("🔥 Firestore save error:", error);
+            console.error("🔥 Full error details:", {
+              message: error.message,
+              name: error.name,
+              stack: error.stack
+            });
           }
         };
-
-        // Start Firestore save in background
-        saveUserToFirestore();
 
         // Navigate
         setTimeout(() => navigate(redirectPath), 500);
       } else {
         showTost({
-          title: res.data.ResponseMsg || t("loginFailed"), // Updated
+          title: res.data.ResponseMsg || t("loginFailed"),
         });
       }
     } catch (err) {
       console.error("🔥 SigninHandler error:", err);
-      showTost({ title: t("loginFailed") }); // Updated
+      console.error("Error details:", err.response?.data || err.message);
+      showTost({ title: t("loginFailed") });
     }
   };
-
   const toggleBottomSheet = () => {
     setIsVisible(!isVisible);
     setOtpShow(false);
     setValue("");
   };
 
-  const PhoneHandler = () => {
-    if (value) {
-      if (value.length === 13) {
-        const Num = value.slice(3);
-        const Code = value.slice(0, 3);
+  // const EmailHandler = () => {
+  //   if (value) {
+  //     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
-        axios
-          .post(`${basUrl}mobile_check.php`, {
-            mobile: Num,
-            ccode: Code,
-          })
+  //     if (emailRegex.test(value)) {
+  //       // 1. Check if email exists in system
+  //       axios.post(`${basUrl}email_check.php`, { email: value })
+  //         .then((res) => {
+  //           console.log("📧 Email Check Response:", res.data);
+
+  //           // IMPORTANT: Your backend returns "false" when email exists
+  //           if (res.data.Result === "false") {
+  //             console.log("✅ Email verified, proceeding with OTP...");
+
+  //             // 2. Send OTP to email (skip sms_type.php check temporarily)
+  //             axios.post(`${basUrl}email_otp.php`, { email: value })
+  //               .then((otpRes) => {
+  //                 console.log("📨 OTP Send Response:", otpRes.data);
+
+  //                 if (otpRes.data.Result === "true" || otpRes.data.otp) {
+  //                   // SUCCESS: OTP sent
+  //                   showTost({ 
+  //                     title: otpRes.data.ResponseMsg || "OTP sent to your email" 
+  //                   });
+
+  //                   // Store OTP for verification
+  //                   setChechOtp(otpRes.data.otp);
+
+  //                   // Show OTP input fields
+  //                   setOtpShow(true);
+  //                   setPasswordShow(false);
+
+  //                   console.log("🎯 OTP fields should be visible now");
+  //                   console.log("OTP Code:", otpRes.data.otp);
+  //                 } else {
+  //                   // OTP send failed
+  //                   showTost({ 
+  //                     title: otpRes.data.ResponseMsg || "Failed to send OTP" 
+  //                   });
+  //                 }
+  //               })
+  //               .catch((otpError) => {
+  //                 console.error("❌ OTP Send Error:", otpError);
+  //                 showTost({ title: "OTP service unavailable" });
+  //               });
+
+  //           } else {
+  //             // Email doesn't exist
+  //             showTost({ 
+  //               title: res.data.ResponseMsg || "Email not registered" 
+  //             });
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           console.error("❌ Email Check Error:", error);
+  //           showTost({ title: "Network error. Please try again." });
+  //         });
+
+  //     } else {
+  //       showTost({ title: "Please enter a valid email address" });
+  //     }
+  //   } else {
+  //     showTost({ title: "Please enter your email" });
+  //   }
+  // };
+
+
+  // const OtpCheckHandler = () => {
+  //   if (checkOtp === otpValue.join("")) {
+  //     showTost({ title: t("otpMatchSuccess") }); // Updated
+  //     setOtpShow(false);
+  //     setPasswordShow(true);
+  //   } else {
+  //     showTost({ title: t("invalidOtp") }); // Updated
+  //   }
+  // };
+
+
+  const EmailHandler = () => {
+    if (value) {
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+      if (emailRegex.test(value)) {
+        // 1. Check if email exists in system
+        axios.post(`${basUrl}email_check.php`, { email: value })
           .then((res) => {
-            if (res.data.Result === "true") {
-              showTost({ title: res.data.ResponseMsg });
-            } else {
-              axios.post(`${basUrl}sms_type.php`).then((res) => {
-                if (res.data.Result === "true") {
-                  if (res.data.otp_auth === "Yes") {
-                    if (res.data.SMS_TYPE === "Msg91") {
-                      axios
-                        .post(`${basUrl}msg_otp.php`, { mobile: Num })
-                        .then((res) => {
-                          showTost({ title: res.data.ResponseMsg });
-                          setChechOtp(res.data.otp);
-                        });
+            console.log("📧 Email Check Response:", res.data);
+
+            // IMPORTANT: Your backend returns "false" when email exists
+            if (res.data.Result === "false") {
+              console.log("✅ Email verified, proceeding with OTP...");
+
+              // 2. Send OTP to email
+              axios.post(`${basUrl}email_otp.php`, { email: value })
+                .then((otpRes) => {
+                  console.log("📨 OTP Send Response:", otpRes.data);
+
+                  if (otpRes.data.Result === "true") {
+                    // SUCCESS: OTP sent
+                    showTost({
+                      title: otpRes.data.ResponseMsg || "OTP sent to your email"
+                    });
+
+                    // Store the OTP sent from backend for debugging
+                    // Note: Now we'll verify via API, not compare locally
+                    if (otpRes.data.otp) {
+                      console.log("OTP sent from backend:", otpRes.data.otp);
+                      setChechOtp(otpRes.data.otp); // Keep for reference if needed
                     }
+
+                    // Show OTP input fields
                     setOtpShow(true);
+                    setPasswordShow(false);
+
+                    console.log("🎯 OTP fields should be visible now");
                   } else {
-                    setPasswordShow(true);
+                    // OTP send failed
+                    showTost({
+                      title: otpRes.data.ResponseMsg || "Failed to send OTP"
+                    });
                   }
-                }
+                })
+                .catch((otpError) => {
+                  console.error("❌ OTP Send Error:", otpError);
+                  showTost({ title: "OTP service unavailable" });
+                });
+
+            } else {
+              // Email doesn't exist
+              showTost({
+                title: res.data.ResponseMsg || "Email not registered"
               });
             }
+          })
+          .catch((error) => {
+            console.error("❌ Email Check Error:", error);
+            showTost({ title: "Network error. Please try again." });
           });
+
       } else {
-        showTost({ title: t("validMobile") }); // Updated
+        showTost({ title: "Please enter a valid email address" });
       }
     } else {
-      showTost({ title: t("enterMobile") }); // Updated
+      showTost({ title: "Please enter your email" });
     }
   };
 
-  const OtpCheckHandler = () => {
-    if (checkOtp === otpValue.join("")) {
-      showTost({ title: t("otpMatchSuccess") }); // Updated
-      setOtpShow(false);
-      setPasswordShow(true);
-    } else {
-      showTost({ title: t("invalidOtp") }); // Updated
+
+  const OtpCheckHandler = async () => {
+    console.log("Email for OTP verification:", value);
+    console.log("Entered OTP:", otpValue.join(""));
+
+    const enteredOtp = otpValue.join("");
+
+    if (!enteredOtp || enteredOtp.length !== 6) {
+      showTost({ title: "Please enter the 6-digit OTP" });
+      return;
+    }
+
+    try {
+      console.log("Sending OTP verification request...");
+
+      // Call the OTP verification API
+      const res = await axios.post(`${basUrl}/verify_otp.php`, {
+        email: value,
+        otp: enteredOtp
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log("OTP verification response:", res.data);
+
+      if (res.data.Result === "true") {
+        showTost({ title: res.data.ResponseMsg || "OTP verified successfully" });
+        setOtpShow(false);
+        setPasswordShow(true);
+
+        // Clear the OTP field
+        setOtpValue([]);
+
+        // If you have setChechOtp state, you might want to clear it too
+        if (setChechOtp) {
+          setChechOtp(null);
+        }
+      } else {
+        showTost({ title: res.data.ResponseMsg || "Invalid OTP" });
+
+        // Clear OTP fields for re-entry
+        setOtpValue([]);
+        if (Inputref.current && Inputref.current[0]) {
+          Inputref.current[0].focus();
+        }
+      }
+    } catch (err) {
+      console.error("OTP verification error:", err);
+
+      if (err.response?.data?.ResponseMsg) {
+        showTost({ title: err.response.data.ResponseMsg });
+      } else if (err.message.includes("Network Error")) {
+        showTost({ title: "Network error. Please check your connection." });
+      } else {
+        showTost({ title: "Failed to verify OTP. Please try again." });
+      }
+
+      // Clear OTP fields on error
+      setOtpValue([]);
+      if (Inputref.current && Inputref.current[0]) {
+        Inputref.current[0].focus();
+      }
     }
   };
 
@@ -469,14 +611,12 @@ const Login = () => {
         if (Password2 === Confirm) {
           axios
             .post(`${basUrl}forget_password.php`, {
-              mobile: value.slice(3),
+              email: value,
               password: Confirm,
-              ccode: value.slice(0, 3),
             })
             .then((res) => {
               if (res.data.Result === "true") {
                 showTost({ title: res.data.ResponseMsg });
-
                 toggleBottomSheet();
                 setValue("");
                 setOtpValue("");
@@ -511,27 +651,69 @@ const Login = () => {
       Inputref.current[index - 1].focus();
     }
   };
-  const UserAddHandler = (data) => {
-    const userRef = doc(db, "datingUser", data.id);
-    getDoc(userRef).then((docSnapshot) => {
-      if (docSnapshot.exists()) {
-        updateDoc(userRef, {
-          isOnline: true,
-        });
-      } else {
-        const Pro_Pic = data.profile_pic;
 
-        setDoc(userRef, {
-          email: data.email,
-          isOnline: true,
-          name: data.name,
-          number: data.mobile,
-          uid: data.id,
-          pro_pic: Pro_Pic ? Pro_Pic : "null",
-        });
+
+  const UserAddHandler = (data) => {
+    try {
+      // Validate data exists
+      if (!data) {
+        console.error("❌ UserAddHandler: No user data provided");
+        return;
       }
-    });
+
+      // Validate and convert ID to string
+      if (!data.id && data.id !== 0) {
+        console.error("❌ UserAddHandler: User ID is undefined/null", data);
+        return;
+      }
+
+      const userId = String(data.id).trim();
+
+      if (!userId || userId === "undefined" || userId === "null") {
+        console.error("❌ UserAddHandler: Invalid user ID after conversion", userId);
+        return;
+      }
+
+      console.log("🔄 UserAddHandler: Processing user ID:", userId);
+
+      // Create Firestore reference with validated ID
+      const userRef = doc(db, "datingUser", userId);
+
+      getDoc(userRef)
+        .then((docSnapshot) => {
+          if (docSnapshot.exists()) {
+            // Update existing user
+            updateDoc(userRef, {
+              isOnline: true,
+              updated_at: new Date().toISOString(),
+            });
+            console.log("✅ UserAddHandler: Existing user updated as online");
+          } else {
+            // Create new user document
+            const Pro_Pic = data.profile_pic;
+            setDoc(userRef, {
+              uid: userId,
+              email: data.email || "",
+              isOnline: true,
+              name: data.name || "",
+              number: data.mobile || "",
+              pro_pic: Pro_Pic ? Pro_Pic : "null",
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            });
+            console.log("✅ UserAddHandler: New user created in Firestore");
+          }
+        })
+        .catch((error) => {
+          console.error("🔥 UserAddHandler: Firestore operation failed:", error);
+        });
+
+    } catch (error) {
+      console.error("🔥 UserAddHandler: Unexpected error:", error);
+    }
   };
+
+
 
   return (
     <div>
@@ -549,49 +731,49 @@ const Login = () => {
                 <p className="text-[20px] mt-[10px] max-_430_:text-[20px] max-_380_:text-[16px] text-[#333333] font-normal text-center mb-3">
                   {t("subtitle")} {/* Updated */}
                 </p>
-               
+
               </div>
               <div className="mt-[20px] w-[100%] space-y-5">
                 {/* Email/Phone Input */}
                 <div>
-                <label htmlFor="" className="font-semibold">
+                  <label htmlFor="" className="font-semibold">
                     {t("emailMobileLabel")} {/* Updated */}
                   </label>
-                <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
-                  <img src={EmailIcon} alt="" className="w-[20px] h-[20px]" />
-                  <input
-                    className="text-black w-[100%] outline-none bg-transparent"
-                    type="Email"
-                    placeholder={t("emailMobilePlaceholder")}  
-                    onChange={(e) => setemail(e.target.value)}
-                    value={Email}
-                  />
-                </div>
+                  <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
+                    <img src={EmailIcon} alt="" className="w-[20px] h-[20px]" />
+                    <input
+                      className="text-black w-[100%] outline-none bg-transparent"
+                      type="Email"
+                      placeholder={t("emailMobilePlaceholder")}
+                      onChange={(e) => setemail(e.target.value)}
+                      value={Email}
+                    />
+                  </div>
                 </div>
 
                 {/* Password Input */}
                 <div className="relative">
                   <div>
-                     <label htmlFor="" className="font-semibold">
-                    {t("passwordLabel")}  
-                  </label>
-<div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
-                    <img
-                      src={UblockIcon}
-                      alt=""
-                      className="w-[20px] h-[20px]"
-                    />
-                    <input
-                      id="input"
-                      type="text"
-                      className="text-black w-[100%] outline-none bg-transparent"
-                      placeholder={t("passwordPlaceholder")}  
-                      onChange={(e) => setpassword(e.target.value)}
-                      value={Password}
-                    />
+                    <label htmlFor="" className="font-semibold">
+                      {t("passwordLabel")}
+                    </label>
+                    <div className="bg-white border-2 flex items-center gap-[15px] focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 px-[15px] py-[15px] rounded-xl shadow-sm transition-all duration-200">
+                      <img
+                        src={UblockIcon}
+                        alt=""
+                        className="w-[20px] h-[20px]"
+                      />
+                      <input
+                        id="input"
+                        type="text"
+                        className="text-black w-[100%] outline-none bg-transparent"
+                        placeholder={t("passwordPlaceholder")}
+                        onChange={(e) => setpassword(e.target.value)}
+                        value={Password}
+                      />
+                    </div>
                   </div>
-                  </div>
-                  
+
                   <button onClick={() => myFunction()}>
                     <img
                       ref={Show}
@@ -662,22 +844,21 @@ const Login = () => {
                       {/* Phone Input */}
                       <div className="bg-white border-2 border-gray-300 relative rounded-xl focus-within:border-amber-500 focus-within:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] transition-all duration-200">
                         {!value && (
-                          
+
                           <label
                             onClick={() => inputFocus.current.focus()}
                             className="text-[16px] absolute top-[10px] left-[60px] text-gray-400 font-[500] pointer-events-none"
                           >
-                            {t("mobileNumber")} {/* Updated */}
                           </label>
                         )}
-                        <PhoneInput
+                        <input
                           ref={inputFocus}
-                          className="text-black w-[100%] px-[15px] py-[10px] font-[500] bg-transparent"
-                          international
-                          defaultCountry="IN"
+                          className="text-black w-[100%] px-[15px] py-[10px] font-[500] bg-transparent border-[2px] border-gray-300 rounded-[10px] outline-none focus:border-[#C89A3D]"
+                          type="email" // Changed from type="email" to type="email" (it's already email)
+                          placeholder={t("enterEmailAddress")} // Add translation key
                           value={value}
-                          onChange={setValue}
-                          inputStyle={{
+                          onChange={(e) => setValue(e.target.value)}
+                          style={{
                             outline: "none",
                             backgroundColor: "transparent",
                           }}
@@ -723,7 +904,7 @@ const Login = () => {
                               value={Password2}
                               className="text-black w-[100%] border-2 outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
                               type="text"
-                              placeholder={t("password")}  
+                              placeholder={t("password")}
                             />
                           </div>
                           <div>
@@ -735,7 +916,7 @@ const Login = () => {
                               onChange={(e) => setconfirm(e.target.value)}
                               className="text-black w-[100%] border-2 mt-[10px] outline-none focus:border-amber-500 focus:shadow-[0_0_0_3px_rgba(245,158,11,0.1)] border-gray-300 bg-white px-[15px] py-[10px] rounded-xl shadow-sm transition-all duration-200"
                               type="text"
-                              placeholder={t("confirmPassword")}  
+                              placeholder={t("confirmPassword")}
                             />
                           </div>
                         </div>
@@ -747,16 +928,16 @@ const Login = () => {
                           otpShow
                             ? OtpCheckHandler
                             : passwordShow
-                            ? SubmitHandler
-                            : PhoneHandler
+                              ? SubmitHandler
+                              : EmailHandler
                         }
                         className="font-bold text-[18px] rounded-full mt-[20px] text-white py-[10px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
                       >
                         {otpShow
                           ? t("check") /* Updated */
                           : passwordShow
-                          ? t("change") /* Updated */
-                          : t("continue")} {/* Updated */}
+                            ? t("change") /* Updated */
+                            : t("continue")} {/* Updated */}
                       </button>
                     </div>
                   </div>

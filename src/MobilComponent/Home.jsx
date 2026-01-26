@@ -69,7 +69,7 @@ const Home = () => {
       id: "en",
     },
     {
-      title: "Greece",
+      title: "Greek",
       img: require("../images/flag/greek-flag.png"),
       id: "el",
     },
@@ -224,7 +224,7 @@ const Home = () => {
             <div className="container h-full flex flex-col justify-between">
               <div className="flex justify-between items-center py-4 px-3">
                 <div className="flex items-center">
-                  <img className="w-[250px]" src={MeetGreek} alt="logo" />
+                  <img className="w-[250px] sm:w-[200px] md:w-[300px] xl:w-[350px]" src={MeetGreek} alt="logo" />
                 </div>
 
                 <div className="flex items-center space-x-4">

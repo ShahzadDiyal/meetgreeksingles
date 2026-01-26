@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Footer from './Footer';
 
 const PageContent = () => {
   const { pageName } = useParams();  
   const [page, setPage] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const basUrl = "https://meetgreek.dhsol.net/api/";  
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const userData = localStorage.getItem('Register_User');
+    setIsAuthenticated(!!userData); // Set true if userData exists
+  }, []);
 
   useEffect(() => {
     // Fetch all pages and find the matching one
@@ -27,7 +35,6 @@ const PageContent = () => {
       });
   }, [pageName]);
 
- 
   const decodeHtml = (html) => {
     const txt = document.createElement('textarea');
     txt.innerHTML = html;
@@ -39,13 +46,19 @@ const PageContent = () => {
   }
 
   return (
-    <div className="pt-[120px] pr-[20px] md:pr-[20px] pl-[20px] md:pl-[320px]">
+    <>
+    <div className={`pt-[60px] pr-[20px] md:pr-[20px] pl-[60px] mb-4 ${
+      isAuthenticated ? 'md:pl-[320px] pt-[120px]' : ''
+    }`}>
       <h1 className="text-2xl font-bold">{page.title}</h1>
       <div 
         className="page-content"
         dangerouslySetInnerHTML={{ __html: decodeHtml(page.description) }}
       />
     </div>
+      <Footer />
+      </>
+
   );
 };
 

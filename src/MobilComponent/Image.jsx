@@ -127,20 +127,21 @@ const Imagecom = () => {
                 <div className="bg-[#0066CC] rounded-full w-[9%] h-[5px]"></div>
               </div>
             </div>
-            <div className="mt-[10px] flex items-start gap-3">
-              <img
+            <img
                 src={logo}
                 alt=""
-                width={60}
-                height={60}
+                width={80}
+                height={80}
                 className="mt-1 flex-shrink-0"
               />
+            <div className="mt-[10px] flex items-start gap-3">
+              
               <div className="flex-1">
                 <h1 className="text-[28px] max-_430_:text-[27px] font-[600] max-_430_:w-[260px]">
                   {t("title")} {/* Updated */}
                 </h1>
-                <p className="text-[20px] mt-[10px] max-_430_:text-[16px]">
-                  {t("description")} {/* Updated */}
+                <p className="text-[18px] mt-[10px] max-_430_:text-[16px]">
+                  {t("imageDescription")} {/* Updated */}
                 </p>
               </div>
             </div>
