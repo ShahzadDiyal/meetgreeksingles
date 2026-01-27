@@ -2,8 +2,8 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getMessaging } from "firebase/messaging";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDvSdiWJ2hEeEHnFlE_bzvShvS0aDeOAfo",
   authDomain: "meetgreeksingles.firebaseapp.com",
@@ -17,10 +17,20 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase services
+//  Auth
+export const auth = getAuth(app);
+
+//  Google Provider
+export const googleProvider = new GoogleAuthProvider();
+export const facebookProvider = new FacebookAuthProvider();
+
+// Firestore
 const db = getFirestore(app);
+
+// Realtime DB
 const database = getDatabase(app);
+
+// Messaging
 const messaging = getMessaging(app);
 
-// Export initialized Firebase services
 export { db, database, messaging };
