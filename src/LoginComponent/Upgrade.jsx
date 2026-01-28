@@ -297,26 +297,27 @@ const Upgrade = () => {
                     {t("foundingMemberLaunch")}
                   </p>
 
-                  <div className="my-3">
-                    {planLIst.map((item, index) => {
-                      const isPremium =
-                        item.amt >= (planLIst[0]?.amt || 60) ||
-                        item.title.toLowerCase().includes("premium");
+                 <div className="my-3">
+  {(() => {
+    const premiumPlan = planLIst.find((item) => {
+      return (
+        item.amt >= (planLIst[0]?.amt || 60) ||
+        item.title.toLowerCase().includes("premium")
+      );
+    });
 
-                      if (isPremium) {
-                        return (
-                          <button
-                            key={index}
-                            onClick={() => GetStartedHandler(index, item.id)}
-                            className="bg-[#1f5799] text-center text-2xl text-white font-bold py-3 px-6 rounded-full border-3 border-amber-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                          >
-                            {t("becomeFoundingMember")}
-                          </button>
-                        );
-                      }
-                      return null;
-                    })}
-                  </div>
+    if (!premiumPlan) return null;
+
+    return (
+      <button
+        onClick={() => GetStartedHandler(0, premiumPlan.id)}
+        className="bg-[#1f5799] text-center text-2xl text-white font-bold py-3 px-6 rounded-full border-3 border-amber-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+      >
+        {t("becomeFoundingMember")}
+      </button>
+    );
+  })()}
+</div>
 
                   <p className="mt-3 text-xl">
                     {t("securePayments")}
@@ -429,25 +430,27 @@ const Upgrade = () => {
                       {t("moreThanSubscription")}
                     </h1>
                     <div className="my-3">
-                      {planLIst.map((item, index) => {
-                        const isPremium =
-                          item.amt >= (planLIst[0]?.amt || 60) ||
-                          item.title.toLowerCase().includes("premium");
+  {(() => {
+    const premiumPlan = planLIst.find((item) => {
+      return (
+        item.amt >= (planLIst[0]?.amt || 60) ||
+        item.title.toLowerCase().includes("premium")
+      );
+    });
 
-                        if (isPremium) {
-                          return (
-                            <button
-                              key={index}
-                              onClick={() => GetStartedHandler(index, item.id)}
-                              className="bg-[#1f5799] text-center text-2xl text-white font-bold py-3 px-6 rounded-full border-3 border-amber-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                            >
-                              {t("becomeFoundingMember")}
-                            </button>
-                          );
-                        }
-                        return null;
-                      })}
-                    </div>
+    if (!premiumPlan) return null;
+
+    return (
+      <button
+        onClick={() => GetStartedHandler(0, premiumPlan.id)}
+        className="bg-[#1f5799] text-center text-2xl text-white font-bold py-3 px-6 rounded-full border-3 border-amber-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+      >
+        {t("becomeFoundingMember")}
+      </button>
+    );
+  })()}
+</div>
+
                   </div>
                 </div>
 
@@ -651,7 +654,7 @@ const Upgrade = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-[20%] max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]"
+            className="w-[30%] max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]"
           >
             <Paypal Amount={planLIst[id]?.amt} />
           </div>
@@ -664,7 +667,7 @@ const Upgrade = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-[20%] max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]"
+            className="w-[30%] max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]"
           >
             <StripePayment Amount={planLIst[id]?.amt} />
           </div>
@@ -677,7 +680,7 @@ const Upgrade = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-[20%] max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]"
+            className="w-[30%] max-_430_:w-[100%] max-_768_:w-[90%] max-_1030_:w-[50%] max-_1500_:w-[40%] bg-white rounded-[15px] p-[15px]"
           >
             <PayStack Amount={planLIst[id]?.amt} />
           </div>

@@ -69,7 +69,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="page/community_events_&_ambassadors" className="text-gray">
+                <Link to="/page/safety_&_community_care" className="text-gray">
                   {t("Safety & Community Care")}
                 </Link>
               </li>

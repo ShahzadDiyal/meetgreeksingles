@@ -38,6 +38,7 @@ const Login = () => {
   const [checkOtp, setChechOtp] = useState();
   const [passwordShow, setPasswordShow] = useState(false);
   const [otpShow, setOtpShow] = useState(false);
+  const [LoginLoading, setLoginLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
 
@@ -67,7 +68,7 @@ const Login = () => {
   const signInWithGoogle = async () => {
     try {
       setGoogleLoading(true);
-      
+
       // Step 1: Authenticate with Firebase/Google
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
@@ -115,8 +116,8 @@ const Login = () => {
         localStorage.setItem("Register_User", JSON.stringify(backendUser));
         localStorage.setItem("firebaseUser", JSON.stringify(user));
 
-        showTost({ 
-          title: res.data.ResponseMsg || "Google Sign-in successful!" 
+        showTost({
+          title: res.data.ResponseMsg || "Google Sign-in successful!"
         });
 
         Data.setDemo(Data.demo + "123");
@@ -139,27 +140,27 @@ const Login = () => {
         showTost({
           title: res.data.ResponseMsg || "Google Sign-in failed. Please try again.",
         });
-        
+
         await auth.signOut();
       }
 
     } catch (error) {
       console.error("❌ Google Sign-In Error:", error);
-      
+
       if (error.code === "auth/popup-closed-by-user") {
         showTost({ title: "Sign-in cancelled" });
       } else if (error.code === "auth/popup-blocked") {
         showTost({ title: "Pop-up blocked. Please allow pop-ups and try again." });
       } else if (error.response) {
-        showTost({ 
-          title: error.response.data?.ResponseMsg || "Server error. Please try again." 
+        showTost({
+          title: error.response.data?.ResponseMsg || "Server error. Please try again."
         });
       } else if (error.message.includes("Network Error")) {
         showTost({ title: "Network error. Please check your connection." });
       } else {
         showTost({ title: "Google Sign-in failed. Please try again." });
       }
-      
+
       try {
         await auth.signOut();
       } catch (signOutError) {
@@ -170,106 +171,114 @@ const Login = () => {
     }
   };
 
-// ============================================
-// FACEBOOK SIGN-IN HANDLER - ADD THIS
-// ============================================
-const signInWithFacebook = async () => {
-  try {
-    setFacebookLoading(true);
-    
-    const facebookProvider = new FacebookAuthProvider();
-    const result = await signInWithPopup(auth, facebookProvider);
-    const user = result.user;
-
-    console.log("✅ Facebook Authentication Success");
-
-    const socialLoginData = {
-      email: user.email || "",
-      name: user.displayName || "",
-      provider: "facebook",
-      provider_id: user.uid,
-      profile_pic: user.photoURL || "",
-    };
-
-    console.log("📤 Sending to social_login.php:", socialLoginData);
-
-    const res = await axios.post(
-      `${basUrl}social_login.php`,
-      socialLoginData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    console.log("📥 Backend Response:", res.data);
-
-    if (res.data.Result === "true") {
-      const backendUser = res.data.UserLogin;
-
-      const backendToken = res.data.token || uid(32);
-      localStorage.setItem("token", backendToken);
-      localStorage.setItem("UserId", backendUser.id);
-      localStorage.setItem("Register_User", JSON.stringify(backendUser));
-      localStorage.setItem("firebaseUser", JSON.stringify(user));
-
-      showTost({ 
-        title: res.data.ResponseMsg || "Facebook Sign-in successful!" 
-      });
-
-      Data.setDemo(Data.demo + "123");
-      UserAddHandler(backendUser);
-
-      const onboardingStatus = (backendUser.onboarding_status || "").toLowerCase();
-      const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
-
-      saveUserToFirestore(backendUser, onboardingStatus);
-
-      setTimeout(() => navigate(redirectPath), 500);
-
-    } else {
-      showTost({
-        title: res.data.ResponseMsg || "Facebook Sign-in failed. Please try again.",
-      });
-      
-      await auth.signOut();
-    }
-
-  } catch (error) {
-    console.error("❌ Facebook Sign-In Error:", error);
-    
-    if (error.code === "auth/popup-closed-by-user") {
-      showTost({ title: "Sign-in cancelled" });
-    } else if (error.code === "auth/popup-blocked") {
-      showTost({ title: "Pop-up blocked. Please allow pop-ups and try again." });
-    } else if (error.code === "auth/account-exists-with-different-credential") {
-      showTost({ title: "An account already exists with this email using a different sign-in method." });
-    } else if (error.response) {
-      showTost({ 
-        title: error.response.data?.ResponseMsg || "Server error. Please try again." 
-      });
-    } else if (error.message.includes("Network Error")) {
-      showTost({ title: "Network error. Please check your connection." });
-    } else {
-      showTost({ title: "Facebook Sign-in failed. Please try again." });
-    }
-    
+  // ============================================
+  // FACEBOOK SIGN-IN HANDLER - ADD THIS
+  // ============================================
+  // ============================================
+  // FACEBOOK SIGN-IN HANDLER - SIMPLEST SOLUTION
+  // ============================================
+  const signInWithFacebook = async () => {
     try {
-      await auth.signOut();
-    } catch (signOutError) {
-      console.error("Sign out error:", signOutError);
-    }
-  } finally {
-    setFacebookLoading(false);
-  }
-};
+      setFacebookLoading(true);
 
+      const facebookProvider = new FacebookAuthProvider();
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user;
+
+      console.log("✅ Facebook Authentication Success");
+
+      const socialLoginData = {
+        email: user.email || "",
+        name: user.displayName || "",
+        provider: "facebook",
+        provider_id: user.uid,
+        profile_pic: user.photoURL || "",
+      };
+
+      console.log("📤 Sending to social_login.php:", socialLoginData);
+
+      const res = await axios.post(
+        `${basUrl}social_login.php`,
+        socialLoginData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("📥 Backend Response:", res.data);
+
+      if (res.data.Result === "true") {
+        const backendUser = res.data.UserLogin;
+
+        const backendToken = res.data.token || uid(32);
+        localStorage.setItem("token", backendToken);
+        localStorage.setItem("UserId", backendUser.id);
+        localStorage.setItem("Register_User", JSON.stringify(backendUser));
+        localStorage.setItem("firebaseUser", JSON.stringify(user));
+
+        showTost({
+          title: res.data.ResponseMsg || "Facebook Sign-in successful!"
+        });
+
+        Data.setDemo(Data.demo + "123");
+        UserAddHandler(backendUser);
+
+        const onboardingStatus = (backendUser.onboarding_status || "").toLowerCase();
+        const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
+
+        saveUserToFirestore(backendUser, onboardingStatus);
+        setTimeout(() => navigate(redirectPath), 500);
+
+      } else {
+        showTost({
+          title: res.data.ResponseMsg || "Facebook Sign-in failed. Please try again.",
+        });
+
+        await auth.signOut();
+      }
+
+    } catch (error) {
+      console.error("❌ Facebook Sign-In Error:", error);
+
+      if (error.code === "auth/account-exists-with-different-credential") {
+        // User tried Facebook but already has Google account
+        showTost({
+          title: "This email is already registered with Google. Please use Google Sign-In instead.",
+        });
+
+        // Sign out any partial Facebook auth
+        try {
+          await auth.signOut();
+        } catch (signOutError) {
+          console.error("Sign out error:", signOutError);
+        }
+
+      } else if (error.code === "auth/popup-closed-by-user") {
+        showTost({ title: "Sign-in cancelled" });
+      } else if (error.code === "auth/popup-blocked") {
+        showTost({ title: "Pop-up blocked. Please allow pop-ups and try again." });
+      } else if (error.response) {
+        showTost({
+          title: error.response.data?.ResponseMsg || "Server error. Please try again."
+        });
+      } else if (error.message.includes("Network Error")) {
+        showTost({ title: "Network error. Please check your connection." });
+      } else {
+        showTost({ title: "Facebook Sign-in failed. Please try again." });
+      }
+
+    } finally {
+      setFacebookLoading(false);
+    }
+  };
   // ============================================
   // REGULAR EMAIL/PASSWORD SIGN-IN (UNCHANGED)
   // ============================================
   const SigninHandler = async () => {
     try {
+      setLoginLoading(true);
       if (!Email)
         return showTost({ title: t("enterEmailMobile") });
       if (!Password) return showTost({ title: t("enterPassword") });
@@ -321,15 +330,18 @@ const signInWithFacebook = async () => {
         saveUserToFirestore(user, onboardingStatus);
 
         setTimeout(() => navigate(redirectPath), 500);
+         setLoginLoading(false);
       } else {
         showTost({
           title: res.data.ResponseMsg || t("loginFailed"),
         });
+         setLoginLoading(false);
       }
     } catch (err) {
       console.error("🔥 SigninHandler error:", err);
       console.error("Error details:", err.response?.data || err.message);
       showTost({ title: t("loginFailed") });
+       setLoginLoading(false);
     }
   };
 
@@ -750,12 +762,32 @@ const signInWithFacebook = async () => {
                 </button>
 
                 {/* Sign In Button */}
-                <button
+                {/* <button
                   onClick={SigninHandler}
                   className="font-bold text-[18px] rounded-full mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm"
                 >
                   {t("signIn")}
-                </button>
+                </button> */}
+
+                <button
+  onClick={SigninHandler}
+  disabled={LoginLoading} // Add disabled attribute
+  className={`font-bold text-[18px] rounded-full mt-[5px] text-white py-[15px] w-[100%] bg-[#1F5799] transition-colors duration-200 shadow-sm ${
+    LoginLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#1a4a87]'
+  }`}
+>
+  {LoginLoading ? (
+    <div className="flex items-center justify-center gap-2">
+      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span> Signing in...</span>
+    </div>
+  ) : (
+    t("signIn")
+  )}
+</button>
 
                 {/* OR Divider */}
                 <div className="flex items-center gap-3">
@@ -781,10 +813,10 @@ const signInWithFacebook = async () => {
                   ) : (
                     <>
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
-                        <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
-                        <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
-                        <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335"/>
+                        <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4" />
+                        <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853" />
+                        <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05" />
+                        <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335" />
                       </svg>
                       <span>Sign in with Google</span>
                     </>
@@ -792,28 +824,28 @@ const signInWithFacebook = async () => {
                 </button>
 
                 {/* Facebook Sign-In Button - NEW */}
-             <button
-  onClick={signInWithFacebook}
-  disabled={facebookLoading}
-  className="font-bold text-[18px] rounded-full text-white py-[15px] w-[100%] bg-[#1877F2] hover:bg-[#166FE5] transition-all duration-200 shadow-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
->
-  {facebookLoading ? (
-    <>
-      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      <span>Signing in...</span>
-    </>
-  ) : (
-    <>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-      </svg>
-      <span>Sign in with Facebook</span>
-    </>
-  )}
-</button>
+                {/* <button
+                  onClick={signInWithFacebook}
+                  disabled={facebookLoading}
+                  className="font-bold text-[18px] rounded-full text-white py-[15px] w-[100%] bg-[#1877F2] hover:bg-[#166FE5] transition-all duration-200 shadow-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {facebookLoading ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Signing in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                      <span>Sign in with Facebook</span>
+                    </>
+                  )}
+                </button> */}
               </div>
 
               {/* Sign Up Link */}

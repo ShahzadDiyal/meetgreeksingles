@@ -386,6 +386,7 @@ const resources = {
       resetIt: "Reset it",
       signIn: "Log In",
       noAccount: "Don't have an Account?",
+      haveAccount: "Already have an Account?",
       signUp: "Sign Up",
       resetPassword: "Reset Your Password",
       mobileNumber: "Mobile Number",
@@ -495,6 +496,7 @@ const resources = {
       greekRootsPlaceholder:
         "Tell us more about your Greek connection...\n• Which Greek regions/places are you connected to?\n• Family background or ancestry\n• Cultural connections or experiences\n• Why Greek culture is important to you",
       greekRootsHint:
+
         "Share details about your Greek heritage, family background, or what draws you to Greek culture",
       nextButton: "Next",
       validationSelectGreekConnection: "Please select your Greek connection",

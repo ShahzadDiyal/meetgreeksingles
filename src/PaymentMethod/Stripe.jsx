@@ -225,7 +225,7 @@ export const StripePayment = ({ Amount }) => {
             </div>
 
             <div className="hidden md:block">
-                <div className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
+                <div className="bg-white rounded-xl shadow-md p-6">
                     <Elements stripe={stripePromise}>
                         <SplitForm fontSize={elementFontSize} amount={Amount} />
                     </Elements>

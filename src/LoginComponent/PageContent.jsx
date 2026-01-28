@@ -47,7 +47,7 @@ const PageContent = () => {
 
   return (
     <>
-    <div className={`pt-[60px] pr-[20px] md:pr-[20px] pl-[60px] mb-4 ${
+    <div className={`pt-[90px] pr-[20px] md:pr-[20px] pl-[60px] mb-4 ${
       isAuthenticated ? 'md:pl-[320px] pt-[120px]' : ''
     }`}>
       <h1 className="text-2xl font-bold">{page.title}</h1>

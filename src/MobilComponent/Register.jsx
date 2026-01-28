@@ -203,117 +203,117 @@ const Register = () => {
   }, [Country, Countries]);
 
 
-    // ============================================
-    // GOOGLE SIGN-IN HANDLER - UPDATED
-    // ============================================
-    const signInWithGoogle = async () => {
-      try {
-        setGoogleLoading(true);
-        
-        // Step 1: Authenticate with Firebase/Google
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-  
-        console.log("Google Authentication Success");
-        console.log("Google User Data:", {
-          email: user.email,
-          name: user.displayName,
-          uid: user.uid,
-          photo: user.photoURL,
+  // ============================================
+  // GOOGLE SIGN-IN HANDLER - UPDATED
+  // ============================================
+  const signInWithGoogle = async () => {
+    try {
+      setGoogleLoading(true);
+
+      // Step 1: Authenticate with Firebase/Google
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      console.log("Google Authentication Success");
+      console.log("Google User Data:", {
+        email: user.email,
+        name: user.displayName,
+        uid: user.uid,
+        photo: user.photoURL,
+      });
+
+      // Step 2: Prepare data for your backend API
+      const socialLoginData = {
+        email: user.email,
+        name: user.displayName || "",
+        provider: "google",
+        provider_id: user.uid,
+        profile_pic: user.photoURL || "",
+      };
+
+      console.log("Sending to social_login.php:", socialLoginData);
+
+      // Step 3: Call your backend social_login.php API
+      const res = await axios.post(
+        `${basUrl}social_login.php`,
+        socialLoginData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Backend Response:", res.data);
+
+      // Step 4: Handle backend response
+      if (res.data.Result === "true") {
+        const backendUser = res.data.UserLogin;
+
+        // Store authentication data
+        const backendToken = res.data.token || uid(32);
+        localStorage.setItem("token", backendToken);
+        localStorage.setItem("UserId", backendUser.id);
+        localStorage.setItem("Register_User", JSON.stringify(backendUser));
+        localStorage.setItem("firebaseUser", JSON.stringify(user)); // Store Firebase user too
+
+        showTost({
+          title: res.data.ResponseMsg || "Google Sign-in successful!"
         });
-  
-        // Step 2: Prepare data for your backend API
-        const socialLoginData = {
-          email: user.email,
-          name: user.displayName || "",
-          provider: "google",
-          provider_id: user.uid,
-          profile_pic: user.photoURL || "",
-        };
-  
-        console.log("Sending to social_login.php:", socialLoginData);
-  
-        // Step 3: Call your backend social_login.php API
-        const res = await axios.post(
-          `${basUrl}social_login.php`,
-          socialLoginData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-  
-        console.log("Backend Response:", res.data);
-  
-        // Step 4: Handle backend response
-        if (res.data.Result === "true") {
-          const backendUser = res.data.UserLogin;
-  
-          // Store authentication data
-          const backendToken = res.data.token || uid(32);
-          localStorage.setItem("token", backendToken);
-          localStorage.setItem("UserId", backendUser.id);
-          localStorage.setItem("Register_User", JSON.stringify(backendUser));
-          localStorage.setItem("firebaseUser", JSON.stringify(user)); // Store Firebase user too
-  
-          showTost({ 
-            title: res.data.ResponseMsg || "Google Sign-in successful!" 
-          });
-  
-          Data.setDemo(Data.demo + "123");
-  
-          // Add user to Firestore
-          // UserAddHandler(backendUser);
-  
-          // Check onboarding status
-          const onboardingStatus = (backendUser.onboarding_status || "").toLowerCase();
-          const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
-  
-          // Save to Firestore in background
-          // saveUserToFirestore(backendUser, onboardingStatus);
-  
-          // Navigate
-          setTimeout(() => navigate(redirectPath), 500);
-  
-        } else {
-          // Backend rejected the social login
-          showTost({
-            title: res.data.ResponseMsg || "Google Sign-in failed. Please try again.",
-          });
-          
-          // Optional: Sign out from Firebase if backend fails
-          await auth.signOut();
-        }
-  
-      } catch (error) {
-        console.error("❌ Google Sign-In Error:", error);
-        
-        if (error.code === "auth/popup-closed-by-user") {
-          showTost({ title: "Sign-in cancelled" });
-        } else if (error.code === "auth/popup-blocked") {
-          showTost({ title: "Pop-up blocked. Please allow pop-ups and try again." });
-        } else if (error.response) {
-          // Backend API error
-          showTost({ 
-            title: error.response.data?.ResponseMsg || "Server error. Please try again." 
-          });
-        } else if (error.message.includes("Network Error")) {
-          showTost({ title: "Network error. Please check your connection." });
-        } else {
-          showTost({ title: "Google Sign-in failed. Please try again." });
-        }
-        
-        // Sign out from Firebase on error
-        try {
-          await auth.signOut();
-        } catch (signOutError) {
-          console.error("Sign out error:", signOutError);
-        }
-      } finally {
-        setGoogleLoading(false);
+
+        Data.setDemo(Data.demo + "123");
+
+        // Add user to Firestore
+        // UserAddHandler(backendUser);
+
+        // Check onboarding status
+        const onboardingStatus = (backendUser.onboarding_status || "").toLowerCase();
+        const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
+
+        // Save to Firestore in background
+        // saveUserToFirestore(backendUser, onboardingStatus);
+
+        // Navigate
+        setTimeout(() => navigate(redirectPath), 500);
+
+      } else {
+        // Backend rejected the social login
+        showTost({
+          title: res.data.ResponseMsg || "Google Sign-in failed. Please try again.",
+        });
+
+        // Optional: Sign out from Firebase if backend fails
+        await auth.signOut();
       }
-    };
+
+    } catch (error) {
+      console.error("❌ Google Sign-In Error:", error);
+
+      if (error.code === "auth/popup-closed-by-user") {
+        showTost({ title: "Sign-in cancelled" });
+      } else if (error.code === "auth/popup-blocked") {
+        showTost({ title: "Pop-up blocked. Please allow pop-ups and try again." });
+      } else if (error.response) {
+        // Backend API error
+        showTost({
+          title: error.response.data?.ResponseMsg || "Server error. Please try again."
+        });
+      } else if (error.message.includes("Network Error")) {
+        showTost({ title: "Network error. Please check your connection." });
+      } else {
+        showTost({ title: "Google Sign-in failed. Please try again." });
+      }
+
+      // Sign out from Firebase on error
+      try {
+        await auth.signOut();
+      } catch (signOutError) {
+        console.error("Sign out error:", signOutError);
+      }
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
 
   const SubmitHandler = async () => {
@@ -989,33 +989,44 @@ const Register = () => {
                 </div>
               </button>
 
- {/* Google Sign-In Button - UPDATED WITH STYLING */}
-                <button
-                  onClick={signInWithGoogle}
-                  disabled={googleLoading}
-                  className="font-bold text-[18px] rounded-full text-gray-700 py-[15px] w-[100%] bg-white border-2 border-gray-300 hover:border-gray-400 transition-all duration-200 shadow-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
-                >
-                  {googleLoading ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <span>Signing in...</span>
-                    </>
-                  ) : (
-                    <>
-                      {/* Google Icon */}
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
-                        <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
-                        <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
-                        <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335"/>
-                      </svg>
-                      <span>Create Account with Google</span>
-                    </>
-                  )}
-                </button>
+              {/* Google Sign-In Button - UPDATED WITH STYLING */}
+              <button
+                onClick={signInWithGoogle}
+                disabled={googleLoading}
+                className="font-bold text-[18px] rounded-full text-gray-700 py-[15px] w-[100%] bg-white border-2 border-gray-300 hover:border-gray-400 transition-all duration-200 shadow-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+              >
+                {googleLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    {/* Google Icon */}
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4" />
+                      <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853" />
+                      <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05" />
+                      <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335" />
+                    </svg>
+                    <span>Create Account with Google</span>
+                  </>
+                )}
+              </button>
+
+              {/* Sign Up Link */}
+              <Link
+                to="/login"
+                className="pt-[20px] font-[500] text-[16px] no-underline text-black block w-full text-center"
+              >
+                {t("haveAccount")}{" "}
+                <span className="text-amber-600 hover:text-amber-700 transition-colors duration-150">
+                  {t("signIn")}
+                </span>
+              </Link>
               {/* Registration Progress Note */}
               {isRegistering && (
                 <div className="mt-4 text-center text-gray-600 text-sm">
