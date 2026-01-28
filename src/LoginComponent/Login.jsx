@@ -171,108 +171,106 @@ const Login = () => {
     }
   };
 
-  // ============================================
-  // FACEBOOK SIGN-IN HANDLER - ADD THIS
-  // ============================================
+
   // ============================================
   // FACEBOOK SIGN-IN HANDLER - SIMPLEST SOLUTION
   // ============================================
-  const signInWithFacebook = async () => {
-    try {
-      setFacebookLoading(true);
+  // const signInWithFacebook = async () => {
+  //   try {
+  //     setFacebookLoading(true);
 
-      const facebookProvider = new FacebookAuthProvider();
-      const result = await signInWithPopup(auth, facebookProvider);
-      const user = result.user;
+  //     const facebookProvider = new FacebookAuthProvider();
+  //     const result = await signInWithPopup(auth, facebookProvider);
+  //     const user = result.user;
 
-      console.log("✅ Facebook Authentication Success");
+  //     console.log("✅ Facebook Authentication Success");
 
-      const socialLoginData = {
-        email: user.email || "",
-        name: user.displayName || "",
-        provider: "facebook",
-        provider_id: user.uid,
-        profile_pic: user.photoURL || "",
-      };
+  //     const socialLoginData = {
+  //       email: user.email || "",
+  //       name: user.displayName || "",
+  //       provider: "facebook",
+  //       provider_id: user.uid,
+  //       profile_pic: user.photoURL || "",
+  //     };
 
-      console.log("📤 Sending to social_login.php:", socialLoginData);
+  //     console.log("📤 Sending to social_login.php:", socialLoginData);
 
-      const res = await axios.post(
-        `${basUrl}social_login.php`,
-        socialLoginData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+  //     const res = await axios.post(
+  //       `${basUrl}social_login.php`,
+  //       socialLoginData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
 
-      console.log("📥 Backend Response:", res.data);
+  //     console.log("📥 Backend Response:", res.data);
 
-      if (res.data.Result === "true") {
-        const backendUser = res.data.UserLogin;
+  //     if (res.data.Result === "true") {
+  //       const backendUser = res.data.UserLogin;
 
-        const backendToken = res.data.token || uid(32);
-        localStorage.setItem("token", backendToken);
-        localStorage.setItem("UserId", backendUser.id);
-        localStorage.setItem("Register_User", JSON.stringify(backendUser));
-        localStorage.setItem("firebaseUser", JSON.stringify(user));
+  //       const backendToken = res.data.token || uid(32);
+  //       localStorage.setItem("token", backendToken);
+  //       localStorage.setItem("UserId", backendUser.id);
+  //       localStorage.setItem("Register_User", JSON.stringify(backendUser));
+  //       localStorage.setItem("firebaseUser", JSON.stringify(user));
 
-        showTost({
-          title: res.data.ResponseMsg || "Facebook Sign-in successful!"
-        });
+  //       showTost({
+  //         title: res.data.ResponseMsg || "Facebook Sign-in successful!"
+  //       });
 
-        Data.setDemo(Data.demo + "123");
-        UserAddHandler(backendUser);
+  //       Data.setDemo(Data.demo + "123");
+  //       UserAddHandler(backendUser);
 
-        const onboardingStatus = (backendUser.onboarding_status || "").toLowerCase();
-        const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
+  //       const onboardingStatus = (backendUser.onboarding_status || "").toLowerCase();
+  //       const redirectPath = onboardingStatus === "completed" ? "/dashboard" : "/image";
 
-        saveUserToFirestore(backendUser, onboardingStatus);
-        setTimeout(() => navigate(redirectPath), 500);
+  //       saveUserToFirestore(backendUser, onboardingStatus);
+  //       setTimeout(() => navigate(redirectPath), 500);
 
-      } else {
-        showTost({
-          title: res.data.ResponseMsg || "Facebook Sign-in failed. Please try again.",
-        });
+  //     } else {
+  //       showTost({
+  //         title: res.data.ResponseMsg || "Facebook Sign-in failed. Please try again.",
+  //       });
 
-        await auth.signOut();
-      }
+  //       await auth.signOut();
+  //     }
 
-    } catch (error) {
-      console.error("❌ Facebook Sign-In Error:", error);
+  //   } catch (error) {
+  //     console.error("❌ Facebook Sign-In Error:", error);
 
-      if (error.code === "auth/account-exists-with-different-credential") {
-        // User tried Facebook but already has Google account
-        showTost({
-          title: "This email is already registered with Google. Please use Google Sign-In instead.",
-        });
+  //     if (error.code === "auth/account-exists-with-different-credential") {
+  //       // User tried Facebook but already has Google account
+  //       showTost({
+  //         title: "This email is already registered with Google. Please use Google Sign-In instead.",
+  //       });
 
-        // Sign out any partial Facebook auth
-        try {
-          await auth.signOut();
-        } catch (signOutError) {
-          console.error("Sign out error:", signOutError);
-        }
+  //       // Sign out any partial Facebook auth
+  //       try {
+  //         await auth.signOut();
+  //       } catch (signOutError) {
+  //         console.error("Sign out error:", signOutError);
+  //       }
 
-      } else if (error.code === "auth/popup-closed-by-user") {
-        showTost({ title: "Sign-in cancelled" });
-      } else if (error.code === "auth/popup-blocked") {
-        showTost({ title: "Pop-up blocked. Please allow pop-ups and try again." });
-      } else if (error.response) {
-        showTost({
-          title: error.response.data?.ResponseMsg || "Server error. Please try again."
-        });
-      } else if (error.message.includes("Network Error")) {
-        showTost({ title: "Network error. Please check your connection." });
-      } else {
-        showTost({ title: "Facebook Sign-in failed. Please try again." });
-      }
+  //     } else if (error.code === "auth/popup-closed-by-user") {
+  //       showTost({ title: "Sign-in cancelled" });
+  //     } else if (error.code === "auth/popup-blocked") {
+  //       showTost({ title: "Pop-up blocked. Please allow pop-ups and try again." });
+  //     } else if (error.response) {
+  //       showTost({
+  //         title: error.response.data?.ResponseMsg || "Server error. Please try again."
+  //       });
+  //     } else if (error.message.includes("Network Error")) {
+  //       showTost({ title: "Network error. Please check your connection." });
+  //     } else {
+  //       showTost({ title: "Facebook Sign-in failed. Please try again." });
+  //     }
 
-    } finally {
-      setFacebookLoading(false);
-    }
-  };
+  //   } finally {
+  //     setFacebookLoading(false);
+  //   }
+  // };
   // ============================================
   // REGULAR EMAIL/PASSWORD SIGN-IN (UNCHANGED)
   // ============================================

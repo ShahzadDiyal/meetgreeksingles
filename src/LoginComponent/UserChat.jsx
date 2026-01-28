@@ -41,6 +41,7 @@ const UserChat = () => {
     const [receiverId, setReceiverId] = useState();
     const [senderId, setSenderId] = useState();
     const [senderName, setSenderName] = useState();
+    const [senderAge, setSenderAge] = useState();
     const [profilePic, setProfilePic] = useState();
     const [showPicker, setShowPicker] = useState(false);
     const [chatUserBlock, setChatUserBlock] = useState([]);
@@ -120,6 +121,7 @@ const UserChat = () => {
             const Data = JSON.parse(Userdata);
             setSenderId(Data.id);
             setSenderName(Data.name);
+            setSenderAge(Data.bday);
             UserGetHandler();
             MyCHatsUserGetHandel();
             setMyphoto(Data.profile_pic);
@@ -166,6 +168,7 @@ const UserChat = () => {
                         message: message,
                         reciverId: receiverId,
                         senderName: senderName,
+                        senderAge: senderAge,
                         senderid: senderId,
                         timestamp: new Date(),
                     };
@@ -190,6 +193,7 @@ const UserChat = () => {
                                 message: message,
                                 reciverId: receiverId,
                                 senderName: senderName,
+                                senderAge: senderAge,
                                 senderid: senderId,
                                 timestamp: new Date(),
                             };
@@ -500,6 +504,7 @@ const UserChat = () => {
                     });
                 });
                 setAllChat(data);
+                console.log("chat data",data);
                 MyCHatsUserGetHandel();
             });
             return () => unsubscribe();
@@ -516,6 +521,7 @@ const UserChat = () => {
         setReceiverId(user.otherId);
         setUserName(user.name);
         setProfilePic(user.pro_pic);
+        // setUserAge(user.bday)
 
         if (window.innerWidth < 1200) {
             Open.current.classList.add("open");
@@ -909,7 +915,7 @@ const UserChat = () => {
                             value={message}
                             onChange={handleMessageChange}
                             onKeyDown={handleKeyPress}
-                            placeholder="Type a message..."
+                            placeholder="Write a friendly message…"
                         />
                         <button onClick={handleSendMessage} className='flex justify-center items-center'>
                             <svg width="17" height="16" viewBox="0 0 17 16" fill="none"
@@ -1066,7 +1072,7 @@ const UserChat = () => {
                                                 </div>}
 
                                             <input value={message}
-                                                onChange={handleMessageChange} onKeyDown={handleKeyPress} className="form-control focus-within:outline-[#0066CC]" placeholder="Write message here..." type="text" />
+                                                onChange={handleMessageChange} onKeyDown={handleKeyPress} className="form-control focus-within:outline-[#0066CC]" placeholder="Write a friendly message…" type="text" />
 
                                             <button onClick={handleSendMessage} aria-label="button" type="button"
                                                 className="avatar-sm p-0 rounded-circle mx-2 flex items-center justify-center bg-[#0066CC]">
